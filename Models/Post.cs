@@ -1,4 +1,4 @@
-namespace MyWeb.Models;
+namespace WEBAPP_FitMatch.Models;
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,14 +9,14 @@ public class Post{
     public int PostId { get; set;}
     [Column("UserId")]
     public int UserId { get; set;}
-    public string Title { get; set;}
+    public required string Title { get; set;}
     public string? Location { get; set;}
     public DateOnly Date { get; set;}
     public TimeOnly Time { get; set;}
-    public string Description { get; set;}
-    public string SportType { get; set;}
+    public required string Description { get; set;}
+    public required string SportType { get; set;}
     public DateTime CreateDate { get; set;}
     public int MaxPeople { get; set;}
 
-    public ICollection<PostUser> Members { get; set;}
+    public ICollection<PostUser> Members { get; set;} = new List<PostUser>();
 }

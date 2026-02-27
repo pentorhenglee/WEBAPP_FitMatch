@@ -1,4 +1,4 @@
-namespace MyWeb.Models;
+namespace WEBAPP_FitMatch.Models;
 
 public class LoginRequest
 {
