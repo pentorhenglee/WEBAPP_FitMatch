@@ -1,11 +1,62 @@
 @{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = "Profile ";
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/ProfileIndex.css" asp-append-version="true" />
-}
+    <link rel="stylesheet" href="~/css/Profile.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+}   
 
 <div class="profile-container">
-    Profile
+    <div class="profile-header">
+        <img src="@ViewData["UserProfilePic"]" alt="Profile Picture" class="profile-pic" />
+        <div class="profile-info">
+            <h1>@ViewData["UserName"]</h1>
+            <p>@ViewData["UserEmail"]</p>
+            <p>@ViewData["UserBio"]</p>
+        </div>
+    </div>
+    <div class="profile-content">
+        <div class="upcoming-history-section">
+            <h3>Upcoming Events</h3>
+            <div id="upcomingEvent" class="upcoming-section"></div>
+            <div class="history-section"></div>
+        </div>
+        <div class="dashboard-mission-section">
+            <div class="dashboard-section"></div>
+            <div class="mission-section"></div>
+        </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    loadUpcomingEvents();
+});
+
+async function loadUpcomingEvents() {
+    const events = [
+    // ------------------------------------EDIT API -------------------------------------
+        { id: 1, title: "Morning Run", date: "2026-03-01", location: "KMITL Track" },
+        { id: 2, title: "Gym Session", date: "2026-03-02", location: "FitMatch Center" }
+    ];
+
+    const container = document.getElementById("upcomingEvent");
+    container.innerHTML = "";
+
+    events.forEach(event => {
+        const card = `
+            <div class="card event-card">
+                <div class="card-body">
+                    <h5 class="card-title">${event.title}</h5>
+                    <p class="card-text">
+                        <i class="bi bi-calendar"></i> ${event.date}<br/>
+                        <i class="bi bi-geo-alt"></i> ${event.location}
+                    </p>
+                    <button class="btn btn-primary btn-sm">View Details</button>
+                </div>
+            </div>
+        `;
+        container.innerHTML += card;
+    });
+}
+</script>
