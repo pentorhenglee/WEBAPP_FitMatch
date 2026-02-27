@@ -1,31 +1,89 @@
-html {
-  font-size: 14px;
+/* ============================================================
+   FitMatch — Global CSS Variables
+   ============================================================ */
+:root {
+  --fm-bg:          #1f1f1f;
+  --fm-surface:     #2a2a2a;
+  --fm-border:      #3a3a3a;
+  --fm-accent:      #2ecc71; /* สีเขียว FitMatch */
+  --fm-text:        #ffffff;
+  --fm-text-muted:  #b3b3b3;
+  --fm-navbar-h:    70px;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  margin-bottom: 60px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--fm-bg);
+  color: var(--fm-text);
+  min-height: 100vh;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+a { text-decoration: none; }
+
+/* ============================================================
+   Navbar (Desktop Only)
+   ============================================================ */
+.fm-navbar {
+  height: var(--fm-navbar-h);
+  background-color: var(--fm-surface);
+  border-bottom: 1px solid var(--fm-border);
+  padding: 0 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+/* ฝั่งซ้าย: โลโก้ */
+.fm-brand {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+.fm-brand img { 
+  height: 50px; 
+  width: auto; 
+}
+.text-fit { color: var(--fm-text); }
+.text-match { color: var(--fm-accent); }
+
+/* ฝั่งขวา: ข้อมูล User */
+.fm-user-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.fm-user-text {
+  text-align: right;
+  line-height: 1.2;
+}
+.fm-user-name {
+  font-weight: bold;
+  font-size: 0.95rem;
+  color: var(--fm-text);
+  text-transform: uppercase;
+}
+.fm-user-email {
+  font-size: 0.75rem;
+  color: var(--fm-text-muted);
+  text-transform: uppercase;
+}
+
+/* วงกลมรูปโปรไฟล์ (ตั้งค่าให้พื้นหลังสีขาวรอไว้ก่อน) */
+.fm-user-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: #ffffff; /* สีขาวว่างๆ */
+  object-fit: cover;
+}
+
+/* ============================================================
+   พื้นที่ตรงกลาง (Dashboard)
+   ============================================================ */
+.fm-page-wrapper {
+  padding: 30px 40px;
 }

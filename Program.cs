@@ -3,6 +3,14 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddDistributedMemoryCache(); // ที่เก็บข้อมูล Session
+builder.Services.AddSession(options => {
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // ตั้งเวลา Session หมดอายุ
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+// ------------------------------------------------------
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -18,12 +26,13 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+app.UseSession();
+
 app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();
