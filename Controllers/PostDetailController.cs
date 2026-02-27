@@ -4,7 +4,7 @@ using WEBAPP_FitMatch.Models;
 
 namespace WEBAPP_FitMatch.Controllers;
 
-public class PostBoardController : Controller
+public class PostDetailController : Controller
 {
     public IActionResult Index()
     {
