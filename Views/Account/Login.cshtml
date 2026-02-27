@@ -48,12 +48,19 @@
             });
 
             if (res.ok) {
-                // ถ้า Login สำเร็จ ส่งไปหน้า Index
                 window.location.href = "/Home/Index";
             } else {
-                // ถ้าไม่สำเร็จ ดึง Error message มาโชว์
-                const errorData = await res.json(); 
-                errorDiv.innerText = errorData.message || "Login failed. Please check your credentials.";
+                // เปลี่ยนมาเช็คก่อนว่าข้อมูลที่ส่งมาเป็น JSON หรือไม่
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    const errorData = await res.json();
+                    errorDiv.innerText = errorData.message || "Login failed.";
+                } else {
+                    // ถ้าไม่ใช่ JSON (แปลว่า Backend พังหนัก) ให้แสดงข้อความนี้
+                    const errorText = await res.text();
+                    console.error("Server Error:", errorText);
+                    errorDiv.innerText = "ระบบเซิร์ฟเวอร์มีปัญหา (Error 500) กรุณาตรวจสอบ Terminal";
+                }
                 errorDiv.classList.remove("d-none");
             }
         } catch (err) {

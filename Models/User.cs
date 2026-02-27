@@ -13,6 +13,6 @@ public class User
     public required string PasswordHash { get; set;}
     [Column("Email")]
     public required string Email { get; set;}
-    public string ProfileUrl { get; set;}
+    public string? ProfileUrl { get; set;}
 
 }

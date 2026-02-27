@@ -88,6 +88,14 @@
     padding: 0 5px;
 }
 
+/* เพิ่มสไตล์สำหรับเวลาแชท */
+.chat-time {
+    font-size: 0.55rem;
+    color: #888888;
+    margin-left: 5px;
+    font-weight: normal;
+}
+
 /* บับเบิ้ลข้อความ */
 .chat-bubble {
     padding: 8px 12px;
