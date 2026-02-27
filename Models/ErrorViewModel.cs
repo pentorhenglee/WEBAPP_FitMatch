@@ -1,4 +1,4 @@
-namespace WEBAPP_FitMatch.Models;
+namespace MyWeb.Models;
 
 public class ErrorViewModel
 {
