@@ -1,0 +1,236 @@
+@{
+    ViewData["Title"] = "Post Detail";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/PostDetail.css" asp-append-version="true" />
+}
+
+<div class="post-detail-container">
+    
+    <div class="post-chat-section">
+        <div class="chat-header">Chat</div>
+        
+        <div class="chat-messages" id="chatHistoryContainer">
+            <div style="text-align:center; color:#ccc; font-size:0.8rem; margin-top:20px;">Loading chat...</div>
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" id="chatInputMessage" placeholder="Type a message..." onkeypress="handleEnterKey(event)" />
+            <button onclick="sendChatMessage()" style="background:none; border:none; color:white; cursor:pointer;">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="post-info-section">
+        <img src="" id="displayCoverImg" class="post-cover-img" alt="Event Cover" style="display:none;" />
+        
+        <div class="post-details">
+            <h2 id="displayTitle">Loading...</h2>
+            <div class="post-meta" id="displayMeta">Location | Date | Time</div>
+            <div class="post-desc" id="displayDesc">Please wait, fetching data from database...</div>
+            
+            <div style="margin-top:20px; font-weight:bold; color: var(--accent);" id="displayParticipants">
+                Participants: - / -
+            </div>
+        </div>
+
+        <div id="actionButtonsArea">
+            <button class="btn-join" id="btnJoin" onclick="joinPost()" style="position: absolute; bottom: 0; right: 0; display: none;">JOIN</button>
+
+            <div class="owner-actions-container" id="ownerActions">
+                <button class="btn-manage" onclick="manageParticipants()">MANAGE</button>
+                <button class="btn-edit" onclick="editPost()">EDIT</button>
+                <button class="btn-close" onclick="closePost()">CLOSE</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        const currentPostId = 1; 
+        const currentUserId = 99; // ไอดีคนกำลังล็อกอิน
+        const myAvatarUrl = ""; // รูปตัวเอง
+
+        // 1. Mockup Data
+        const mockPostFromDB = {
+            PostId: 1,
+            UserId: 99, // 🌟 เพิ่ม UserId ของเจ้าของโพสต์ (99 = เป็นของเราเอง)
+            Status: "Open", // 🌟 เพิ่ม Status (Open/Closed)
+            Title: "Morning Run at Suan Lumpini",
+            Location: "Suan Lumpini", 
+            Date: "14 Feb 2026",
+            Time: "08:00",
+            Description: "Looking for running group. Pace doesn't matter, we can chill and take photos. Everyone is welcome!",
+            MaxPeople: 5,
+            CurrentPeople: 2,
+            ImageUrl: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Aerial_view_of_Lumphini_Park.jpg"
+        };
+
+        const mockChatsFromDB = [
+            { 
+                CommentId: 1, 
+                UserId: 10, 
+                UserName: "John Runner", 
+                AvatarUrl: "", 
+                Message: "Anyone arrived yet?", 
+                IsMine: false 
+            },
+            { 
+                CommentId: 2, 
+                UserId: 99, 
+                UserName: "Earthy", 
+                AvatarUrl: myAvatarUrl, 
+                Message: "Driving there, 10 mins away!", 
+                IsMine: true 
+            }
+        ];
+
+        // 2. Fetch API Methods
+        async function fetchPostDetail() {
+            try {
+                const data = mockPostFromDB; 
+                document.getElementById('displayCoverImg').src = data.ImageUrl;
+                document.getElementById('displayCoverImg').style.display = "block";
+                document.getElementById('displayTitle').innerText = data.Title;
+                document.getElementById('displayMeta').innerText = `${data.Location} | ${data.Date} | ${data.Time}`;
+                document.getElementById('displayDesc').innerText = data.Description;
+                document.getElementById('displayParticipants').innerText = `Participants: ${data.CurrentPeople} / ${data.MaxPeople}`;
+
+                // 🌟 ลอจิกเช็คสลับมุมมอง (Owner vs Normal User)
+                if (data.UserId === currentUserId) {
+                    // ถ้าเป็นเจ้าของโพสต์
+                    document.getElementById('btnJoin').style.display = "none";
+                    document.getElementById('ownerActions').style.display = "flex";
+                } else {
+                    // ถ้าไม่ใช่เจ้าของโพสต์
+                    document.getElementById('ownerActions').style.display = "none";
+                    
+                    // เช็คเพิ่มเติม: ถ้าโพสต์ปิดรับสมัครแล้ว
+                    if (data.Status === "Closed") {
+                        const btnJoin = document.getElementById('btnJoin');
+                        btnJoin.style.display = "block";
+                        btnJoin.innerText = "CLOSED";
+                        btnJoin.disabled = true;
+                        btnJoin.style.backgroundColor = "#333";
+                        btnJoin.style.color = "#888";
+                    } else {
+                        document.getElementById('btnJoin').style.display = "block";
+                    }
+                }
+
+            } catch (error) { console.error("Error:", error); }
+        }
+
+        async function fetchChatHistory() {
+            try {
+                const chats = mockChatsFromDB; 
+                const chatContainer = document.getElementById('chatHistoryContainer');
+                chatContainer.innerHTML = ""; 
+
+                chats.forEach(chat => {
+                    const wrapperClass = chat.IsMine ? "mine" : "others";
+                    chatContainer.innerHTML += `
+                        <div class="chat-message-wrapper ${wrapperClass}">
+                            <img src="${chat.AvatarUrl}" class="chat-avatar" alt="Avatar">
+                            <div class="chat-message-content">
+                                <div class="chat-username">${chat.UserName}</div>
+                                <div class="chat-bubble">${chat.Message}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            } catch (error) { console.error("Error:", error); }
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInputMessage');
+            const message = input.value.trim();
+            if (!message) return;
+
+            try {
+                // สร้างแชทใหม่ฝั่งตัวเองทันทีเมื่อกดส่ง
+                const chatContainer = document.getElementById('chatHistoryContainer');
+                chatContainer.innerHTML += `
+                    <div class="chat-message-wrapper mine">
+                        <img src="${myAvatarUrl}" class="chat-avatar" alt="Avatar">
+                        <div class="chat-message-content">
+                            <div class="chat-username">Earthy</div>
+                            <div class="chat-bubble">${message}</div>
+                        </div>
+                    </div>
+                `;
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+                input.value = ""; 
+            } catch (error) {
+                alert("Failed to send message.");
+            }
+        }
+
+        function handleEnterKey(e) {
+            if (e.key === 'Enter') sendChatMessage();
+        }
+
+        async function joinPost() {
+            const btn = document.getElementById('btnJoin');
+            btn.innerText = "JOINING...";
+            btn.disabled = true;
+
+            try {
+                // อนาคตตรงนี้จะเป็นโค้ด Fetch API ไปบอก Database ว่า "นาย A ขอ Join โพสต์นี้นะ"
+                
+                // จำลองว่าเน็ตโหลด 1 วินาที
+                setTimeout(() => {
+                    // 1. เปลี่ยนหน้าตาปุ่มเป็น JOINED
+                    btn.innerText = "JOINED";
+                    btn.style.backgroundColor = "var(--accent)";
+                    btn.style.color = "white";
+                    
+                    // 2. 🌟 Logic การเพิ่มจำนวนคน: เอาค่าเดิมมาบวก 1
+                    mockPostFromDB.CurrentPeople += 1;
+                    
+                    // 3. 🌟 อัปเดตตัวเลขบนหน้าจอด้วยตัวแปร
+                    document.getElementById('displayParticipants').innerText = `Participants: ${mockPostFromDB.CurrentPeople} / ${mockPostFromDB.MaxPeople}`;
+                    
+                }, 1000);
+
+            } catch (error) {
+                alert("Failed to join.");
+                btn.innerText = "JOIN";
+                btn.disabled = false;
+            }
+        }
+
+        function editPost() {
+            // ในอนาคตจะพาไปหน้า /Post/Edit/1
+            alert("to edit post-page");
+        }
+
+        async function closePost() {
+            if (confirm("are you sure to close this post?")) {
+                // อนาคต Fetch ไปอัปเดต Status ใน DB ตรงนี้
+                alert("post status is closed!");
+                
+                // จำลองการเปลี่ยนหน้าตาปุ่มทันที
+                const btnClose = document.querySelector('.btn-close');
+                btnClose.innerText = "CLOSED";
+                btnClose.style.backgroundColor = "#555";
+                btnClose.disabled = true;
+            }
+        }
+
+        function manageParticipants() {
+            // อนาคตอาจจะเด้ง Modal โชว์รายชื่อคนจอย เพื่อกด Approve/Reject
+            alert("notify Modal to edit participants (Approve / Reject / Kick)");
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchPostDetail();
+            fetchChatHistory();
+        });
+    </script>
+}

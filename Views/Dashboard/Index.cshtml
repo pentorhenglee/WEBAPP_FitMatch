@@ -3,11 +3,130 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/DashboardIndex.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
 }
 
-<div class="test-link-box">
-    <h1>🚀 ทดสอบการลิงก์ CSS</h1>
-    <p>ถ้าคุณเห็นกล่องนี้มี <b>ขอบเส้นประสีเขียว</b> และพื้นหลังสีเทา...</p>
-    <p>แปลว่าไฟล์ dashboard.css ลิงก์สำเร็จ 100% พร้อมลุยของจริงแล้วครับ!</p>
+<div class="dashboard-container">
+    
+    <div class="dash-left-panel">
+        <div class="dash-header">
+            <h2>Dashboard</h2>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">
+                Sort: <select style="background:transparent; color:white; border:none; outline:none;"><option>Last Month</option></select>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('upcoming', this)">Up Coming</button>
+            <button class="tab-btn" onclick="switchTab('history', this)">History</button>
+        </div>
+
+        <div id="upcoming-content" class="tab-content active">
+            <div style="text-align: center; color: var(--text-muted); padding: 40px 0;">Loading...</div>
+        </div>
+
+        <div id="history-content" class="tab-content">
+            <div style="text-align: center; color: var(--text-muted); padding: 40px 0;">Loading...</div>
+        </div>
+    </div>
+
+    <div class="dash-right-panel">
+        <div>
+            <h2>olo</h2>
+        </div>
+    </div>
+
 </div>
+
+@section Scripts {
+    <script>
+        // 1. จำลองข้อมูล (Mockup Object) ที่จะได้รับจาก Database
+        const mockUpcomingData = [
+            {
+                id: 1,
+                title: "SUVANAPHUM AIRPORT",
+                date: "14 - 2 - 2026",
+                time: "08:00 - 09:00",
+                description: "We are going for a run make sure we are going for a run mate eiei",
+                icon: "fa-person-running"
+            },
+            {
+                id: 2,
+                title: "SUVANAPHUM AIRPORT",
+                date: "14 - 2 - 2026",
+                time: "08:00 - 09:00",
+                description: "We are going for a run make sure we are going for a run mate eiei",
+                icon: "fa-person-running"
+            }
+        ];
+
+        // ประวัติจำลองให้เป็น Array ว่าง เพื่อเทสต์ว่าระบบโชว์ข้อความ "ยังไม่มีประวัติ" ได้ถูกต้อง
+        const mockHistoryData = []; 
+
+        // 2. ฟังก์ชันจำลองการ Fetch Data (เปลี่ยนไปเรียก API จริงตรงนี้ในอนาคต)
+        async function fetchEventData(type) {
+            // ในอนาคตจะเปลี่ยนเป็น: const response = await fetch(`/api/events/${type}`); return await response.json();
+            
+            return new Promise(resolve => {
+                setTimeout(() => { // หน่วงเวลา 0.5 วิ ให้ดูเหมือนโหลดจากเน็ตจริงๆ
+                    if(type === 'upcoming') resolve(mockUpcomingData);
+                    else resolve(mockHistoryData);
+                }, 500);
+            });
+        }
+
+        // 3. ฟังก์ชันสร้าง HTML (Render)
+        function renderCards(containerId, events, emptyMessage) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = ''; // เคลียร์ข้อความ "กำลังโหลดข้อมูล..."
+
+            // ถ้าไม่มีข้อมูล
+            if (!events || events.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: var(--text-muted); padding: 40px 0;">
+                        <i class="fa-solid fa-clock-rotate-left" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                        <p>${emptyMessage}</p>
+                    </div>`;
+                return;
+            }
+
+            // ถ้ามีข้อมูล ให้วนลูปสร้างการ์ด
+            let htmlContent = '';
+            events.forEach(ev => {
+                htmlContent += `
+                    <div class="event-card">
+                        <div class="event-icon"><i class="fa-solid ${ev.icon}"></i></div>
+                        <div class="event-info">
+                            <h4>${ev.title}</h4>
+                            <div class="event-time">${ev.date} • ${ev.time}</div>
+                            <div class="event-desc">${ev.description}</div>
+                        </div>
+                        <div class="event-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+                    </div>
+                `;
+            });
+            container.innerHTML = htmlContent;
+        }
+
+        // 4. โหลดข้อมูลตอนเปิดหน้าเว็บ
+        async function initDashboard() {
+            const upcomingEvents = await fetchEventData('upcoming');
+            renderCards('upcoming-content', upcomingEvents, 'ไม่มีกิจกรรมที่กำลังจะมาถึง');
+
+            const historyEvents = await fetchEventData('history');
+            renderCards('history-content', historyEvents, 'ยังไม่มีประวัติกิจกรรม<br><span style="font-size: 0.8rem;">(กิจกรรมที่จบไปแล้วจะมาแสดงที่นี่)</span>');
+        }
+
+        // 5. ระบบสลับ Tab (เหมือนเดิม)
+        function switchTab(tabId, btnElement) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tabId + '-content').classList.add('active');
+        }
+
+        // สั่งให้ทำงานเมื่อหน้าเว็บโหลดเสร็จ
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+}
