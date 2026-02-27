@@ -10,10 +10,10 @@ using WEBAPP_FitMatch.Models;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ProfileapiController : ControllerBase
+public class ProfileAPIController : ControllerBase
 {
     private readonly AppDbContext _db;
-    public ProfileapiController(AppDbContext db)
+    public ProfileAPIController(AppDbContext db)
     {
         _db = db;
     }
