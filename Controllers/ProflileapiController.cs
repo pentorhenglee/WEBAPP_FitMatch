@@ -1,12 +1,12 @@
 using System.Net;
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
-namespace MyWeb.Controllers;
+namespace WEBAPP_FitMatch.Controllers;
 
 using System.Data.SqlTypes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ActionConstraints;
-using MyWeb.Models;
+using WEBAPP_FitMatch.Models;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -28,4 +28,5 @@ public class ProfileapiController : ControllerBase
         }
         return Ok(user);
     }
+
 }
