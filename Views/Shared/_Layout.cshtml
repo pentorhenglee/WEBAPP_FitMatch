@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -17,17 +17,22 @@
                 </div>
             </a>
 
-            <div class="user-section">
+            <div class="user-section" id="userSection" style="display: none;">   @*loged in*@
                 <div class="user-text">
-                    <div class="user-name" id="displayUserName">Loading...</div>
-                    <div class="user-email" id="displayUserEmail">Loading...</div>
+                    <div class="user-name" id="displayUserName"></div>
+                    <div class="user-email" id="displayUserEmail"></div>
                 </div>
                 <a asp-controller="Profile" asp-action="Index" aria-label="View Profile">
                     <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
-                         id="displayUserAvatar" 
-                         class="user-avatar" 
-                         alt="Avatar" />
+                         id="displayUserAvatar" class="user-avatar" alt="Avatar" />
                 </a>
+                <div>
+                    <button onclick="logout() class="btn-logout" >Logout</button>
+                </div>
+            </div>
+            <div id="authLinks" style="display: none;" class="auth-links">   @*yong mai login*@
+                <a asp-controller="Account" asp-action="Login" class="nav-link">Login</a>
+                <a asp-controller="Account" asp-action="Register" class="nav-link btn-register">Register</a>
             </div>
         </nav>
     </header>
@@ -40,31 +45,61 @@
 
     <script>
         async function fetchUserProfile() {
+            const userSection = document.getElementById('userSection');
+            const authLinks = document.getElementById('authLinks');
+            
+
             try {
                 // TODO: เมื่อ Backend เสร็จ ให้เปลี่ยนตรงนี้เป็น fetch('/api/User/1')
                 // ตอนนี้เราจำลองว่าดึงข้อมูลสำเร็จแล้ว
-                const mockDataFromAPI = {
+                @* const mockDataFromAPI = {
                     name: "EARTHY",
                     email: "SUPHASIN@KMITL.AC.TH",
                     avatarUrl: "" // ถ้า Backend ไม่มีรูปส่งมา มันจะเป็นรูปสีขาวๆ ที่เราตั้งไว้
-                };
+                }; *@
+                const res = await fetch("/api/profileapi", { credentials: 'same-origin' });
 
-                // เอาข้อมูลที่ Fetch ได้ไปยัดใส่ HTML
-                document.getElementById('displayUserName').innerText = mockDataFromAPI.name;
-                document.getElementById('displayUserEmail').innerText = mockDataFromAPI.email;
+                if (res.ok) {
+                    // กรณี Login สำเร็จ (200 OK)
+                    const user = await res.json();
+                    
+                    document.getElementById('displayUserName').innerText = user.username;
+                    document.getElementById('displayUserEmail').innerText = user.email;
+                    
+                    if (user.profileUrl && user.profileUrl !== "") {
+                        document.getElementById('displayUserAvatar').src = user.profileUrl;
+                    }
 
-                // ถ้ายูสเซอร์มีรูป ค่อยเอารูปมาทับสีขาว
-                if (mockDataFromAPI.avatarUrl !== "") {
-                    document.getElementById('displayUserAvatar').src = mockDataFromAPI.avatarUrl;
+                    userSection.style.display = 'flex';
+                    authLinks.style.display = 'none';
+                } else {
+                    // กรณี Unauthorized (401) หรือ Error อื่นๆ
+                    userSection.style.display = 'none';
+                    authLinks.style.display = 'flex';
                 }
 
             } catch (error) {
                 console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
             }
         }
-
-        // สั่งให้ดึงข้อมูลทันทีที่เปิดเว็บ
         fetchUserProfile();
+
+        async function logout(){
+            const res = await fetch('/api/auth/logout', {
+                method: "POST",
+                credentials: 'same-origin',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ message: "logout"})
+            });
+            
+            const data = await res.json();
+            console.log(data);
+
+            if (data.success){
+                alert("Logout success");
+                window.location.href = "/Home/index";
+            }
+        }
     </script>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
