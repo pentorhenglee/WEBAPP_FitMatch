@@ -177,3 +177,42 @@
     background-color: var(--accent); /* แก้เป็น --accent แล้ว */
     color: white;
 }
+
+/* ============================================================
+   ปุ่มสำหรับเจ้าของโพสต์ (Owner Actions)
+   ============================================================ */
+.owner-actions-container {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: none; /* ซ่อนไว้ก่อน JS จะเป็นตัวเปิด */
+}
+
+.owner-actions-container button {
+    border: none;
+    padding: 20px 30px;
+    margin: 10px 10px;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-manage {
+    background-color: #e0e0e0; /* สีน้ำเงิน */
+    color: rgb(0, 0, 0);
+}
+.btn-manage:hover { background-color: #2563eb; }
+
+.btn-edit {
+    background-color: #e0e0e0; /* สีเทา */
+    color: #000;
+}
+.btn-edit:hover { background-color: #ccc; }
+
+.btn-close {
+    background-color: #ef4444; /* สีแดง */
+    color: white;
+}
+.btn-close:hover { background-color: #dc2626; }

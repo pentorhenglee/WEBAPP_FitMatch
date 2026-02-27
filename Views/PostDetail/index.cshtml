@@ -36,8 +36,14 @@
             </div>
         </div>
 
-        <div class="join-btn-container">
-            <button class="btn-join" id="btnJoin" onclick="joinPost()">JOIN</button>
+        <div id="actionButtonsArea">
+            <button class="btn-join" id="btnJoin" onclick="joinPost()" style="position: absolute; bottom: 0; right: 0; display: none;">JOIN</button>
+
+            <div class="owner-actions-container" id="ownerActions">
+                <button class="btn-manage" onclick="manageParticipants()">MANAGE</button>
+                <button class="btn-edit" onclick="editPost()">EDIT</button>
+                <button class="btn-close" onclick="closePost()">CLOSE</button>
+            </div>
         </div>
     </div>
 
@@ -49,9 +55,11 @@
         const currentUserId = 99; // ไอดีคนกำลังล็อกอิน
         const myAvatarUrl = ""; // รูปตัวเอง
 
-        // 1. Mockup Data (เพิ่มข้อมูลชื่อและรูปภาพ)
+        // 1. Mockup Data
         const mockPostFromDB = {
             PostId: 1,
+            UserId: 99, // 🌟 เพิ่ม UserId ของเจ้าของโพสต์ (99 = เป็นของเราเอง)
+            Status: "Open", // 🌟 เพิ่ม Status (Open/Closed)
             Title: "Morning Run at Suan Lumpini",
             Location: "Suan Lumpini", 
             Date: "14 Feb 2026",
@@ -92,6 +100,29 @@
                 document.getElementById('displayMeta').innerText = `${data.Location} | ${data.Date} | ${data.Time}`;
                 document.getElementById('displayDesc').innerText = data.Description;
                 document.getElementById('displayParticipants').innerText = `Participants: ${data.CurrentPeople} / ${data.MaxPeople}`;
+
+                // 🌟 ลอจิกเช็คสลับมุมมอง (Owner vs Normal User)
+                if (data.UserId === currentUserId) {
+                    // ถ้าเป็นเจ้าของโพสต์
+                    document.getElementById('btnJoin').style.display = "none";
+                    document.getElementById('ownerActions').style.display = "flex";
+                } else {
+                    // ถ้าไม่ใช่เจ้าของโพสต์
+                    document.getElementById('ownerActions').style.display = "none";
+                    
+                    // เช็คเพิ่มเติม: ถ้าโพสต์ปิดรับสมัครแล้ว
+                    if (data.Status === "Closed") {
+                        const btnJoin = document.getElementById('btnJoin');
+                        btnJoin.style.display = "block";
+                        btnJoin.innerText = "CLOSED";
+                        btnJoin.disabled = true;
+                        btnJoin.style.backgroundColor = "#333";
+                        btnJoin.style.color = "#888";
+                    } else {
+                        document.getElementById('btnJoin').style.display = "block";
+                    }
+                }
+
             } catch (error) { console.error("Error:", error); }
         }
 
@@ -156,6 +187,29 @@
                 btn.style.color = "white";
                 document.getElementById('displayParticipants').innerText = `Participants: 3 / 5`;
             }, 1000);
+        }
+
+        function editPost() {
+            // ในอนาคตจะพาไปหน้า /Post/Edit/1
+            alert("พาไปหน้าฟอร์มสำหรับ แก้ไขข้อมูลโพสต์");
+        }
+
+        async function closePost() {
+            if (confirm("คุณแน่ใจหรือไม่ว่าต้องการ ปิดรับสมัคร กิจกรรมนี้?")) {
+                // อนาคต Fetch ไปอัปเดต Status ใน DB ตรงนี้
+                alert("สถานะโพสต์ถูกเปลี่ยนเป็น CLOSED แล้ว!");
+                
+                // จำลองการเปลี่ยนหน้าตาปุ่มทันที
+                const btnClose = document.querySelector('.btn-close');
+                btnClose.innerText = "CLOSED";
+                btnClose.style.backgroundColor = "#555";
+                btnClose.disabled = true;
+            }
+        }
+
+        function manageParticipants() {
+            // อนาคตอาจจะเด้ง Modal โชว์รายชื่อคนจอย เพื่อกด Approve/Reject
+            alert("เด้ง Modal จัดการผู้เข้าร่วม (Approve / Reject / Kick)");
         }
 
         document.addEventListener('DOMContentLoaded', () => {
