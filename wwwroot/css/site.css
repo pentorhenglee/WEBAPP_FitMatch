@@ -2,7 +2,7 @@
    FitMatch — Global CSS Variables
    ============================================================ */
 :root {
-  --bg:          #1f1f1f;
+  --bg:          radial-gradient(circle at top left, #0f2027, #000000 60%);;
   --surface:     #2a2a2a;
   --border:      #3a3a3a;
   --accent:      #2ecc71;
