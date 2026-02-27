@@ -2,21 +2,21 @@
    FitMatch — Global CSS Variables
    ============================================================ */
 :root {
-  --fm-bg:          #1f1f1f;
-  --fm-surface:     #2a2a2a;
-  --fm-border:      #3a3a3a;
-  --fm-accent:      #2ecc71; /* สีเขียว FitMatch */
-  --fm-text:        #ffffff;
-  --fm-text-muted:  #b3b3b3;
-  --fm-navbar-h:    70px;
+  --bg:          #1f1f1f;
+  --surface:     #2a2a2a;
+  --border:      #3a3a3a;
+  --accent:      #2ecc71; /* สีเขียว FitMatch */
+  --text:        #ffffff;
+  --text-muted:  #b3b3b3;
+  --navbar-h:    70px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: var(--fm-bg);
-  color: var(--fm-text);
+  background-color: var(--bg);
+  color: var(--text);
   min-height: 100vh;
 }
 
@@ -25,10 +25,10 @@ a { text-decoration: none; }
 /* ============================================================
    Navbar (Desktop Only)
    ============================================================ */
-.fm-navbar {
-  height: var(--fm-navbar-h);
-  background-color: var(--fm-surface);
-  border-bottom: 1px solid var(--fm-border);
+.-navbar {
+  height: var(--navbar-h);
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border);
   padding: 0 40px;
   display: flex;
   align-items: center;
@@ -36,44 +36,44 @@ a { text-decoration: none; }
 }
 
 /* ฝั่งซ้าย: โลโก้ */
-.fm-brand {
+.-brand {
   display: flex;
   align-items: center;
   font-size: 1.5rem;
   font-weight: 800;
   letter-spacing: 1px;
 }
-.fm-brand img { 
+.-brand img { 
   height: 50px; 
   width: auto; 
 }
-.text-fit { color: var(--fm-text); }
-.text-match { color: var(--fm-accent); }
+.text-fit { color: var(--text); }
+.text-match { color: var(--accent); }
 
 /* ฝั่งขวา: ข้อมูล User */
-.fm-user-section {
+.-user-section {
   display: flex;
   align-items: center;
   gap: 15px;
 }
-.fm-user-text {
+.-user-text {
   text-align: right;
   line-height: 1.2;
 }
-.fm-user-name {
+.-user-name {
   font-weight: bold;
   font-size: 0.95rem;
-  color: var(--fm-text);
+  color: var(--text);
   text-transform: uppercase;
 }
-.fm-user-email {
+.-user-email {
   font-size: 0.75rem;
-  color: var(--fm-text-muted);
+  color: var(--text-muted);
   text-transform: uppercase;
 }
 
 /* วงกลมรูปโปรไฟล์ (ตั้งค่าให้พื้นหลังสีขาวรอไว้ก่อน) */
-.fm-user-avatar {
+.-user-avatar {
   width: 45px;
   height: 45px;
   border-radius: 50%;
@@ -84,6 +84,6 @@ a { text-decoration: none; }
 /* ============================================================
    พื้นที่ตรงกลาง (Dashboard)
    ============================================================ */
-.fm-page-wrapper {
+.-page-wrapper {
   padding: 30px 40px;
 }

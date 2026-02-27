@@ -9,30 +9,30 @@
 </head>
 <body>
     <header>
-        <nav class="fm-navbar">
-            <a class="fm-brand" asp-controller="Home" asp-action="Index">
+        <nav class="-navbar">
+            <a class="-brand" asp-controller="Home" asp-action="Index">
                 <img src="~/images/logo.png" alt="Logo" />
                 <div>
                     <span class="text-fit">FIT</span><span class="text-match">MATCH</span>
                 </div>
             </a>
 
-            <div class="fm-user-section">
-                <div class="fm-user-text">
-                    <div class="fm-user-name" id="displayUserName">Loading...</div>
-                    <div class="fm-user-email" id="displayUserEmail">Loading...</div>
+            <div class="-user-section">
+                <div class="-user-text">
+                    <div class="-user-name" id="displayUserName">Loading...</div>
+                    <div class="-user-email" id="displayUserEmail">Loading...</div>
                 </div>
                 <a asp-controller="Profile" asp-action="Index" aria-label="View Profile">
                     <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
                          id="displayUserAvatar" 
-                         class="fm-user-avatar" 
+                         class="-user-avatar" 
                          alt="Avatar" />
                 </a>
             </div>
         </nav>
     </header>
 
-    <div class="fm-page-wrapper">
+    <div class="-page-wrapper">
         <main role="main">
             @RenderBody()
         </main>
