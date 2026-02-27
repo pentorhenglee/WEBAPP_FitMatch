@@ -87,7 +87,6 @@
                 Message: "Driving there, 10 mins away!", 
                 IsMine: true 
             }
-        
         ];
 
         // 2. Fetch API Methods
@@ -181,23 +180,40 @@
             btn.innerText = "JOINING...";
             btn.disabled = true;
 
-            setTimeout(() => {
-                btn.innerText = "JOINED";
-                btn.style.backgroundColor = "var(--accent)";
-                btn.style.color = "white";
-                document.getElementById('displayParticipants').innerText = `Participants: 3 / 5`;
-            }, 1000);
+            try {
+                // อนาคตตรงนี้จะเป็นโค้ด Fetch API ไปบอก Database ว่า "นาย A ขอ Join โพสต์นี้นะ"
+                
+                // จำลองว่าเน็ตโหลด 1 วินาที
+                setTimeout(() => {
+                    // 1. เปลี่ยนหน้าตาปุ่มเป็น JOINED
+                    btn.innerText = "JOINED";
+                    btn.style.backgroundColor = "var(--accent)";
+                    btn.style.color = "white";
+                    
+                    // 2. 🌟 Logic การเพิ่มจำนวนคน: เอาค่าเดิมมาบวก 1
+                    mockPostFromDB.CurrentPeople += 1;
+                    
+                    // 3. 🌟 อัปเดตตัวเลขบนหน้าจอด้วยตัวแปร
+                    document.getElementById('displayParticipants').innerText = `Participants: ${mockPostFromDB.CurrentPeople} / ${mockPostFromDB.MaxPeople}`;
+                    
+                }, 1000);
+
+            } catch (error) {
+                alert("Failed to join.");
+                btn.innerText = "JOIN";
+                btn.disabled = false;
+            }
         }
 
         function editPost() {
             // ในอนาคตจะพาไปหน้า /Post/Edit/1
-            alert("พาไปหน้าฟอร์มสำหรับ แก้ไขข้อมูลโพสต์");
+            alert("to edit post-page");
         }
 
         async function closePost() {
-            if (confirm("คุณแน่ใจหรือไม่ว่าต้องการ ปิดรับสมัคร กิจกรรมนี้?")) {
+            if (confirm("are you sure to close this post?")) {
                 // อนาคต Fetch ไปอัปเดต Status ใน DB ตรงนี้
-                alert("สถานะโพสต์ถูกเปลี่ยนเป็น CLOSED แล้ว!");
+                alert("post status is closed!");
                 
                 // จำลองการเปลี่ยนหน้าตาปุ่มทันที
                 const btnClose = document.querySelector('.btn-close');
@@ -209,7 +225,7 @@
 
         function manageParticipants() {
             // อนาคตอาจจะเด้ง Modal โชว์รายชื่อคนจอย เพื่อกด Approve/Reject
-            alert("เด้ง Modal จัดการผู้เข้าร่วม (Approve / Reject / Kick)");
+            alert("notify Modal to edit participants (Approve / Reject / Kick)");
         }
 
         document.addEventListener('DOMContentLoaded', () => {
