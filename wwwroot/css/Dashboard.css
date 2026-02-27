@@ -1,20 +1,118 @@
-/* โค้ดสำหรับทดสอบการลิงก์ CSS */
-.test-link-box {
-    background-color: #3a3a3a; /* พื้นหลังสีเทาอ่อนกว่าพื้นเว็บนิดนึง */
-    border: 3px dashed var(--fm-accent); /* ขอบเส้นประสีเขียว FitMatch */
+/* ============================================================
+   Dashboard Layout (Grid แบ่งซ้าย-ขวา)
+   ============================================================ */
+.dashboard-container {
+    display: grid;
+    grid-template-columns: 350px 1fr; /* ซ้ายกว้าง 350px ขวากินพื้นที่ที่เหลือ */
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ============================================================
+   ฝั่งซ้าย: กล่อง Up Coming / History
+   ============================================================ */
+.dash-left-panel {
+    background-color: var(--surface);
+    border-radius: 20px;
+    padding: 25px;
+    min-height: 600px;
+}
+
+/* ส่วนหัวและ Tabs */
+.dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.dash-header h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--text);
+}
+
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    background-color: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 8px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+/* สถานะตอนปุ่มถูกกด (Active) */
+.tab-btn.active {
+    background-color: #555555;
+    color: var(--text);
+    border-color: #555555;
+}
+
+/* ============================================================
+   การ์ดกิจกรรม (Event Card)
+   ============================================================ */
+.tab-content {
+    display: none; /* ซ่อนไว้ก่อน จะใช้ JS เปิด */
+}
+.tab-content.active {
+    display: block; /* เปิดเฉพาะอันที่ Active */
+}
+
+.event-card {
+    background-color: #444444;
     border-radius: 15px;
-    padding: 40px;
-    text-align: center;
-    margin: 50px auto;
-    max-width: 600px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: transform 0.2s;
 }
 
-.test-link-box h1 {
-    color: var(--fm-accent);
-    margin-bottom: 10px;
+.event-card:hover {
+    transform: translateY(-3px);
+    background-color: #4a4a4a;
 }
 
-.test-link-box p {
-    color: var(--fm-text);
-    font-size: 1.2rem;
+/* ไอคอนคนวิ่งสีเขียว */
+.event-icon {
+    font-size: 2.5rem;
+    color: var(--accent);
+}
+
+/* ข้อมูลตรงกลาง */
+.event-info {
+    flex: 1;
+}
+.event-info h4 {
+    font-size: 0.95rem;
+    margin-bottom: 5px;
+    color: var(--text);
+}
+.event-time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+}
+.event-desc {
+    font-size: 0.7rem;
+    color: #888;
+    line-height: 1.2;
+}
+
+/* ลูกศรขวาสุด */
+.event-arrow {
+    color: var(--text-muted);
+    font-size: 1rem;
 }
