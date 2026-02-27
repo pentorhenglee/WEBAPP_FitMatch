@@ -1,0 +1,20 @@
+/* โค้ดสำหรับทดสอบการลิงก์ CSS */
+.test-link-box {
+    background-color: #3a3a3a; /* พื้นหลังสีเทาอ่อนกว่าพื้นเว็บนิดนึง */
+    border: 3px dashed var(--fm-accent); /* ขอบเส้นประสีเขียว FitMatch */
+    border-radius: 15px;
+    padding: 40px;
+    text-align: center;
+    margin: 50px auto;
+    max-width: 600px;
+}
+
+.test-link-box h1 {
+    color: var(--fm-accent);
+    margin-bottom: 10px;
+}
+
+.test-link-box p {
+    color: var(--fm-text);
+    font-size: 1.2rem;
+}

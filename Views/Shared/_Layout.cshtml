@@ -3,47 +3,70 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - WEBAPP_FitMatch</title>
-    <script type="importmap"></script>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <title>@ViewData["Title"] - FitMatch</title>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/WEBAPP_FitMatch.styles.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">WEBAPP_FitMatch</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+        <nav class="fm-navbar">
+            <a class="fm-brand" asp-controller="Home" asp-action="Index">
+                <img src="~/images/logo.png" alt="Logo" />
+                <div>
+                    <span class="text-fit">FIT</span><span class="text-match">MATCH</span>
                 </div>
+            </a>
+
+            <div class="fm-user-section">
+                <div class="fm-user-text">
+                    <div class="fm-user-name" id="displayUserName">Loading...</div>
+                    <div class="fm-user-email" id="displayUserEmail">Loading...</div>
+                </div>
+                <a asp-controller="Profile" asp-action="Index" aria-label="View Profile">
+                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
+                         id="displayUserAvatar" 
+                         class="fm-user-avatar" 
+                         alt="Avatar" />
+                </a>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+
+    <div class="fm-page-wrapper">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2569 - WEBAPP_FitMatch - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        async function fetchUserProfile() {
+            try {
+                // TODO: เมื่อ Backend เสร็จ ให้เปลี่ยนตรงนี้เป็น fetch('/api/User/1')
+                // ตอนนี้เราจำลองว่าดึงข้อมูลสำเร็จแล้ว
+                const mockDataFromAPI = {
+                    name: "EARTHY",
+                    email: "SUPHASIN@KMITL.AC.TH",
+                    avatarUrl: "" // ถ้า Backend ไม่มีรูปส่งมา มันจะเป็นรูปสีขาวๆ ที่เราตั้งไว้
+                };
+
+                // เอาข้อมูลที่ Fetch ได้ไปยัดใส่ HTML
+                document.getElementById('displayUserName').innerText = mockDataFromAPI.name;
+                document.getElementById('displayUserEmail').innerText = mockDataFromAPI.email;
+
+                // ถ้ายูสเซอร์มีรูป ค่อยเอารูปมาทับสีขาว
+                if (mockDataFromAPI.avatarUrl !== "") {
+                    document.getElementById('displayUserAvatar').src = mockDataFromAPI.avatarUrl;
+                }
+
+            } catch (error) {
+                console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
+            }
+        }
+
+        // สั่งให้ดึงข้อมูลทันทีที่เปิดเว็บ
+        fetchUserProfile();
+    </script>
+
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
