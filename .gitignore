@@ -480,3 +480,20 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+# --- ASP.NET Core MVC Specifics ---
+
+# Development-only settings (prevents leaking local DB strings)
+**/appsettings.Development.json
+
+# Client-side library folders (restored via LibMan/npm)
+**/wwwroot/lib/
+**/node_modules/
+
+# Local SQLite databases
+*.db
+*.db-shm
+*.db-wal
+
+# Folder for published output (when you run 'dotnet publish')
+[Pp]ublish/
