@@ -9,30 +9,30 @@
 </head>
 <body>
     <header>
-        <nav class="-navbar">
-            <a class="-brand" asp-controller="Home" asp-action="Index">
+        <nav class="navbar">
+            <a class="brand" asp-controller="Home" asp-action="Index">
                 <img src="~/images/logo.png" alt="Logo" />
                 <div>
                     <span class="text-fit">FIT</span><span class="text-match">MATCH</span>
                 </div>
             </a>
 
-            <div class="-user-section">
-                <div class="-user-text">
-                    <div class="-user-name" id="displayUserName">Loading...</div>
-                    <div class="-user-email" id="displayUserEmail">Loading...</div>
+            <div class="user-section">
+                <div class="user-text">
+                    <div class="user-name" id="displayUserName">Loading...</div>
+                    <div class="user-email" id="displayUserEmail">Loading...</div>
                 </div>
                 <a asp-controller="Profile" asp-action="Index" aria-label="View Profile">
                     <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
                          id="displayUserAvatar" 
-                         class="-user-avatar" 
+                         class="user-avatar" 
                          alt="Avatar" />
                 </a>
             </div>
         </nav>
     </header>
 
-    <div class="-page-wrapper">
+    <div class="page-wrapper">
         <main role="main">
             @RenderBody()
         </main>

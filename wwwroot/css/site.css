@@ -5,7 +5,7 @@
   --bg:          #1f1f1f;
   --surface:     #2a2a2a;
   --border:      #3a3a3a;
-  --accent:      #2ecc71; /* สีเขียว FitMatch */
+  --accent:      #2ecc71;
   --text:        #ffffff;
   --text-muted:  #b3b3b3;
   --navbar-h:    70px;
@@ -25,7 +25,7 @@ a { text-decoration: none; }
 /* ============================================================
    Navbar (Desktop Only)
    ============================================================ */
-.-navbar {
+.navbar {
   height: var(--navbar-h);
   background-color: var(--surface);
   border-bottom: 1px solid var(--border);
@@ -36,14 +36,14 @@ a { text-decoration: none; }
 }
 
 /* ฝั่งซ้าย: โลโก้ */
-.-brand {
+.brand {
   display: flex;
   align-items: center;
   font-size: 1.5rem;
   font-weight: 800;
   letter-spacing: 1px;
 }
-.-brand img { 
+.brand img { 
   height: 50px; 
   width: auto; 
 }
@@ -51,29 +51,29 @@ a { text-decoration: none; }
 .text-match { color: var(--accent); }
 
 /* ฝั่งขวา: ข้อมูล User */
-.-user-section {
+.user-section {
   display: flex;
   align-items: center;
   gap: 15px;
 }
-.-user-text {
+.user-text {
   text-align: right;
   line-height: 1.2;
 }
-.-user-name {
+.user-name {
   font-weight: bold;
   font-size: 0.95rem;
   color: var(--text);
   text-transform: uppercase;
 }
-.-user-email {
+.user-email {
   font-size: 0.75rem;
   color: var(--text-muted);
   text-transform: uppercase;
 }
 
 /* วงกลมรูปโปรไฟล์ (ตั้งค่าให้พื้นหลังสีขาวรอไว้ก่อน) */
-.-user-avatar {
+.user-avatar {
   width: 45px;
   height: 45px;
   border-radius: 50%;
@@ -84,6 +84,6 @@ a { text-decoration: none; }
 /* ============================================================
    พื้นที่ตรงกลาง (Dashboard)
    ============================================================ */
-.-page-wrapper {
+.page-wrapper {
   padding: 30px 40px;
 }
