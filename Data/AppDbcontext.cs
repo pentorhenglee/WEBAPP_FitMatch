@@ -1,6 +1,6 @@
 using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
-using MyWeb.Models;
+using WEPAPP_FitMatch.Models;
 
 public class AppDbContext : DbContext
 {
