@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace MyWeb.Migrations
+namespace WEBAPP_FitMatch.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20260215075249_InitialPostgres")]
@@ -23,7 +23,7 @@ namespace MyWeb.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("MyWeb.Models.User", b =>
+            modelBuilder.Entity("WEBAPP_FitMatch.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

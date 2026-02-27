@@ -200,10 +200,10 @@
 }
 
 .btn-manage {
-    background-color: #e0e0e0; /* สีน้ำเงิน */
-    color: rgb(0, 0, 0);
+    background-color: #e0e0e0; /* สีเทา */
+    color: #000;
 }
-.btn-manage:hover { background-color: #2563eb; }
+.btn-manage:hover { background-color: #ccc; }
 
 .btn-edit {
     background-color: #e0e0e0; /* สีเทา */
@@ -212,7 +212,7 @@
 .btn-edit:hover { background-color: #ccc; }
 
 .btn-close {
-    background-color: #ef4444; /* สีแดง */
-    color: white;
+    background-color: #e0e0e0; /* สีเทา */
+    color: #000;
 }
-.btn-close:hover { background-color: #dc2626; }
+.btn-close:hover { background-color: #ccc; }

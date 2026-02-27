@@ -1,4 +1,4 @@
-namespace MyWeb.Models;
+namespace WEBAPP_FitMatch.Models;
 using System.ComponentModel.DataAnnotations.Schema;
 
 [Table("User")]
@@ -8,9 +8,9 @@ public class User
     public int Id { get; set;}
 
     [Column("Username")]   
-    public string Username { get; set;}
+    public required string Username { get; set;}
     [Column("Password_hash")]
-    public string PasswordHash { get; set;}
+    public required string PasswordHash { get; set;}
     [Column("Email")]
-    public string Email { get; set;}
+    public required string Email { get; set;}
 }
