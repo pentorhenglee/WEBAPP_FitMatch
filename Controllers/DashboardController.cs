@@ -1,11 +1,13 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using WEBAPP_FitMatch.Models;
+using WEBAPP_FitMatch.Filters;
 
 namespace WEBAPP_FitMatch.Controllers;
 
 public class DashboardController : Controller
-{
+{   
+    [SessionCheck]
     public IActionResult Index()
     {
         return View();

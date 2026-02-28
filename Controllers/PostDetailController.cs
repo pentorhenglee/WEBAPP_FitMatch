@@ -1,18 +1,14 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using WEBAPP_FitMatch.Models;
-
+using WEBAPP_FitMatch.Filters;
 
 namespace WEBAPP_FitMatch.Controllers;
 
-public class HomeController : Controller
-{
+public class PostDetailController : Controller
+{   
+    [SessionCheck]
     public IActionResult Index()
-    {
-        return View();
-    }
-
-    public IActionResult Privacy()
     {
         return View();
     }
