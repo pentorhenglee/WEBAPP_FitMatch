@@ -1,4 +1,5 @@
 using WEBAPP_FitMatch;
+using WEBAPP_FitMatch.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -7,6 +7,7 @@ using System.Data.SqlTypes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using WEBAPP_FitMatch.Models;
+using WEBAPP_FitMatch.Data;
 
 [ApiController]
 [Route("api/[controller]")]

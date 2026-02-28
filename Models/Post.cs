@@ -11,8 +11,8 @@ public class Post{
     public int UserId { get; set;}
     public required string Title { get; set;}
     public string? Location { get; set;}
-    public DateOnly Date { get; set;}
-    public TimeOnly Time { get; set;}
+    public DateTime DateTime { get; set;}
+    
     public required string Description { get; set;}
     public required string SportType { get; set;}
     public DateTime CreateDate { get; set;}

@@ -17,7 +17,7 @@
                 </div>
             </a>
 
-            <div class="user-section" id="userSection" style="display: none;">   @*loged in*@
+            <div class="user-section" id="userSection" style="display: none;">   
                 <div class="user-text">
                     <div class="user-name" id="displayUserName"></div>
                     <div class="user-email" id="displayUserEmail"></div>
@@ -30,7 +30,7 @@
                     <button onclick="logout() class="btn-logout" >Logout</button>
                 </div>
             </div>
-            <div id="authLinks" style="display: none;" class="auth-links">   @*yong mai login*@
+            <div id="authLinks" style="display: none;" class="auth-links">   
                 <a asp-controller="Account" asp-action="Login" class="nav-link">Login</a>
                 <a asp-controller="Account" asp-action="Register" class="nav-link btn-register">Register</a>
             </div>
@@ -56,7 +56,7 @@
                     name: "EARTHY",
                     email: "SUPHASIN@KMITL.AC.TH",
                     avatarUrl: "" // ถ้า Backend ไม่มีรูปส่งมา มันจะเป็นรูปสีขาวๆ ที่เราตั้งไว้
-                }; *@
+                }; 
                 const res = await fetch("/api/profileapi", { credentials: 'same-origin' });
 
                 if (res.ok) {
