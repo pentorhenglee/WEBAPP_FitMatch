@@ -22,9 +22,10 @@
         +
         </button>
 
-        <div id="postsDisplay" class="posts-display">
+        <!-- <div id="postsDisplay" class="posts-display"> -->
         </div>
     </div>
+    <div id="postsDisplay" class="posts-display">
 </div>
 
 <script>
@@ -33,7 +34,7 @@
         postsDisplay.innerHTML = '';
 
         if (!posts || posts.length === 0) {
-            postsDisplay.innerHTML = '<p class="text-white">No posts found.</p>';
+            postsDisplay.innerHTML = '<p class="no-posts">No posts found.</p>';
             return;
         }
 
@@ -79,7 +80,7 @@
 
         } catch (error) {
             console.error('Error:', error);
-            document.getElementById('postsDisplay').innerHTML = '<p class="text-white">Failed to load posts.</p>';
+            document.getElementById('postsDisplay').innerHTML = '<p class="no-post">No posts yet.</p>';
         }
     }
 

@@ -13,15 +13,70 @@ body {
     font-weight: bold;
 }
 
-.searchInput {
+/* .searchInput {
     display: flex;
     justify-content: center;
     margin-top: 20px;
     border-radius: 10px;
     cursor: pointer;
+} */
+
+/* ส่วนที่ครอบทั้ง Search Bar และปุ่ม + */
+.search-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    /* ระยะห่างระหว่างช่องค้นหากับปุ่มบวก */
+    margin-top: 30px;
 }
 
-.post-button {
+/* ตัว Search Bar ที่เป็นกระจกใส */
+.search-bar {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    /* ความใสแบบสีขาวจางๆ */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* ขอบเส้นบางๆ */
+    border-radius: 25px;
+    /* ทำขอบมนแบบในรูป */
+    padding: 5px 20px;
+    width: 600px;
+    /* ปรับความกว้างตามความเหมาะสม */
+    backdrop-filter: blur(5px);
+    /* เพิ่มเอฟเฟกต์กระจกฝ้า (ถ้าต้องการ) */
+}
+
+/* ปรับแต่งช่องพิมพ์ข้อความข้างใน */
+.search-bar input {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 10px;
+    width: 100%;
+    outline: none;
+    font-size: 16px;
+    text-align: center;
+    /* ให้ตัวหนังสืออยู่ตรงกลางแบบในรูป */
+    letter-spacing: 1px;
+}
+
+/* ปรับแต่งสี Placeholder ให้จางลง */
+.search-bar input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* ปุ่มแว่นขยาย (ถ้ามี) */
+.search-bar button {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    font-size: 18px;
+}
+
+/* .post-button {
     display: block;
     margin: 30px auto;
     padding: 10px 20px;
@@ -31,4 +86,21 @@ body {
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
+} */
+
+.post-button {
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    background-color: #2ecc71;
+    border: none;
+    cursor: pointer;
+}
+
+.no-post {
+    text-align: center;
+    margin-top: 50px;
+    font-size: 28px;
+    color: #2ecc71;
+    width: 100%;
 }
