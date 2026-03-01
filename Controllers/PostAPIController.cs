@@ -94,6 +94,16 @@ namespace WEBAPP_FitMatch.Controllers
             {
                 Title = dto.Title ?? "",
                 Location = dto.Location,
+                EventDateTime = DateTime.SpecifyKind(dto.EventDateTime, DateTimeKind.Utc), 
+                Description = dto.Description,
+                SportType = dto.SportType,
+                MaxPeople = dto.MaxPeople,
+                UserId = user_id.Value,
+                ImageUrl = dto.ImageUrl,
+                Status = "open",
+                
+                // 🌟 ต้องส่งเวลาที่สร้างโพสต์ไปด้วย (ใช้เวลาปัจจุบันแบบ UTC)
+                CreateDate = DateTime.UtcNow 
                 EventDateTime = DateTime.SpecifyKind(dto.EventDateTime,DateTimeKind.Utc),
                 Description = dto.Description ?? "",
                 SportType = dto.SportType ?? "",
