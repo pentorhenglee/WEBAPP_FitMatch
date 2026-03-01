@@ -7,10 +7,15 @@ public class Post
 {
     [Key]
     [Column("PostId")]
-    public int PostId { get; set; }
-
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // 🌟 เติมบรรทัดนี้ครับ บังคับให้ Database รันเลขให้อัตโนมัติ
+    public int PostId { get; set;}
     [Column("UserId")]
-    public int UserId { get; set; }             
+    public int UserId { get; set;}
+    public required string Title { get; set;}
+    public string? Location { get; set;}
+
+    [Column("EventDateTime")]
+    public DateTime EventDateTime { get; set;}
     
     [ForeignKey("UserId")]
     public virtual User? User { get; set; }
