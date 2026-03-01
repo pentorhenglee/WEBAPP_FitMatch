@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using System.Formats.Asn1;
 using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
+using System.Xml;
+using System.Security.Cryptography.X509Certificates;
+using System.ComponentModel;
 
 namespace WEBAPP_FitMatch.Controllers
 {
@@ -83,7 +87,7 @@ namespace WEBAPP_FitMatch.Controllers
             return Ok(posts);
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<ActionResult> CreatePost([FromBody] CreatePostDto dto)
         {
             var user_id = HttpContext.Session.GetInt32("user_id");
@@ -92,24 +96,17 @@ namespace WEBAPP_FitMatch.Controllers
 
             var post = new Post
             {
-                Title = dto.Title ?? "",
-                Location = dto.Location,
-                EventDateTime = DateTime.SpecifyKind(dto.EventDateTime, DateTimeKind.Utc), 
-                Description = dto.Description,
-                SportType = dto.SportType,
-                MaxPeople = dto.MaxPeople,
-                UserId = user_id.Value,
-                ImageUrl = dto.ImageUrl,
-                Status = "open",
                 
-                // 🌟 ต้องส่งเวลาที่สร้างโพสต์ไปด้วย (ใช้เวลาปัจจุบันแบบ UTC)
-                CreateDate = DateTime.UtcNow 
+                
+                Title = dto.Title,
+                CreateDate = DateTime.UtcNow,
                 EventDateTime = DateTime.SpecifyKind(dto.EventDateTime,DateTimeKind.Utc),
                 Description = dto.Description ?? "",
                 SportType = dto.SportType ?? "",
                 MaxPeople = dto.MaxPeople,
                 UserId = user_id.Value,
-                CreateDate = DateTime.UtcNow,
+                Location = dto.Location,
+                ImageUrl = dto.ImageUrl,
                 Status = "open"
             };
 
