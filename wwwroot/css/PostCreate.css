@@ -1,0 +1,97 @@
+/* ============================================================
+   Create Post Layout
+   ============================================================ */
+.create-post-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 100px);
+    padding: 20px;
+}
+
+.create-post-container {
+    background-color: #333333; /* สีเทาเข้มเข้ากับเว็บ */
+    width: 100%;
+    max-width: 700px;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+    color: white;
+}
+
+.create-post-container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2rem;
+    color: var(--accent); /* ใช้สีเขียวของเว็บ */
+}
+
+/* การจัดวาง Grid สำหรับฟอร์ม */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+/* ให้บางช่องกินพื้นที่เต็ม 2 คอลัมน์ */
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    color: #cccccc;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    background-color: #4a4a4a;
+    border: 1px solid #555;
+    color: white;
+    padding: 12px 15px;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: var(--accent);
+}
+
+/* ซ่อนไอคอนปฏิทิน/นาฬิกา สีดำของเบราว์เซอร์ให้กลืนกับเว็บ */
+::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+/* ปุ่มกด Submit */
+.btn-submit-post {
+    width: 100%;
+    background-color: var(--accent);
+    color: #000;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    margin-top: 20px;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.btn-submit-post:hover {
+    background-color: #ffffff;
+    transform: translateY(-2px);
+}

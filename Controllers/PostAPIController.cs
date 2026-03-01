@@ -60,8 +60,5 @@ namespace WEBAPP_FitMatch.Controllers
             return Ok(post);
 
         }
-
-
-
     }
 }
