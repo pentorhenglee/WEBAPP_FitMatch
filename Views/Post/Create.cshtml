@@ -86,10 +86,9 @@
                 SportType: document.getElementById('postSportType').value,
                 MaxPeople: parseInt(document.getElementById('postMaxPeople').value),
                 Location: document.getElementById('postLocation').value,
-                DateTime: `${dateVal}T${timeVal}:00`,
+                EventDateTime: `${dateVal}T${timeVal}:00`,
                 ImageUrl: document.getElementById('postImageUrl').value,
                 Description: document.getElementById('postDescription').value
-                
             };
 
             console.log("prepare sending to Backend:", postData);
