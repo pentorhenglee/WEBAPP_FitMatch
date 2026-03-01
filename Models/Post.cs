@@ -17,15 +17,7 @@ public class Post
     [Column("EventDateTime")]
     public DateTime EventDateTime { get; set;}
     
-    [ForeignKey("UserId")]
-    public virtual User? User { get; set; }
-
-    [Required]
-    public string? Title { get; set; }
-
-    public string? Location { get; set; }
-
-    public DateTime? EventDateTime { get; set; }
+  
 
     [Required]
     public string? Description { get; set; }
