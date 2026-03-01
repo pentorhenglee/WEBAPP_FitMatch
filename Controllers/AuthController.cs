@@ -31,6 +31,7 @@ public class AuthController : ControllerBase
             return Unauthorized("Wrong password");
 
         HttpContext.Session.SetString("user", user.Username);
+        HttpContext.Session.SetString("user_email", user.Email);
         HttpContext.Session.SetInt32("user_id", user.Id);
         return Ok(new { message = "Login success" });
     }
