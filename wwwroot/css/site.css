@@ -3,7 +3,7 @@
    ============================================================ */
 :root {
   --bg:          radial-gradient(circle at top left, #0f2027, #000000 60%);
-  --surface:     #2a2a2a;
+  --surface:     #131313;
   --border:      #3a3a3a;
   --accent:      #2ecc71;
   --text:        #ffffff;
@@ -15,7 +15,6 @@
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: var(--bg);
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -34,6 +33,37 @@ a { text-decoration: none; }
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 40px;       
+}
+
+.links {
+  flex: 1;
+  color: #fff;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+}
+
+.links a {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.links a:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.links a.active {
+  color: var(--accent);
+  background-color: rgba(46, 204, 113, 0.15);
+  /* border-bottom: 2px solid var(--accent); */
 }
 
 /* ฝั่งซ้าย: โลโก้ */
