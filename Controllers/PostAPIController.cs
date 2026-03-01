@@ -48,7 +48,7 @@ namespace WEBAPP_FitMatch.Controllers
             {
                 Title = dto.Title,
                 Location = dto.Location,
-                DateTime = DateTime.SpecifyKind(dto.DateTime, DateTimeKind.Utc), 
+                EventDateTime = DateTime.SpecifyKind(dto.EventDateTime, DateTimeKind.Utc), 
                 Description = dto.Description,
                 SportType = dto.SportType,
                 MaxPeople = dto.MaxPeople,
@@ -64,7 +64,6 @@ namespace WEBAPP_FitMatch.Controllers
             await _db.SaveChangesAsync();
 
             return Ok();
-
         }
     }
 }

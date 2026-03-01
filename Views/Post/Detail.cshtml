@@ -47,6 +47,18 @@
         </div>
     </div>
 
+    <div id="participantsModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Participants</h3>
+                <span class="close-modal" onclick="closeParticipantsModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="participantsListContainer">
+                <div style="text-align: center; color: #ccc;">Loading members...</div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 @section Scripts {
@@ -91,6 +103,12 @@
             }
         ];
 
+        const mockMembersFromDB = [
+            { UserId: 99, Username: "Earthy", ProfileUrl: myAvatarUrl, IsOwner: true },
+            { UserId: 10, Username: "Kuy Cat", ProfileUrl: "", IsOwner: false },
+            { UserId: 15, Username: "Kuy Kan", ProfileUrl: "", IsOwner: false }
+        ];
+
         // 2. Fetch API Methods
         async function fetchPostDetail() {
             try {
@@ -101,6 +119,9 @@
                 document.getElementById('displayMeta').innerText = `${data.Location} | ${data.Date} | ${data.Time}`;
                 document.getElementById('displayDesc').innerText = data.Description;
                 document.getElementById('displayParticipants').innerText = `Participants: ${data.CurrentPeople} / ${data.MaxPeople}`;
+
+            const participantsDiv = document.getElementById('displayParticipants');
+            participantsDiv.innerHTML = `Participants: <span style="text-decoration:underline; cursor:pointer;" onclick="openParticipantsModal()">${data.CurrentPeople} / ${data.MaxPeople}</span>`;
 
                 // 🌟 ลอจิกเช็คสลับมุมมอง (Owner vs Normal User)
                 if (data.UserId === currentUserId) {
@@ -234,6 +255,51 @@
         function manageParticipants() {
             // อนาคตอาจจะเด้ง Modal โชว์รายชื่อคนจอย เพื่อกด Approve/Reject
             alert("notify Modal to edit participants (Approve / Reject / Kick)");
+        }
+
+        async function openParticipantsModal() {
+            document.getElementById('participantsModal').style.display = 'flex';
+            await fetchParticipants(); // เรียกฟังก์ชันดึงรายชื่อ
+        }
+
+        function closeParticipantsModal() {
+            document.getElementById('participantsModal').style.display = 'none';
+        }
+
+        // 3. ฟังก์ชันดึงรายชื่อจาก API (หรือ Mockup)
+        async function fetchParticipants() {
+            const container = document.getElementById('participantsListContainer');
+            container.innerHTML = '<div style="text-align:center; color:#ccc;">Loading...</div>';
+
+            try {
+                // 🌟 อนาคตเปลี่ยนเป็น fetch API ของจริง
+                // const response = await fetch(`/api/post/${currentPostId}/members`);
+                // if (!response.ok) throw new Error('Failed to fetch members');
+                // const members = await response.json();
+                
+                // ใช้ Mockup ไปก่อน
+                const members = mockMembersFromDB;
+
+                // วาด HTML รายชื่อ
+                container.innerHTML = '';
+                members.forEach(member => {
+                    const avatarSrc = member.ProfileUrl || 'https://via.placeholder.com/40'; // ถ้ารูปพังให้ใช้ placeholder
+                    const ownerBadge = member.IsOwner ? '<span class="owner-badge">Owner</span>' : '';
+                    
+                    container.innerHTML += `
+                        <div class="participant-item">
+                            <img src="${avatarSrc}" class="participant-avatar" alt="${member.Username}">
+                            <div class="participant-info">
+                                <div class="participant-name">${member.Username} ${ownerBadge}</div>
+                                </div>
+                        </div>
+                    `;
+                });
+
+            } catch (error) {
+                console.error("Error fetching participants:", error);
+                container.innerHTML = '<div style="text-align:center; color:red;">Failed to load participants.</div>';
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {

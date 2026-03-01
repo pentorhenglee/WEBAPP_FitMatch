@@ -14,7 +14,7 @@ public class Post{
     public string? Location { get; set;}
 
     [Column("EventDateTime")]
-    public DateTime DateTime { get; set;}
+    public DateTime EventDateTime { get; set;}
     
     public required string Description { get; set;}
     public required string SportType { get; set;}
@@ -25,4 +25,6 @@ public class Post{
     public string? ImageUrl {get;set;}
 
     public string Status {get;set;}
+
+
 }
