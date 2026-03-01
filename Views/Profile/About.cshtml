@@ -1,0 +1,24 @@
+@{
+    ViewData["Title"] = "About ";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Profile.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+}   
+
+<div class="container">
+		<!-- Sidebar -->
+		<nav class="sidebar">
+            <a href="/Profile">Profile</a>
+            <a href="/Dashboard">Dashboard</a>
+            <a href="/Profile/Missions">Missions</a>
+            <a href="/Profile/About" class="active">About</a>
+        </nav>
+
+		<!-- Main Content -->
+		<div class="content">
+            <h1>About</h1>
+            <p>This is the about page.</p>
+		</div>
+	</div>
