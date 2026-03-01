@@ -1,22 +1,34 @@
 /* ============================================================
-   Dashboard Layout (Grid แบ่งซ้าย-ขวา)
+   Layout หลักของ Dashboard
    ============================================================ */
 .dashboard-container {
-    display: grid;
-    grid-template-columns: 350px 1fr; /* ซ้ายกว้าง 350px ขวากินพื้นที่ที่เหลือ */
-    gap: 30px;
-    max-width: 1200px;
+    display: flex;
+    gap: 20px;
+    align-items: stretch; 
+    max-width: 1400px;
     margin: 0 auto;
+    padding: 20px;
+    height: calc(100vh - 150px); 
 }
 
 /* ============================================================
    ฝั่งซ้าย: กล่อง Up Coming / History
    ============================================================ */
 .dash-left-panel {
-    background-color: var(--surface);
-    border-radius: 20px;
-    padding: 25px;
-    min-height: 600px;
+    width: 450px; 
+    background-color: var(--surface); 
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* 🌟 กันเนื้อหาล้น */
+}
+
+.dash-right-panel {
+    flex-grow: 1; 
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* 🌟 กันเนื้อหาล้น */
 }
 
 /* ส่วนหัวและ Tabs */
@@ -25,6 +37,7 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    flex-shrink: 0; /* 🌟 ห้ามหด */
 }
 
 .dash-header h2 {
@@ -37,6 +50,7 @@
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
+    flex-shrink: 0; /* 🌟 ห้ามหด */
 }
 
 .tab-btn {
@@ -51,7 +65,6 @@
     transition: all 0.3s ease;
 }
 
-/* สถานะตอนปุ่มถูกกด (Active) */
 .tab-btn.active {
     background-color: #555555;
     color: var(--text);
@@ -62,11 +75,18 @@
    การ์ดกิจกรรม (Event Card)
    ============================================================ */
 .tab-content {
-    display: none; /* ซ่อนไว้ก่อน จะใช้ JS เปิด */
+    display: none; 
 }
 .tab-content.active {
-    display: block; /* เปิดเฉพาะอันที่ Active */
+    display: block; 
+    flex-grow: 1; /* 🌟 ให้กินพื้นที่ที่เหลือ */
+    overflow-y: auto; /* 🌟 ถ้าการ์ดเยอะให้ไถ Scrollbar ได้ */
+    padding-right: 5px;
 }
+
+/* ตกแต่ง Scrollbar ฝั่งซ้าย */
+.tab-content.active::-webkit-scrollbar { width: 6px; }
+.tab-content.active::-webkit-scrollbar-thumb { background: #555; border-radius: 10px; }
 
 .event-card {
     background-color: #444444;
@@ -85,13 +105,11 @@
     background-color: #4a4a4a;
 }
 
-/* ไอคอนคนวิ่งสีเขียว */
 .event-icon {
     font-size: 2.5rem;
     color: var(--accent);
 }
 
-/* ข้อมูลตรงกลาง */
 .event-info {
     flex: 1;
 }
@@ -111,7 +129,6 @@
     line-height: 1.2;
 }
 
-/* ลูกศรขวาสุด */
 .event-arrow {
     color: var(--text-muted);
     font-size: 1rem;
@@ -122,17 +139,22 @@
    ============================================================ */
 .stats-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* แบ่ง 2 คอลัมน์ */
+    grid-template-columns: 1fr 1fr; 
+    grid-template-rows: 1fr 1fr;    
     gap: 20px;
-    margin-top: 10px;
+    flex-grow: 1; 
+    height: 100%;
 }
 
 .stat-card {
-    background-color: #333; /* สีพื้นหลังกล่องสถิติ */
+    background-color: var(--surface);
     border-radius: 12px;
     padding: 20px;
     color: white;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    display: flex;         
+    flex-direction: column; 
+    overflow: hidden; 
 }
 
 .stat-card h3 {
@@ -141,6 +163,7 @@
     color: #ddd;
     margin-bottom: 15px;
     font-weight: 500;
+    flex-shrink: 0; /* 🌟 ห้ามหด */
 }
 
 /* Progress Bar */
@@ -151,10 +174,11 @@
     width: 100%;
     overflow: hidden;
     margin-top: 10px;
+    flex-shrink: 0; /* 🌟 ห้ามหด */
 }
 
 .progress-fill {
-    background-color: #2ecc71; /* สีเขียวมิ้นต์ (เปลี่ยนเป็น var(--accent) ของคุณได้) */
+    background-color: var(--accent); /* 🌟 ดึงสีจากตัวแปรของคุณเลย */
     height: 100%;
     transition: width 0.5s ease-in-out;
 }
@@ -176,7 +200,18 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-shrink: 0; /* 🌟 ห้ามหด */
 }
+
+/* 🌟 ล็อกพื้นที่และใส่ Scrollbar ให้ Mission กับ Partners */
+#partnersContainer, #missionsContainer {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+#partnersContainer::-webkit-scrollbar, #missionsContainer::-webkit-scrollbar { width: 6px; }
+#partnersContainer::-webkit-scrollbar-thumb, #missionsContainer::-webkit-scrollbar-thumb { background: #555; border-radius: 10px; }
 
 /* Items inside cards */
 .partner-item {
@@ -213,7 +248,7 @@
 .mission-item input[type="checkbox"] {
     margin-right: 15px;
     transform: scale(1.2);
-    accent-color: #2ecc71;
+    accent-color: var(--accent);
     cursor: not-allowed;
 }
 
