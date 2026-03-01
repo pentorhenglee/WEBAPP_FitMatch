@@ -6,11 +6,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 public class Post{
     [Key]
     [Column("PostId")]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // 🌟 เติมบรรทัดนี้ครับ บังคับให้ Database รันเลขให้อัตโนมัติ
     public int PostId { get; set;}
     [Column("UserId")]
     public int UserId { get; set;}
     public required string Title { get; set;}
     public string? Location { get; set;}
+
+    [Column("EventDateTime")]
     public DateTime DateTime { get; set;}
     
     public required string Description { get; set;}
@@ -19,4 +22,7 @@ public class Post{
     public int MaxPeople { get; set;}
 
     public ICollection<PostUser> Members { get; set;} = new List<PostUser>();
+    public string? ImageUrl {get;set;}
+
+    public string Status {get;set;}
 }

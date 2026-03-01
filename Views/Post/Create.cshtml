@@ -23,10 +23,10 @@
                     <select id="postSportType" required>
                         <option value="" disabled selected>Select sport...</option>
                         <option value="Running">Running</option>
-                        <option value="Cycling">Cycling</option>
+                        <option value="Soccer">Soccer</option>
+                        <option value="Basketball">Basketball</option>
                         <option value="Badminton">Badminton</option>
-                        <option value="Swimming">Swimming</option>
-                        <option value="Other">Other</option>
+                        <option value="Cycling">Cycling</option>
                     </select>
                 </div>
 
@@ -76,45 +76,49 @@
             btnSubmit.disabled = true;
             btnSubmit.innerText = "CREATING...";
 
+            // ดึงค่าวันที่และเวลามาเตรียมไว้ก่อน
+            const dateVal = document.getElementById('postDate').value;
+            const timeVal = document.getElementById('postTime').value;
+
             // 1. ดึงข้อมูลจากฟอร์ม
             const postData = {
                 Title: document.getElementById('postTitle').value,
                 SportType: document.getElementById('postSportType').value,
                 MaxPeople: parseInt(document.getElementById('postMaxPeople').value),
                 Location: document.getElementById('postLocation').value,
-                Date: document.getElementById('postDate').value,
-                Time: document.getElementById('postTime').value,
+                DateTime: `${dateVal}T${timeVal}:00`,
                 ImageUrl: document.getElementById('postImageUrl').value,
                 Description: document.getElementById('postDescription').value
+                
             };
 
-            console.log("ข้อมูลที่เตรียมส่งไป Backend:", postData);
+            console.log("prepare sending to Backend:", postData);
 
             try {
                 // 2. ยิงข้อมูลไปหา C# Backend (API)
                 // TODO: เดี๋ยวเราต้องไปสร้าง PostController เพื่อรับข้อมูลตรงนี้
-                /*
-                const res = await fetch('/api/post/create', {
+                
+                const res = await fetch('/api/postapi/create', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(postData)
                 });
 
                 if (res.ok) {
-                    alert("สร้างกิจกรรมสำเร็จ!");
-                    window.location.href = "/Home/Index"; // เด้งกลับหน้า Home
+                    alert("Created Activity!");
+                    window.location.href = "/Home/Index";
                 } else {
-                    const error = await res.json();
-                    alert("Error: " + error.message);
-                }
-                */
-
-                // จำลองว่าส่งสำเร็จไปก่อน 1 วินาที
-                setTimeout(() => {
-                    alert("นี่คือการจำลอง: สร้างกิจกรรมสำเร็จ! (รันคำสั่ง Console.log ไปแล้ว)");
+                    // 🌟 เช็คก่อนว่าเซิร์ฟเวอร์ส่ง JSON กลับมาไหม ถ้าไม่ใช่จะได้ไม่แครช
+                    const contentType = res.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                        const error = await res.json();
+                        alert("Error: " + (error.message || "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์"));
+                    } else {
+                        alert(`Error ${res.status}: เชื่อมต่อ API ไม่สำเร็จ (เซิร์ฟเวอร์อาจจะพัง หรือ URL ผิด)`);
+                    }
                     btnSubmit.disabled = false;
                     btnSubmit.innerText = "CREATE POST";
-                }, 1000);
+                }
 
             } catch (error) {
                 console.error("Network Error:", error);
