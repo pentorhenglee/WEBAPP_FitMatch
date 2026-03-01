@@ -1,0 +1,131 @@
+@{
+    ViewData["Title"] = "Create Post";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/PostCreate.css" asp-append-version="true" />
+}
+
+<div class="create-post-wrapper">
+    <div class="create-post-container">
+        <h2>Create New Activity</h2>
+        
+        <form id="createPostForm">
+            <div class="form-grid">
+                
+                <div class="form-group full-width">
+                    <label>Activity Title</label>
+                    <input type="text" id="postTitle" placeholder="e.g. Morning Run at Suan Lumpini" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Sport Type</label>
+                    <select id="postSportType" required>
+                        <option value="" disabled selected>Select sport...</option>
+                        <option value="Running">Running</option>
+                        <option value="Soccer">Soccer</option>
+                        <option value="Basketball">Basketball</option>
+                        <option value="Badminton">Badminton</option>
+                        <option value="Cycling">Cycling</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Max People</label>
+                    <input type="number" id="postMaxPeople" min="2" max="50" placeholder="e.g. 5" required />
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Location</label>
+                    <input type="text" id="postLocation" placeholder="e.g. Suan Lumpini Park" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="postDate" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Time</label>
+                    <input type="time" id="postTime" required />
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Cover Image URL (Optional)</label>
+                    <input type="url" id="postImageUrl" placeholder="https://example.com/image.jpg" />
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Description</label>
+                    <textarea id="postDescription" rows="4" placeholder="Share more details about your activity..." required></textarea>
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn-submit-post" id="btnSubmitPost">CREATE POST</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('createPostForm').addEventListener('submit', async function(e) {
+            e.preventDefault(); // ป้องกันไม่ให้หน้าเว็บรีเฟรช
+
+            const btnSubmit = document.getElementById('btnSubmitPost');
+            btnSubmit.disabled = true;
+            btnSubmit.innerText = "CREATING...";
+
+            // ดึงค่าวันที่และเวลามาเตรียมไว้ก่อน
+            const dateVal = document.getElementById('postDate').value;
+            const timeVal = document.getElementById('postTime').value;
+
+            // 1. ดึงข้อมูลจากฟอร์ม
+            const postData = {
+                Title: document.getElementById('postTitle').value,
+                SportType: document.getElementById('postSportType').value,
+                MaxPeople: parseInt(document.getElementById('postMaxPeople').value),
+                Location: document.getElementById('postLocation').value,
+                DateTime: `${dateVal}T${timeVal}:00`,
+                ImageUrl: document.getElementById('postImageUrl').value,
+                Description: document.getElementById('postDescription').value
+                
+            };
+
+            console.log("prepare sending to Backend:", postData);
+
+            try {
+                // 2. ยิงข้อมูลไปหา C# Backend (API)
+                // TODO: เดี๋ยวเราต้องไปสร้าง PostController เพื่อรับข้อมูลตรงนี้
+                
+                const res = await fetch('/api/postapi/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(postData)
+                });
+
+                if (res.ok) {
+                    alert("Created Activity!");
+                    window.location.href = "/Home/Index";
+                } else {
+                    // 🌟 เช็คก่อนว่าเซิร์ฟเวอร์ส่ง JSON กลับมาไหม ถ้าไม่ใช่จะได้ไม่แครช
+                    const contentType = res.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                        const error = await res.json();
+                        alert("Error: " + (error.message || "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์"));
+                    } else {
+                        alert(`Error ${res.status}: เชื่อมต่อ API ไม่สำเร็จ (เซิร์ฟเวอร์อาจจะพัง หรือ URL ผิด)`);
+                    }
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerText = "CREATE POST";
+                }
+
+            } catch (error) {
+                console.error("Network Error:", error);
+                alert("เกิดข้อผิดพลาดในการเชื่อมต่อเซิร์ฟเวอร์");
+                btnSubmit.disabled = false;
+                btnSubmit.innerText = "CREATE POST";
+            }
+        });
+    </script>
+}
