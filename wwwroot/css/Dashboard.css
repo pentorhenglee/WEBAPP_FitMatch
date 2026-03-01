@@ -116,3 +116,110 @@
     color: var(--text-muted);
     font-size: 1rem;
 }
+
+/* ============================================================
+   Right Panel Stats (Dashboard)
+   ============================================================ */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* แบ่ง 2 คอลัมน์ */
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.stat-card {
+    background-color: #333; /* สีพื้นหลังกล่องสถิติ */
+    border-radius: 12px;
+    padding: 20px;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card h3 {
+    margin-top: 0;
+    font-size: 1rem;
+    color: #ddd;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+/* Progress Bar */
+.progress-bg {
+    background-color: #555;
+    border-radius: 10px;
+    height: 10px;
+    width: 100%;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.progress-fill {
+    background-color: #2ecc71; /* สีเขียวมิ้นต์ (เปลี่ยนเป็น var(--accent) ของคุณได้) */
+    height: 100%;
+    transition: width 0.5s ease-in-out;
+}
+
+/* Typography for Stats */
+.stat-main-val {
+    font-size: 3rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.stat-sub-val {
+    text-align: right;
+    font-size: 0.8rem;
+    color: #aaa;
+}
+
+.stat-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Items inside cards */
+.partner-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    background-color: #444;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.partner-item:last-child {
+    margin-bottom: 0;
+}
+
+.partner-item img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    margin-right: 15px;
+    object-fit: cover;
+}
+
+.mission-item {
+    display: flex;
+    align-items: center;
+    background-color: #444;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.mission-item input[type="checkbox"] {
+    margin-right: 15px;
+    transform: scale(1.2);
+    accent-color: #2ecc71;
+    cursor: not-allowed;
+}
+
+.loading-text {
+    text-align: center;
+    color: #888;
+    font-size: 0.8rem;
+    padding: 20px 0;
+}

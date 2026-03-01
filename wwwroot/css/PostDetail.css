@@ -224,3 +224,71 @@
     color: #000;
 }
 .btn-close:hover { background-color: #ccc; }
+
+/* ============================================================
+   Participants Modal Styles
+   ============================================================ */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #444;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.modal-header h3 { margin: 0; color: #fff; }
+
+.close-modal {
+    font-size: 24px;
+    cursor: pointer;
+    color: #888;
+}
+.close-modal:hover { color: #fff; }
+
+.participant-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #333;
+}
+.participant-item:last-child { border-bottom: none; }
+
+.participant-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background-color: #555;
+    margin-right: 15px;
+    object-fit: cover;
+}
+
+.participant-info { flex-grow: 1; }
+.participant-name { color: #fff; font-weight: bold; }
+.participant-role { font-size: 0.8rem; color: #aaa; }
+.owner-badge {
+    background-color: var(--accent);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    margin-left: 8px;
+}
