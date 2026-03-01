@@ -4,22 +4,234 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/Home.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 }
 
 
-<div class="text-center">
+<!-- <div class="text-center">
     <div>
         Find Your Fitness Community
     </div>
 
-    <div class="search-bar">
-        <input type="text" placeholder="SEARCH THE PLACE" />
-        <button type="submit">SEARCH</button>
+    <div class="search-container">
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="SEARCH THE PLACE" />
+            <button type="button" id="searchButton">SEARCH</button>
+        </div>
+
+        <button class="post-button" id="addpostButton">
+        +
+        </button>
     </div>
 
-    <button class="post-button">
-    +
-    </button>
+    <div class="category-container">
+        <div class="category-item active" data-category="">
+            <i class="fas fa-infinity"></i>
+        </div>
+        <div class="category-item" data-category="Running">
+            <i class="fas fa-running"></i>
+        </div>
+        <div class="category-item" data-category="Cycling">
+            <i class="fas fa-bicycle"></i>
+        </div>
+        <div class="category-item" data-category="Basketball">
+            <i class="fas fa-basketball-ball"></i>
+        </div>
+        <div class="category-item" data-category="Football">
+            <i class="fas fa-futbol"></i>
+        </div>
+        <div class="category-item" data-category="Tennis">
+            <i class="fas fa-table-tennis"></i>
+        </div>
+    </div>
+
+    <div id="postsDisplay" class="posts-display"></div>
+</div> -->
+
+<div class="page-container">
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+    <div id="categorySidebar" class="category-sidebar">
+        <div class="sidebar-header">
+            <h3>Categories</h3>
+            <button id="closeSidebar" class="close-btn">&times;</button>
+        </div>
+        <div class="category-items-wrapper">
+            <div class="category-item active" data-category="">
+                <i class="fas fa-infinity"></i> <span>All Sports</span>
+            </div>
+            <div class="category-item" data-category="Running">
+                <i class="fas fa-running"></i> <span>Running</span>
+            </div>
+            <div class="category-item" data-category="Cycling">
+                <i class="fas fa-bicycle"></i> <span>Cycling</span>
+            </div>
+            <div class="category-item" data-category="Basketball">
+                <i class="fas fa-basketball-ball"></i> <span>Basketball</span>
+            </div>
+            <div class="category-item" data-category="Football">
+                <i class="fas fa-futbol"></i> <span>Football</span>
+            </div>
+            <div class="category-item" data-category="Tennis">
+                <i class="fas fa-table-tennis"></i> <span>Tennis</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="welcome-message">
+             <h1>Find Your Fitness Community</h1>
+        </div>
+
+        <button id="menuToggle" class="menu-toggle-btn">
+            <i class="fas fa-bars"></i> Categories
+        </button>
+        
+        <div class="search-container">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="SEARCH THE PLACE" />
+                <button type="button" id="searchButton">SEARCH</button>
+            </div>
+
+            <button class="post-button" id="addpostButton">
+            +
+            </button>
+        </div>
+
+        <div id="postsDisplay" class="posts-display"></div>
+    </div>
 </div>
 
 
+<script>
+    function renderPosts(posts) {
+        const postsDisplay = document.getElementById('postsDisplay');
+        postsDisplay.innerHTML = '';
+
+        if (!posts || posts.length === 0) {
+            postsDisplay.innerHTML = '<p class="no-posts">No posts found.</p>';
+            return;
+        }
+
+        posts.forEach(post => {
+            const card = document.createElement('div');
+            card.className = 'post-card';
+
+            card.onclick = () => {
+                window.location.href = `/Post/Detail/${post.postId}`;
+            };
+
+            card.innerHTML = `
+                <div class="card-image">
+                    <img src="${post.imageUrl || '/images/default-post.jpg'}" alt="${post.title || 'Post Image'}" />
+                </div>
+                <div class="card-content">
+                    <h3 class="post-title">${post.title || 'Untitled'}</h3>
+                    <p class="post-location">${post.location || 'Unknown Location'}</p>
+                    <p class="post-date">${post.date || 'TBA'}</p>
+                    <p class="post-description">${post.description || ''}</p>
+                </div>
+            `;
+            postsDisplay.appendChild(card);
+        });
+    }
+
+    async function fetchSearchResults(query = null, category = null) {
+        // ถ้า query เป็น null (เกิดจากการโหลดหน้าแรก) ให้ดึงค่าว่างเพื่อดึงทั้งหมด
+        // ถ้าไม่ใช่ null ให้เช็กว่ามีข้อความไหม
+        const searchTerm = (query === null) ? "" : query.trim();
+
+        try {
+            // const url = searchTerm
+            //     ? `/Home/search?query=${encodeURIComponent(searchTerm)}`
+            //     : '/Home/search?query=';
+            const url = `/Home/search?query=${encodeURIComponent(searchTerm)}&category=${encodeURIComponent(category)}`;
+
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Network response was not ok');
+            
+            const results = await response.json();
+            renderPosts(results);
+
+        } catch (error) {
+            console.error('Error:', error);
+            document.getElementById('postsDisplay').innerHTML = '<p class="no-post">No posts yet.</p>';
+        }
+    }
+
+    // เมื่อโหลดหน้าเว็บ: เรียกโดยไม่ส่งค่า (ดึงทั้งหมด)
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchSearchResults(null); 
+    });
+
+    // เมื่อคลิกปุ่ม SEARCH: ดึงค่าจาก Input มาส่งให้ฟังก์ชัน
+    // document.getElementById('searchButton').addEventListener('click', () => {
+    //     const query = document.getElementById('searchInput').value;
+    //     if (!query.trim()) {
+    //         alert('Please enter a search term.');
+    //         return;
+    //     }
+    //     fetchSearchResults(query);
+    // });
+
+    document.getElementById('searchButton').addEventListener('click', () => {
+        const query = document.getElementById('searchInput').value;
+        // หาหมวดหมู่ที่ถูกเลือกอยู่ในขณะนั้น (ตัวที่มีคลาส active)
+        const activeCat = document.querySelector('.category-item.active')?.getAttribute('data-category') || "";
+        
+        // เรียกฟังก์ชันโดยส่งทั้งคำค้นหาและหมวดหมู่ (แม้ query จะว่างก็ตาม)
+        fetchSearchResults(query, activeCat);
+    });
+
+    // เมื่อกดปุ่ม Enter
+    // document.getElementById('searchInput').addEventListener('keydown', function(event) {
+    //     if (event.key === 'Enter') {
+    //         event.preventDefault();
+    //         const query = event.target.value;
+    //         if (!query.trim()) {
+    //             alert('Please enter a search term.');
+    //             return;
+    //         }
+    //         fetchSearchResults(query);
+    //     }
+    // });
+    
+    document.getElementById('searchInput').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            const query = event.target.value;
+            const activeCat = document.querySelector('.category-item.active')?.getAttribute('data-category') || "";
+            
+            fetchSearchResults(query, activeCat);
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+    const menuToggle = document.getElementById('menuToggle');
+    const closeSidebar = document.getElementById('closeSidebar');
+    const sidebar = document.getElementById('categorySidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+
+    // ฟังก์ชันเปิด-ปิด
+    const toggleSidebar = () => {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+    };
+
+    menuToggle.addEventListener('click', toggleSidebar);
+    closeSidebar.addEventListener('click', toggleSidebar);
+    overlay.addEventListener('click', toggleSidebar); // คลิกข้างนอกเพื่อปิด
+
+    // เมื่อเลือกหมวดหมู่ ให้ปิด Sidebar อัตโนมัติด้วย
+    document.querySelectorAll('.category-item').forEach(item => {
+        item.addEventListener('click', () => {
+            // โค้ด Filter เดิมของคุณ...
+            const cat = item.getAttribute('data-category');
+            fetchSearchResults(document.getElementById('searchInput').value, cat);
+            
+            // ปิด sidebar หลังเลือก
+            toggleSidebar();
+        });
+        });
+    });
+</script>
