@@ -10,34 +10,46 @@
 <body>
     <header>
         <nav class="navbar">
+            @using Microsoft.AspNetCore.Http
+            @{
+                // ดึงค่าจาก Session มาเช็คตรงๆ
+                var userName = Context.Session.GetString("user");
+                var userEmail = Context.Session.GetString("user_email");
+            }
             <a class="brand" asp-controller="Home" asp-action="Index">
                 <img src="~/images/logo.png" alt="Logo" />
                 <div>
                     <span class="text-fit">FIT</span><span class="text-match">MATCH</span>
                 </div>
             </a>
-
-            <div class="user-section" id="userSection" style="display: none; position: relative;">   
-                <div class="user-text">
-                    <div class="user-name" id="displayUserName"></div>
-                    <div class="user-email" id="displayUserEmail"></div>
+            @if (!string.IsNullOrEmpty(userName))
+            {
+                <div class="user-section" id="userSection" style=" position: relative;">   
+                    <div class="user-text">
+                        <div class="user-name" id="displayUserName">@userName</div>
+                        <div class="user-email" id="displayUserEmail">@userEmail</div>
+                    </div>
+                    
+                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
+                        id="displayUserAvatar" class="user-avatar" alt="Avatar" onclick="toggleUserDropdown()" style="cursor: pointer;" />
+                    
+                    <div id="userDropdown" class="user-dropdown-menu">
+                        <a asp-controller="Profile" asp-action="Index" class="dropdown-item">My Profile</a>
+                        <a asp-controller="Dashboard" asp-action="Index" class="dropdown-item">Dashboard</a>
+                        <div class="dropdown-divider"></div>
+                        <button onclick="logout()" class="dropdown-item text-danger" style="width: 100%; text-align: left; background: none; border: none; font-family: inherit;">Logout</button>
+                    </div>
                 </div>
-                
-                <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
-                     id="displayUserAvatar" class="user-avatar" alt="Avatar" onclick="toggleUserDropdown()" style="cursor: pointer;" />
-                
-                <div id="userDropdown" class="user-dropdown-menu">
-                    <a asp-controller="Profile" asp-action="Index" class="dropdown-item">My Profile</a>
-                    <a asp-controller="Dashboard" asp-action="Index" class="dropdown-item">Dashboard</a>
-                    <div class="dropdown-divider"></div>
-                    <button onclick="logout()" class="dropdown-item text-danger" style="width: 100%; text-align: left; background: none; border: none; font-family: inherit;">Logout</button>
-                </div>
-            </div>
-
-            <div id="authLinks" style="display: none;" class="auth-links">   
+            }
+            else
+            {
+            <div id="authLinks"  class="auth-links">   
                 <a asp-controller="Account" asp-action="Login" class="nav-link">Login</a>
                 <a asp-controller="Account" asp-action="Register" class="nav-link btn-register">Register</a>
             </div>
+
+            }
+
         </nav>
     </header>
 
@@ -67,7 +79,7 @@
             }
         }
 
-        async function fetchUserProfile() {
+        @* async function fetchUserProfile() {
             const userSection = document.getElementById('userSection');
             const authLinks = document.getElementById('authLinks');
 
@@ -95,7 +107,7 @@
                 console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
             }
         }
-        fetchUserProfile();
+        fetchUserProfile(); *@
 
         async function logout(){
             const res = await fetch('/api/auth/logout', {
