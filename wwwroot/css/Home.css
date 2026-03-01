@@ -45,7 +45,7 @@ body {
     width: 100%;
     outline: none;
     font-size: 16px;
-    text-align: center;
+    text-align: left;
     /* ให้ตัวหนังสืออยู่ตรงกลางแบบในรูป */
     letter-spacing: 1px;
 }
@@ -55,7 +55,6 @@ body {
     color: rgba(255, 255, 255, 0.4);
 }
 
-/* ปุ่มแว่นขยาย (ถ้ามี) */
 .search-bar button {
     background: transparent;
     border: none;
@@ -73,96 +72,66 @@ body {
     cursor: pointer;
 }
 
-/* ปุ่มเปิดเมนู */
-.menu-toggle-btn {
-    font-size: 16px;
-    position: fixed;
-    top: 80px;
-    left: 20px;
-    z-index: 1001;
-    background: rgba(46, 204, 113, 0.2);
-    border: 1px solid #2ecc71;
-    color: white;
-    padding: 16px 24px;
-    border-radius: 8px;
-    cursor: pointer;
-    backdrop-filter: blur(5px);
-    /* เพิ่มเพื่อให้ดูแยกจากพื้นหลัง */
-}
-
-/* แถบ Sidebar (ซ่อนไว้ก่อน) */
 .category-sidebar {
     position: fixed;
-    top: 0;
+    top: 70px;
     left: 0;
-    width: 250px;
-    height: 100%;
-    background: #1a1a1a;
-    z-index: 9999;
-    transform: translateX(-100%);
-    /* ซ่อนไปทางซ้าย */
-    transition: transform 0.3s ease-in-out;
-    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
-    padding: 20px;
-    padding-top: 80px;
-}
-
-/* เมื่อ Sidebar เปิด */
-.category-sidebar.open {
-    transform: translateX(0);
-}
-
-/* ฉากหลังดำๆ เมื่อเปิด Sidebar */
-.sidebar-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 9998;
-    display: none;
-    /* ซ่อนไว้ก่อน */
-}
-
-.sidebar-overlay.active {
-    display: block;
-}
-
-/* ปรับแต่งปุ่มกากบาทปิด */
-.sidebar-header {
+    width: 60px;
+    height: calc(100% - 60px);
+    background: rgba(26, 26, 26, 0.9);
+    z-index: 1000;
+    transition: width 0.3s ease;
+    overflow: hidden;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #2ecc71;
-    margin-bottom: 30px;
+    flex-direction: column;
+
+    justify-content: center;
+    /* ⭐ ทำให้ไอคอนอยู่กลางแนวตั้ง */
+
+    padding: 10px 0;
+    backdrop-filter: blur(10px);
 }
 
-.close-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 30px;
-    cursor: pointer;
+.category-sidebar:hover {
+    width: 200px;
 }
 
-/* ปรับ category-item ให้ดูเป็นรายการเมนู */
 .category-item {
     display: flex;
     align-items: center;
-    gap: 15px;
-    padding: 15px;
-    margin-bottom: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
+    padding: 40px 20px;
     cursor: pointer;
     color: rgba(255, 255, 255, 0.6);
+    transition: all 0.2s;
+    white-space: nowrap;
+    position: relative;
+}
+
+.category-item i {
+    min-width: 25px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.category-label {
+    margin-left: 15px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.category-sidebar:hover .category-label {
+    opacity: 1;
 }
 
 .category-item.active {
     background: rgba(46, 204, 113, 0.2);
-    color: white;
+    color: #2ecc71;
     border-left: 4px solid #2ecc71;
+}
+
+.category-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
 }
 
 .no-post {
