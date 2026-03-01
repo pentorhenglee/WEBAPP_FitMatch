@@ -6,29 +6,169 @@ body {
     padding: 0;
 }
 
-.text-center {
+.welcome-message {
     color: #2ecc71;
-    font-size: 40px;
+    font-size: 25px;
     text-align: center;
     font-weight: bold;
 }
 
-.search-bar {
+/* ส่วนที่ครอบทั้ง Search Bar และปุ่ม + */
+.search-container {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
-    border-radius: 10px;
+    align-items: center;
+    gap: 15px;
+    /* ระยะห่างระหว่างช่องค้นหากับปุ่มบวก */
+    margin-top: 50px;
+}
+
+/* ตัว Search Bar ที่เป็นกระจกใส */
+.search-bar {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 25px;
+    padding: 5px 20px;
+    width: 600px;
+    backdrop-filter: blur(5px);
+    /* เพิ่มเอฟเฟกต์กระจกฝ้า (ถ้าต้องการ) */
+}
+
+/* ปรับแต่งช่องพิมพ์ข้อความข้างใน */
+.search-bar input {
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 10px;
+    width: 100%;
+    outline: none;
+    font-size: 16px;
+    text-align: center;
+    /* ให้ตัวหนังสืออยู่ตรงกลางแบบในรูป */
+    letter-spacing: 1px;
+}
+
+/* ปรับแต่งสี Placeholder ให้จางลง */
+.search-bar input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* ปุ่มแว่นขยาย (ถ้ามี) */
+.search-bar button {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
     cursor: pointer;
+    font-size: 18px;
 }
 
 .post-button {
-    display: block;
-    margin: 30px auto;
-    padding: 10px 20px;
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
     background-color: #2ecc71;
-    color: white;
     border: none;
-    border-radius: 5px;
-    font-size: 16px;
     cursor: pointer;
+}
+
+/* ปุ่มเปิดเมนู */
+.menu-toggle-btn {
+    font-size: 16px;
+    position: fixed;
+    top: 80px;
+    left: 20px;
+    z-index: 1001;
+    background: rgba(46, 204, 113, 0.2);
+    border: 1px solid #2ecc71;
+    color: white;
+    padding: 16px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    /* เพิ่มเพื่อให้ดูแยกจากพื้นหลัง */
+}
+
+/* แถบ Sidebar (ซ่อนไว้ก่อน) */
+.category-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100%;
+    background: #1a1a1a;
+    z-index: 9999;
+    transform: translateX(-100%);
+    /* ซ่อนไปทางซ้าย */
+    transition: transform 0.3s ease-in-out;
+    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    padding-top: 80px;
+}
+
+/* เมื่อ Sidebar เปิด */
+.category-sidebar.open {
+    transform: translateX(0);
+}
+
+/* ฉากหลังดำๆ เมื่อเปิด Sidebar */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9998;
+    display: none;
+    /* ซ่อนไว้ก่อน */
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+/* ปรับแต่งปุ่มกากบาทปิด */
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #2ecc71;
+    margin-bottom: 30px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+/* ปรับ category-item ให้ดูเป็นรายการเมนู */
+.category-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.category-item.active {
+    background: rgba(46, 204, 113, 0.2);
+    color: white;
+    border-left: 4px solid #2ecc71;
+}
+
+.no-post {
+    text-align: center;
+    margin-top: 50px;
+    font-size: 28px;
+    color: #2ecc71;
+    width: 100%;
 }
