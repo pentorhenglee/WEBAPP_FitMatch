@@ -63,244 +63,161 @@
 
 @section Scripts {
     <script>
-        const currentPostId = 1; 
-        const currentUserId = 99; // ไอดีคนกำลังล็อกอิน
-        const myAvatarUrl = ""; // รูปตัวเอง
+        const currentPostId = @ViewBag.PostId; 
+        let globalPostData = null; 
 
-        // 1. Mockup Data
-        const mockPostFromDB = {
-            PostId: 1,
-            UserId: 99, // 🌟 เพิ่ม UserId ของเจ้าของโพสต์ (99 = เป็นของเราเอง)
-            Status: "Open", // 🌟 เพิ่ม Status (Open/Closed)
-            Title: "Morning Run at Suan Lumpini",
-            Location: "Suan Lumpini", 
-            Date: "14 Feb 2026",
-            Time: "08:00",
-            Description: "Looking for running group. Pace doesn't matter, we can chill and take photos. Everyone is welcome!",
-            MaxPeople: 5,
-            CurrentPeople: 2,
-            ImageUrl: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Aerial_view_of_Lumphini_Park.jpg"
-        };
-
-        const mockChatsFromDB = [
-            { 
-                CommentId: 1, 
-                UserId: 10, 
-                UserName: "John Runner", 
-                AvatarUrl: "", 
-                Message: "Anyone arrived yet?", 
-                Time: "07:45",
-                IsMine: false 
-            },
-            { 
-                CommentId: 2, 
-                UserId: 99, 
-                UserName: "Earthy", 
-                AvatarUrl: myAvatarUrl, 
-                Message: "Driving there, 10 mins away!", 
-                Time: "07:50",
-                IsMine: true 
-            }
-        ];
-
-        const mockMembersFromDB = [
-            { UserId: 99, Username: "Earthy", ProfileUrl: myAvatarUrl, IsOwner: true },
-            { UserId: 10, Username: "Kuy Cat", ProfileUrl: "", IsOwner: false },
-            { UserId: 15, Username: "Kuy Kan", ProfileUrl: "", IsOwner: false }
-        ];
-
-        // 2. Fetch API Methods
         async function fetchPostDetail() {
             try {
-                const data = mockPostFromDB; 
-                document.getElementById('displayCoverImg').src = data.ImageUrl;
-                document.getElementById('displayCoverImg').style.display = "block";
-                document.getElementById('displayTitle').innerText = data.Title;
-                document.getElementById('displayMeta').innerText = `${data.Location} | ${data.Date} | ${data.Time}`;
-                document.getElementById('displayDesc').innerText = data.Description;
-                document.getElementById('displayParticipants').innerText = `Participants: ${data.CurrentPeople} / ${data.MaxPeople}`;
+                const response = await fetch(`/api/postapi/detail/${currentPostId}`);
+                if (!response.ok) {
+                    document.getElementById('displayTitle').innerText = "Post Not Found";
+                    return;
+                }
+                
+                globalPostData = await response.json(); 
+                const data = globalPostData;
 
-            const participantsDiv = document.getElementById('displayParticipants');
-            participantsDiv.innerHTML = `Participants: <span style="text-decoration:underline; cursor:pointer;" onclick="openParticipantsModal()">${data.CurrentPeople} / ${data.MaxPeople}</span>`;
+                const currentPeopleCount = data.members ? data.members.length : 0;
 
-                // 🌟 ลอจิกเช็คสลับมุมมอง (Owner vs Normal User)
-                if (data.UserId === currentUserId) {
-                    // ถ้าเป็นเจ้าของโพสต์
-                    document.getElementById('btnJoin').style.display = "none";
+                const dateObj = new Date(data.eventDateTime);
+                const dateStr = dateObj.toLocaleDateString('en-GB').replace(/\//g, ' - ');
+                const timeStr = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+
+                if (data.imageUrl) {
+                    document.getElementById('displayCoverImg').src = data.imageUrl;
+                    document.getElementById('displayCoverImg').style.display = "block";
+                }
+                document.getElementById('displayTitle').innerText = data.title;
+                document.getElementById('displayMeta').innerText = `${data.location} | ${dateStr} | ${timeStr}`;
+                document.getElementById('displayDesc').innerText = data.description;
+
+                const participantsDiv = document.getElementById('displayParticipants');
+                participantsDiv.innerHTML = `Participants: <span style="text-decoration:underline; cursor:pointer;" onclick="openParticipantsModal()">${currentPeopleCount} / ${data.maxPeople}</span>`;
+
+                // ==========================================
+                // 🌟 ลอจิกปุ่ม (Owner vs Normal User) อัปเกรดใหม่!
+                // ==========================================
+                
+                // 1. เช็คว่าคนเปิดเว็บอยู่ คือเจ้าของโพสต์ไหม?
+                const isOwner = data.ownerId === data.currentUserId;
+                
+                // 2. เช็คว่าคนเปิดเว็บอยู่ จอยกิจกรรมนี้ไปหรือยัง? (หา id ตัวเองใน array members)
+                const isAlreadyJoined = data.members.some(m => m.userId === data.currentUserId);
+                
+                // 3. เช็คว่าคนเต็มหรือยัง?
+                const isFull = currentPeopleCount >= data.maxPeople;
+                
+                // 4. เช็คว่าโพสต์ปิดรับสมัครหรือยัง?
+                const isClosed = data.status.toLowerCase() === "close" || data.status.toLowerCase() === "closed";
+
+                const btnJoin = document.getElementById('btnJoin');
+
+                if (isOwner) {
+                    // มุมมองเจ้าของ: ซ่อน JOIN, โชว์ปุ่มจัดการ
+                    btnJoin.style.display = "none";
                     document.getElementById('ownerActions').style.display = "flex";
                 } else {
-                    // ถ้าไม่ใช่เจ้าของโพสต์
+                    // มุมมองคนอื่น: ซ่อนปุ่มจัดการ, โชว์ปุ่มเข้าร่วม
                     document.getElementById('ownerActions').style.display = "none";
+                    btnJoin.style.display = "block";
                     
-                    // เช็คเพิ่มเติม: ถ้าโพสต์ปิดรับสมัครแล้ว
-                    if (data.Status === "Closed") {
-                        const btnJoin = document.getElementById('btnJoin');
-                        btnJoin.style.display = "block";
+                    if (isClosed) {
+                        // โพสต์ปิดรับแล้ว
                         btnJoin.innerText = "CLOSED";
                         btnJoin.disabled = true;
                         btnJoin.style.backgroundColor = "#333";
                         btnJoin.style.color = "#888";
-                    } else {
-                        document.getElementById('btnJoin').style.display = "block";
+                        btnJoin.onclick = null;
+                    } 
+                    else if (isAlreadyJoined) {
+                        // 🌟 จอยไปแล้ว (ทำปุ่มให้กดเพื่อยกเลิกได้)
+                        btnJoin.innerText = "LEAVE EVENT";
+                        btnJoin.disabled = false;
+                        btnJoin.style.backgroundColor = "#ff4d4d"; // สีแดงสื่อถึงการออก
+                        btnJoin.style.color = "white";
+                        btnJoin.onclick = leavePost; // ชี้ไปที่ฟังก์ชันออกกลุ่ม
+                    } 
+                    else if (isFull) {
+                        // 🌟 คนเต็มแล้ว
+                        btnJoin.innerText = "FULL";
+                        btnJoin.disabled = true;
+                        btnJoin.style.backgroundColor = "#555";
+                        btnJoin.style.color = "#ccc";
+                        btnJoin.onclick = null;
+                    } 
+                    else {
+                        // 🌟 ยังไม่จอย และมีที่ว่าง
+                        btnJoin.innerText = "JOIN";
+                        btnJoin.disabled = false;
+                        btnJoin.style.backgroundColor = "var(--accent)"; // สีหลักของคุณ
+                        btnJoin.style.color = "white";
+                        btnJoin.onclick = joinPost; // ชี้ไปที่ฟังก์ชันเข้ากลุ่ม
                     }
                 }
 
-            } catch (error) { console.error("Error:", error); }
-        }
-
-       async function fetchChatHistory() {
-            try {
-                const chats = mockChatsFromDB; 
-                const chatContainer = document.getElementById('chatHistoryContainer');
-                chatContainer.innerHTML = ""; 
-
-                chats.forEach(chat => {
-                    const wrapperClass = chat.IsMine ? "mine" : "others";
-                    // 🌟 เพิ่ม <span class="chat-time"> ตรงนี้
-                    chatContainer.innerHTML += `
-                        <div class="chat-message-wrapper ${wrapperClass}">
-                            <img src="${chat.AvatarUrl}" class="chat-avatar" alt="Avatar">
-                            <div class="chat-message-content">
-                                <div class="chat-username">${chat.UserName} <span class="chat-time">${chat.Time}</span></div>
-                                <div class="chat-bubble">${chat.Message}</div>
-                            </div>
-                        </div>
-                    `;
-                });
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            } catch (error) { console.error("Error:", error); }
-        }
-
-        async function sendChatMessage() {
-            const input = document.getElementById('chatInputMessage');
-            const message = input.value.trim();
-            if (!message) return;
-
-            try {
-                // 🌟 ดึงเวลาปัจจุบันของเครื่องตอนที่กดส่ง (เช่น 08:05)
-                const now = new Date();
-                const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
-
-                const chatContainer = document.getElementById('chatHistoryContainer');
-                
-                // 🌟 ใส่ตัวแปร timeString เข้าไปใน HTML
-                chatContainer.innerHTML += `
-                    <div class="chat-message-wrapper mine">
-                        <img src="${myAvatarUrl}" class="chat-avatar" alt="Avatar">
-                        <div class="chat-message-content">
-                            <div class="chat-username">Earthy <span class="chat-time">${timeString}</span></div>
-                            <div class="chat-bubble">${message}</div>
-                        </div>
-                    </div>
-                `;
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-                input.value = ""; 
-            } catch (error) {
-                alert("Failed to send message.");
+            } catch (error) { 
+                console.error("Error fetching post detail:", error); 
+                document.getElementById('displayTitle').innerText = "Error loading data.";
             }
-        }
-
-        function handleEnterKey(e) {
-            if (e.key === 'Enter') sendChatMessage();
-        }
-
-        async function joinPost() {
-            const btn = document.getElementById('btnJoin');
-            btn.innerText = "JOINING...";
-            btn.disabled = true;
-
-            try {
-                // อนาคตตรงนี้จะเป็นโค้ด Fetch API ไปบอก Database ว่า "นาย A ขอ Join โพสต์นี้นะ"
-                
-                // จำลองว่าเน็ตโหลด 1 วินาที
-                setTimeout(() => {
-                    // 1. เปลี่ยนหน้าตาปุ่มเป็น JOINED
-                    btn.innerText = "JOINED";
-                    btn.style.backgroundColor = "var(--accent)";
-                    btn.style.color = "white";
-                    
-                    // 2. 🌟 Logic การเพิ่มจำนวนคน: เอาค่าเดิมมาบวก 1
-                    mockPostFromDB.CurrentPeople += 1;
-                    
-                    // 3. 🌟 อัปเดตตัวเลขบนหน้าจอด้วยตัวแปร
-                    document.getElementById('displayParticipants').innerText = `Participants: ${mockPostFromDB.CurrentPeople} / ${mockPostFromDB.MaxPeople}`;
-                    
-                }, 1000);
-
-            } catch (error) {
-                alert("Failed to join.");
-                btn.innerText = "JOIN";
-                btn.disabled = false;
-            }
-        }
-
-        function editPost() {
-            // ในอนาคตจะพาไปหน้า /Post/Edit/1
-            alert("to edit post-page");
-        }
-
-        async function closePost() {
-            if (confirm("are you sure to close this post?")) {
-                // อนาคต Fetch ไปอัปเดต Status ใน DB ตรงนี้
-                alert("post status is closed!");
-                
-                // จำลองการเปลี่ยนหน้าตาปุ่มทันที
-                const btnClose = document.querySelector('.btn-close');
-                btnClose.innerText = "CLOSED";
-                btnClose.style.backgroundColor = "#555";
-                btnClose.disabled = true;
-            }
-        }
-
-        function manageParticipants() {
-            // อนาคตอาจจะเด้ง Modal โชว์รายชื่อคนจอย เพื่อกด Approve/Reject
-            alert("notify Modal to edit participants (Approve / Reject / Kick)");
         }
 
         async function openParticipantsModal() {
             document.getElementById('participantsModal').style.display = 'flex';
-            await fetchParticipants(); // เรียกฟังก์ชันดึงรายชื่อ
+            renderParticipants(); 
         }
 
         function closeParticipantsModal() {
             document.getElementById('participantsModal').style.display = 'none';
         }
 
-        // 3. ฟังก์ชันดึงรายชื่อจาก API (หรือ Mockup)
-        async function fetchParticipants() {
+        function renderParticipants() {
             const container = document.getElementById('participantsListContainer');
-            container.innerHTML = '<div style="text-align:center; color:#ccc;">Loading...</div>';
+            
+            if (!globalPostData || !globalPostData.members || globalPostData.members.length === 0) {
+                container.innerHTML = '<div style="text-align:center; color:#ccc;">No members yet.</div>';
+                return;
+            }
 
-            try {
-                // 🌟 อนาคตเปลี่ยนเป็น fetch API ของจริง
-                // const response = await fetch(`/api/post/${currentPostId}/members`);
-                // if (!response.ok) throw new Error('Failed to fetch members');
-                // const members = await response.json();
+            container.innerHTML = '';
+            
+            globalPostData.members.forEach(member => {
+                const avatarSrc = member.profileUrl || 'https://via.placeholder.com/40'; 
+                const isOwner = member.userId === globalPostData.ownerId;
+                const ownerBadge = isOwner ? '<span class="owner-badge">Owner</span>' : '';
                 
-                // ใช้ Mockup ไปก่อน
-                const members = mockMembersFromDB;
-
-                // วาด HTML รายชื่อ
-                container.innerHTML = '';
-                members.forEach(member => {
-                    const avatarSrc = member.ProfileUrl || 'https://via.placeholder.com/40'; // ถ้ารูปพังให้ใช้ placeholder
-                    const ownerBadge = member.IsOwner ? '<span class="owner-badge">Owner</span>' : '';
-                    
-                    container.innerHTML += `
-                        <div class="participant-item">
-                            <img src="${avatarSrc}" class="participant-avatar" alt="${member.Username}">
-                            <div class="participant-info">
-                                <div class="participant-name">${member.Username} ${ownerBadge}</div>
-                                </div>
+                container.innerHTML += `
+                    <div class="participant-item">
+                        <img src="${avatarSrc}" class="participant-avatar" alt="${member.name}">
+                        <div class="participant-info">
+                            <div class="participant-name">${member.name} ${ownerBadge}</div>
                         </div>
-                    `;
-                });
+                    </div>
+                `;
+            });
+        }
 
-            } catch (error) {
-                console.error("Error fetching participants:", error);
-                container.innerHTML = '<div style="text-align:center; color:red;">Failed to load participants.</div>';
+        async function fetchChatHistory() {
+            document.getElementById('chatHistoryContainer').innerHTML = '<div style="text-align:center; color:#ccc; font-size:0.8rem; margin-top:20px;">Chat system coming soon...</div>';
+        }
+
+        function handleEnterKey(e) { /* Placeholder */ }
+        function sendChatMessage() { /* Placeholder */ }
+        
+        function joinPost() { 
+            // รอเชื่อม API เข้าร่วม
+            alert("Join API coming soon!"); 
+        }
+
+        function leavePost() {
+            // 🌟 เพิ่มฟังก์ชันใหม่ สำหรับกดยกเลิก
+            if(confirm("Are you sure you want to leave this event?")) {
+                alert("Leave API coming soon!");
             }
         }
+
+        function editPost() { alert("Edit API coming soon!"); }
+        function closePost() { alert("Close API coming soon!"); }
+        function manageParticipants() { alert("Manage coming soon!"); }
 
         document.addEventListener('DOMContentLoaded', () => {
             fetchPostDetail();
