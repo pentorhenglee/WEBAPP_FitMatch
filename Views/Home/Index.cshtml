@@ -40,6 +40,11 @@
         posts.forEach(post => {
             const card = document.createElement('div');
             card.className = 'post-card';
+
+            card.onclick = () => {
+                window.location.href = `/Post/Detail/${post.postId}`;
+            };
+
             card.innerHTML = `
                 <div class="card-image">
                     <img src="${post.imageUrl || '/images/default-post.jpg'}" alt="${post.title || 'Post Image'}" />
