@@ -46,11 +46,11 @@ namespace WEBAPP_FitMatch.Controllers
 
             var post = new Post
             {
-                Title = dto.Title,
+                Title = dto.Title ?? "",
                 Location = dto.Location,
                 DateTime = DateTime.SpecifyKind(dto.DateTime, DateTimeKind.Utc), // ✅ กำหนด UTC
-                Description = dto.Description,
-                SportType = dto.SportType,
+                Description = dto.Description ?? "",
+                SportType = dto.SportType ?? "",
                 MaxPeople = dto.MaxPeople,
                 UserId = user_id.Value
             };
