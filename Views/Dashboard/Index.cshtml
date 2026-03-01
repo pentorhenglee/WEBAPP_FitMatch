@@ -13,7 +13,7 @@
         <div class="dash-header">
             <h2>Dashboard</h2>
             <div style="font-size: 0.8rem; color: var(--text-muted);">
-                Sort: <select style="background:transparent; color:white; border:none; outline:none;"><option>Last Month</option></select>
+                Sort: <select style="background:transparent; color:rgb(203, 203, 203); border:none; outline:none;"><option>Last Month</option></select>
             </div>
         </div>
 
@@ -45,7 +45,7 @@
 
             <div class="stat-card">
                 <h3>Activity Stats</h3>
-                <div style="height: 150px; display: flex; justify-content: center;">
+                <div style="height: 150px; width: 80%; margin: 0 auto;">
                     <canvas id="activityChart"></canvas>
                 </div>
             </div>
@@ -242,8 +242,17 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    cutout: '55%',
                     plugins: {
-                        legend: { position: 'right', labels: { color: '#ccc', boxWidth: 12 } }
+                        legend: { 
+                            position: 'right', 
+                            align: 'center', // 🌟 บังคับให้อยู่กึ่งกลางแนวตั้งพอดีกราฟ
+                            labels: { 
+                                color: '#ffffff', 
+                                usePointStyle: true, // ใช้จุดกลมๆ
+                                padding: 15
+                            } 
+                        }
                     }
                 }
             });
