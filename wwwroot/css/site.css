@@ -11,6 +11,10 @@
   --navbar-h:    70px;
 }
 
+.logout {
+    color: rgba(180, 28, 28, 0.534);
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
@@ -80,6 +84,8 @@ a { text-decoration: none; }
 }
 .text-fit { color: var(--text); }
 .text-match { color: var(--accent); }
+
+
 
 /* ฝั่งขวา: ข้อมูล User */
 .user-section {
@@ -164,7 +170,7 @@ a { text-decoration: none; }
     color: #ff4d4d !important;
 }
 .text-danger:hover {
-    background-color: #ffe6e6 !important;
+    background-color: #9e9696 !important;
 }
 
 /* ================= Auth Links (สถานะยังไม่ล็อกอิน) ================= */

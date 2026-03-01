@@ -29,6 +29,7 @@
                         <a href="/Dashboard">DASHBOARD</a>
                         <a href="/Profile/Missions">MISSIONS</a>
                         <a href="/Profile/About">ABOUT</a>
+                        <a onclick="logout()" class="text-danger">LOGOUT</a>
                 </nav>
 
                 <div class="user-section" id="userSection" style=" position: relative;">   
@@ -68,25 +69,6 @@
     </div>
 
     <script>
-        // ฟังก์ชันเปิด/ปิด Dropdown
-        function toggleUserDropdown() {
-            const dropdown = document.getElementById('userDropdown');
-            dropdown.classList.toggle('show');
-        }
-
-        // ปิด Dropdown อัตโนมัติเวลาคลิกที่อื่นบนหน้าจอ
-        window.onclick = function(event) {
-            if (!event.target.matches('.user-avatar')) {
-                const dropdowns = document.getElementsByClassName("user-dropdown-menu");
-                for (let i = 0; i < dropdowns.length; i++) {
-                    let openDropdown = dropdowns[i];
-                    if (openDropdown.classList.contains('show')) {
-                        openDropdown.classList.remove('show');
-                    }
-                }
-            }
-        }
-
         @* async function fetchUserProfile() {
             const userSection = document.getElementById('userSection');
             const authLinks = document.getElementById('authLinks');
