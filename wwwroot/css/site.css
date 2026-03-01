@@ -168,7 +168,6 @@ a { text-decoration: none; }
 
 .text-danger:hover {
   color: #ff4d4d !important;  
-  background-color: #9e9696 !important;
 }
 
 /* ================= Auth Links (สถานะยังไม่ล็อกอิน) ================= */

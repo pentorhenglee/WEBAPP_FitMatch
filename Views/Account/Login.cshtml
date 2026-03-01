@@ -3,11 +3,6 @@
     Layout = null;
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/Account.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-}  
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,18 +15,6 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-    <style>
-        /* Ensuring the layout fills the screen since we aren't using _Layout */
-        body {
-            margin: 0;
-            background-color: #121212;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
-    </style>
 </head>
 <body>
 <div class="container">
@@ -43,7 +26,7 @@
         <div class="form-section">
             <div class="login-card">
                 <h2>Welcome back!</h2>
-                <p class="subtitle">Login</p>
+                <label for="loginLabel">Login</label>
                 <div id="errorMessage" role="alert" class="error d-none"></div>
                 <form id="loginForm">
                     <div class="input-group">
@@ -59,7 +42,7 @@
                     </button>
                 </form>
                 
-                <p class="signup-text">Dont have an account? <a href="/Account/Register">Sign up!</a></p>
+                <p class="login-text"> Don't have an account? <a href="/Account/Register">Sign up!</a></p>
             </div>
         </div>
     </div>
