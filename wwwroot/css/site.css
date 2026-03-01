@@ -166,11 +166,9 @@ a { text-decoration: none; }
     background-color: #555555;
 }
 
-.text-danger {
-    color: #ff4d4d !important;
-}
 .text-danger:hover {
-    background-color: #9e9696 !important;
+  color: #ff4d4d !important;  
+  background-color: #9e9696 !important;
 }
 
 /* ================= Auth Links (สถานะยังไม่ล็อกอิน) ================= */
