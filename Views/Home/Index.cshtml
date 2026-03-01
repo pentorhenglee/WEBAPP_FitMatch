@@ -25,8 +25,8 @@
             <div class="category-item" data-category="Football">
                 <i class="fas fa-futbol"></i> <span class="category-label">Football</span>
             </div>
-            <div class="category-item" data-category="Badminton">
-                <i class="fas fa-table-tennis"></i> <span class="category-label">Badminton</span>
+            <div class="category-item" data-category="Tennis">
+                <i class="fas fa-volleyball-ball"></i> <span class="category-label">volleyball</span>
             </div>
         </div>
     </div>
@@ -169,5 +169,12 @@
                 fetchSearchResults(searchTerms, category);
             });
         });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("addpostButton")
+            .addEventListener("click", function () {
+                window.location.href = "/Post/Create";
+            });
     });
 </script>
