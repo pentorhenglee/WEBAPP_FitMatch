@@ -8,7 +8,7 @@ using System.Security.AccessControl;
 namespace WEBAPP_FitMatch.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/postapi")]
     public class PostAPIController : ControllerBase
     {
         private readonly AppDbContext _db;
@@ -37,7 +37,7 @@ namespace WEBAPP_FitMatch.Controllers
             return Ok(posts);
         }
 
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<ActionResult> CreatePost([FromBody] CreatePostDto dto)
         {
             var user_id = HttpContext.Session.GetInt32("user_id");
@@ -48,16 +48,22 @@ namespace WEBAPP_FitMatch.Controllers
             {
                 Title = dto.Title,
                 Location = dto.Location,
-                DateTime = DateTime.SpecifyKind(dto.DateTime, DateTimeKind.Utc), // ✅ กำหนด UTC
+                DateTime = DateTime.SpecifyKind(dto.DateTime, DateTimeKind.Utc), 
                 Description = dto.Description,
                 SportType = dto.SportType,
                 MaxPeople = dto.MaxPeople,
-                UserId = user_id.Value
+                UserId = user_id.Value,
+                ImageUrl = dto.ImageUrl,
+                Status = "open",
+                
+                // 🌟 ต้องส่งเวลาที่สร้างโพสต์ไปด้วย (ใช้เวลาปัจจุบันแบบ UTC)
+                CreateDate = DateTime.UtcNow 
             };
 
             _db.Posts.Add(post);
             await _db.SaveChangesAsync();
-            return Ok(post);
+
+            return Ok();
 
         }
     }
