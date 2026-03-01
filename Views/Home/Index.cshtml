@@ -8,31 +8,25 @@
 }
 
 <div class="page-container">
-    <div id="sidebarOverlay" class="sidebar-overlay"></div>
-
     <div id="categorySidebar" class="category-sidebar">
-        <div class="sidebar-header">
-            <h3>Categories</h3>
-            <button id="closeSidebar" class="close-btn">&times;</button>
-        </div>
         <div class="category-items-wrapper">
             <div class="category-item active" data-category="">
-                <i class="fas fa-infinity"></i> <span>All Sports</span>
+                <i class="fas fa-infinity"></i> <span class="category-label">All Sports</span>
             </div>
             <div class="category-item" data-category="Running">
-                <i class="fas fa-running"></i> <span>Running</span>
+                <i class="fas fa-running"></i> <span class="category-label">Running</span>
             </div>
             <div class="category-item" data-category="Cycling">
-                <i class="fas fa-bicycle"></i> <span>Cycling</span>
+                <i class="fas fa-bicycle"></i> <span class="category-label">Cycling</span>
             </div>
             <div class="category-item" data-category="Basketball">
-                <i class="fas fa-basketball-ball"></i> <span>Basketball</span>
+                <i class="fas fa-basketball-ball"></i> <span class="category-label">Basketball</span>
             </div>
             <div class="category-item" data-category="Football">
-                <i class="fas fa-futbol"></i> <span>Football</span>
+                <i class="fas fa-futbol"></i> <span class="category-label">Football</span>
             </div>
             <div class="category-item" data-category="Tennis">
-                <i class="fas fa-table-tennis"></i> <span>Tennis</span>
+                <i class="fas fa-table-tennis"></i> <span class="category-label">Tennis</span>
             </div>
         </div>
     </div>
@@ -41,10 +35,6 @@
         <div class="welcome-message">
              <h1>Find Your Fitness Community</h1>
         </div>
-
-        <button id="menuToggle" class="menu-toggle-btn">
-            <i class="fas fa-bars"></i> Categories
-        </button>
         
         <div class="search-container">
             <div class="search-bar">
@@ -166,31 +156,18 @@
     });
 
     document.addEventListener('DOMContentLoaded', () => {
-    const menuToggle = document.getElementById('menuToggle');
-    const closeSidebar = document.getElementById('closeSidebar');
-    const sidebar = document.getElementById('categorySidebar');
-    const overlay = document.getElementById('sidebarOverlay');
+    // จัดการการคลิกเลือกหมวดหมู่
+        document.querySelectorAll('.category-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // 1. ย้ายไฮไลท์สีเขียว
+                document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
+                this.classList.add('active');
 
-    // ฟังก์ชันเปิด-ปิด
-    const toggleSidebar = () => {
-        sidebar.classList.toggle('open');
-        overlay.classList.toggle('active');
-    };
-
-    menuToggle.addEventListener('click', toggleSidebar);
-    closeSidebar.addEventListener('click', toggleSidebar);
-    overlay.addEventListener('click', toggleSidebar); // คลิกข้างนอกเพื่อปิด
-
-    // เมื่อเลือกหมวดหมู่ ให้ปิด Sidebar อัตโนมัติด้วย
-    document.querySelectorAll('.category-item').forEach(item => {
-        item.addEventListener('click', () => {
-            // โค้ด Filter เดิมของคุณ...
-            const cat = item.getAttribute('data-category');
-            fetchSearchResults(document.getElementById('searchInput').value, cat);
-            
-            // ปิด sidebar หลังเลือก
-            toggleSidebar();
-        });
+                // 2. กรองข้อมูล
+                const category = this.getAttribute('data-category');
+                const searchTerms = document.getElementById('searchInput').value;
+                fetchSearchResults(searchTerms, category);
+            });
         });
     });
 </script>
