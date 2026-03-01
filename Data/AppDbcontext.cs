@@ -8,7 +8,8 @@ namespace WEBAPP_FitMatch.Data
 {
     public DbSet<User> Users { get; set; }
     public DbSet<Post> Posts { get; set; }
-    public DbSet<PostUser> PostUsers { get; set; }
+    public DbSet<Member> Members {get;set;}
+    public DbSet<Comment> Comments {get;set;}
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
 }
