@@ -1,0 +1,132 @@
+@{
+    ViewData["Title"] = "Profile ";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Profile.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+}   
+
+<div class="container">
+		<!-- Sidebar -->
+		<nav class="sidebar">
+            <a href="/Profile" class="active">Profile</a>
+            <a href="/Dashboard">Dashboard</a>
+            <a href="/Profile/Missions">Missions</a>
+        </nav>
+
+		<!-- Main Content -->
+		<div class="content">
+            <div class="profile">
+                @* <div class="profile-header">
+                    <img src="@ViewData["UserProfilePic"]" alt="Profile Picture" class="profile-pic" />
+                    <div class="profile-info">
+                        <h1>@ViewData["UserName"]</h1>
+                        <p>@ViewData["UserEmail"]</p>
+                        <p>@ViewData["UserBio"]</p>
+                    </div> *@
+                    <h2>User Profile</h2>
+                </div>
+
+                <div class="upcoming-history-section">
+                    <h3>Upcoming Events</h3>
+                    <div id="upcomingEvent" class="upcoming-section"></div>
+                    <div id="historyEvent" class="history-section"></div>
+                </div>
+
+                <div class="dashboard-mission-section">
+                    <h3>Missions</h3>
+                    <div id="missions" class="mission-section"></div>
+                </div>
+		</div>
+	</div>
+
+<script>
+        document.addEventListener("DOMContentLoaded", function() {
+        loadUpcomingEvents();
+        loadHistoryEvents();
+        @* loadDashboard(); *@
+        loadMissions();
+    });
+
+    const upcomingEvents = [
+        // TODO EDIT API HERE
+            { id: 1, title: "Morning Run", date: "2026-03-01", time: "07:00 AM - 08:00 AM", location: "KMITL Track" },
+            { id: 2, title: "Gym Session", date: "2026-03-02", time: "06:00 PM - 07:30 PM", location: "FitMatch Center" }
+        ];
+
+    const historyEvents = [
+        // TODO EDIT API HERE
+            { id: 1, title: "Suanluang", date: "2026-03-01", time: "07:00 AM - 08:00 AM", location: "KMITL Track" },
+            { id: 2, title: "Basketbalz", date: "2026-03-02", time: "06:00 PM - 07:30 PM", location: "FitMatch Center" }
+        ];
+
+    const missions = [
+            { id: 1, title: "Morning Run", current_progress: 2, max_progress: 10},
+            { id: 2, title: "Gym Session", current_progress: 5, max_progress: 12}
+        ];
+
+    function formatDate(event) {
+        const card = `
+                    <div class="event-card">
+                        <div class="card-body">
+                            <h5 class="card-title">${event.title}</h5>
+                            <p class="card-text">
+                                <i class="bi bi-calendar"></i> ${event.date} ${event.time}<br/>
+                                <i class="bi bi-geo-alt"></i> ${event.location}
+                            </p>
+                            <button class="btn btn-primary btn-sm">View Details</button>
+                        </div>
+                    </div>
+                `;
+        return card;
+    }
+
+/// -------------------------------------UPCOMING EVENTS------------------------------------- ///
+    async function loadUpcomingEvents() {
+        const container = document.getElementById("upcomingEvent");
+        container.innerHTML = "";
+
+        upcomingEvents.forEach(event => {
+            card = formatDate(event);
+            container.innerHTML += card;
+        });
+    }
+    /// -------------------------------------UPCOMING EVENTS------------------------------------- ///
+    
+/// -------------------------------------HISTORY------------------------------------- ///
+    async function loadHistoryEvents() {
+        const container = document.getElementById("historyEvent");
+        container.innerHTML = "";
+
+        historyEvents.forEach(event => {
+            card = formatDate(event);
+            container.innerHTML += card;
+        });
+    }
+    /// -------------------------------------HISTORY------------------------------------- ///
+
+/// -------------------------------------DASHBOARD------------------------------------- ///
+    @* async function loadDashboard() {
+        } *@
+    /// -------------------------------------DASHBOARD------------------------------------- ///
+
+/// -------------------------------------MISSION------------------------------------- ///
+    async function loadMissions() {
+        const container = document.getElementById("missions");
+        container.innerHTML = "";
+
+        missions.forEach(mission => {
+            card = `
+                    <div class="mission-card">
+                        <div class="card-body">
+                            <h5 class="card-title">${mission.title}</h5>
+                            <p class="card-text">
+                                Progress: ${mission.current_progress} / ${mission.max_progress}
+                        </div>
+                    </div>`
+            container.innerHTML += card;
+        });
+    }
+    /// -------------------------------------MISSION------------------------------------- ///
+</script>
