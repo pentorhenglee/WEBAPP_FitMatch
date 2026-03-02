@@ -17,6 +17,14 @@ public class ProfileController : Controller
         return View();
     }
 
+    // [HttpPost("update-profile")]
+    // public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileDto model)
+    // {
+
+    //     return Ok();
+    // }
+
+
     public IActionResult Missions()
     {
         return View();
