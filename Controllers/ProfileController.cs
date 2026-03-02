@@ -10,20 +10,8 @@ public class ProfileController : Controller
     [SessionCheck]
     public IActionResult Index()
     {
-        ViewData["UserName"] = "Earthy"; // ส่งชื่อไป
-        ViewData["UserEmail"] = "suphasin@kmitl.ac.th"; // ส่ง Email ไป
-        ViewData["UserProfilePic"] = "~/images/profile.jpg"; // ส่ง URL รูปโปรไฟล์ไป
-        ViewData["UserBio"] = "I'm a passionate fitness enthusiast who loves to stay active and healthy."; // ส่ง Bio ไป
         return View();
     }
-
-    // [HttpPost("update-profile")]
-    // public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileDto model)
-    // {
-
-    //     return Ok();
-    // }
-
 
     public IActionResult Missions()
     {
