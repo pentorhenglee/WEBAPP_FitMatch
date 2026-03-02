@@ -231,11 +231,25 @@ namespace WEBAPP_FitMatch.Controllers
 
         [HttpGet]
         [Route("/api/all_post")]
-        public async Task<ActionResult> GetAllPost()
-        {
+        public async Task<ActionResult> GetAllPost(string? query, string? category)
+        {                 
             try
-            {
-                var posts = await _db.Posts
+            {               
+                var post_filter = _db.Posts.AsQueryable();
+                if (!string.IsNullOrEmpty(category))
+                {
+                    post_filter = post_filter.Where(p => p.SportType == category);
+                }
+                if (!string.IsNullOrEmpty(query))
+                {
+                    post_filter = post_filter.Where(p => 
+                        (p.Title != null && p.Title.Contains(query)) || 
+                        (p.Location != null && p.Location.Contains(query)) || 
+                        (p.Description != null && p.Description.Contains(query)));
+                }
+
+                var posts = await post_filter
+                    .OrderByDescending(p => p.EventDateTime)
                     .Select(p => new
                     {
                         p.PostId,
