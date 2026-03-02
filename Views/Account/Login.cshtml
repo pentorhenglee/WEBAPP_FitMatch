@@ -54,54 +54,52 @@
 
 <script>
         document.getElementById("loginForm").addEventListener("submit", async function (e) {
-        e.preventDefault();
-    
-        const errorDiv = document.getElementById("errorMessage");
-        const btnSubmit = document.getElementById("btnSubmit");
+            e.preventDefault();
+        
+            const errorDiv = document.getElementById("errorMessage");
+            const btnSubmit = document.getElementById("btnSubmit");
 
-        const originalContent = btnSubmit.innerHTML;
-        errorDiv.classList.add("d-none");
-        errorDiv.innerText = "";
+            const originalContent = btnSubmit.innerHTML;
+            errorDiv.classList.add("d-none");
+            errorDiv.innerText = "";
 
-        btnSubmit.disabled = true;
-        btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> LOADING...';
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> LOADING...';
 
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
 
-        try {
-            const res = await fetch("/api/auth/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ Email: email, Password: password }) // Key ต้องตรงกับ DTO ใน Backend
-            });
+            try {
+                const res = await fetch("/api/auth/login", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ Email: email, Password: password }) // Key ต้องตรงกับ DTO ใน Backend
+                });
 
-            if (res.ok) {
-                window.location.href = "/Home/Index";
-            } else {
-                btnSubmit.disabled = false;
-                btnSubmit.innerHTML = originalContent;
-                const contentType = res.headers.get("content-type");
-                if (contentType && contentType.indexOf("application/json") !== -1) {
-                    const errorData = await res.json();
-                    errorDiv.innerText = errorData.message || "Login failed.";
+                if (res.ok) {
+                    window.location.href = "/Home/Index";
                 } else {
-                    errorDiv.innerText = "Error 500: Server error.";
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = originalContent;
+                    const contentType = res.headers.get("content-type");
+                    if (contentType && contentType.indexOf("application/json") !== -1) {
+                        const errorData = await res.json();
+                        errorDiv.innerText = errorData.message || "Login failed.";
+                    } else {
+                        errorDiv.innerText = "Error 500: Server error.";
+                    }
+                    errorDiv.classList.remove("d-none");
+
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = originalBtnText;  
                 }
-                errorDiv.classList.remove("d-none");
-
+            } catch (err) {
                 btnSubmit.disabled = false;
-                btnSubmit.innerHTML = originalBtnText;  
+                btnSubmit.innerHTML = originalContent;  
+                errorDiv.innerText = "Network error: " + err.message;
+                errorDiv.classList.remove("d-none");
             }
-        } catch (err) {
-            btnSubmit.disabled = false;
-            btnSubmit.innerHTML = originalContent;  
-            errorDiv.innerText = "Network error: " + err.message;
-            errorDiv.classList.remove("d-none");
-        }
-    });
-
-    
+        });    
 
 const words = ["RUN", "CYCLE", "BASKETBALL", "SOCCER", "VOLLEYBALL"];
 let wordIndex = 0;

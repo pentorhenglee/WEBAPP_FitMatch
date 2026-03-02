@@ -11,13 +11,12 @@
     <div class="profile-card">
         <div class="profile-sidebar">
             <div class="avatar-wrapper">
-                <img src="@(ViewData["UserAvatar"] ?? "https://via.placeholder.com/180")" 
+                <img src="@(ViewData["UserAvatar"] ?? "https://scontent-bkk1-1.xx.fbcdn.net/v/t1.6435-1/131682447_906678186740615_1405287260129360996_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=110&ccb=1-7&_nc_sid=1d2534&_nc_ohc=eppxjz_V9C8Q7kNvwHpTDMe&_nc_oc=Admx1GLaea7f0zhJtPCXyXbnvjQfPPmEZe7VXNv8cv1rO7JKumLKnCKbHQO6cs836CU&_nc_zt=24&_nc_ht=scontent-bkk1-1.xx&_nc_gid=m2s5ylZ2zPqnifot4EukhA&_nc_ss=8&oh=00_Afx9DMJRaArEuWmYycbdCPzmSKjwbIaEMUrQoIiOtEPIRw&oe=69CD1D72")" 
                      id="displayUserAvatar" 
                      class="profile-image-large" 
                      alt="User Avatar"/>
-                <div class="status-indicator"></div>
             </div>
-            <button class="edit-profile-btn">
+            <button class="edit-profile-btn" id="edit-profile-btn">
                 <i class="fas fa-edit"></i> Edit Profile
             </button>
         </div>
@@ -40,12 +39,123 @@
                 </p>
             </div>
 
-            <div class="profile-stats">
+            @* <div class="profile-stats">
                 <div class="stat-item">
                     <span class="stat-value">FitMatch</span>
                     <span class="stat-label">Member</span>
                 </div>
+            </div> *@
+        </div>
+    </div>
+
+    <div id="editProfileModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Update Profile</h2>
+                <button id="closeModal" class="close-btn">&times;</button>
             </div>
+            
+            <form id="editProfileForm">
+                <div class="form-group" style="text-align: center;">
+                    <label>New Avatar Preview</label>
+                    <div class="avatar-wrapper" style="margin: 10px auto; width: 100px; height: 100px; border: 2px solid var(--accent);">
+                        <img id="urlPreview" src="@(ViewData["UserAvatar"] ?? "https://scontent-bkk1-1.xx.fbcdn.net/v/t1.6435-1/131682447_906678186740615_1405287260129360996_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=110&ccb=1-7&_nc_sid=1d2534&_nc_ohc=eppxjz_V9C8Q7kNvwHpTDMe&_nc_oc=Admx1GLaea7f0zhJtPCXyXbnvjQfPPmEZe7VXNv8cv1rO7JKumLKnCKbHQO6cs836CU&_nc_zt=24&_nc_ht=scontent-bkk1-1.xx&_nc_gid=m2s5ylZ2zPqnifot4EukhA&_nc_ss=8&oh=00_Afx9DMJRaArEuWmYycbdCPzmSKjwbIaEMUrQoIiOtEPIRw&oe=69CD1D72")" alt="Avatar Preview"
+                             style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Profile Image URL</label>
+                    <input type="text" id="editAvatarUrl" placeholder="Paste image link (e.g., https://...)" value="@ViewData["UserAvatar"]" />
+                </div>
+
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="editUsername" value="@ViewData["UserName"]" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Bio</label>
+                    <textarea id="editBio" rows="4">@ViewData["UserBio"]</textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="cancelBtn" class="secondary-btn">Cancel</button>
+                    <button type="submit" class="save-btn" id="saveBtn">Save Changes</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
+<script>
+    const modal = document.getElementById('editProfileModal');
+    const editBtn = document.getElementById('edit-profile-btn');
+    const closeBtn = document.getElementById('closeModal');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const editForm = document.getElementById('editProfileForm');
+    
+    // Preview Elements
+    const urlInput = document.getElementById('editAvatarUrl');
+    const previewImg = document.getElementById('urlPreview');
+
+    // Live URL Preview Logic
+    urlInput.addEventListener('input', () => {
+        const url = urlInput.value.trim();
+        // Update preview image source immediately
+        previewImg.src = url || "https://via.placeholder.com/100";
+    });
+
+    // Handle broken image URLs
+    previewImg.onerror = () => {
+        previewImg.src = "https://via.placeholder.com/100?text=Invalid+URL";
+    };
+
+    // Modal Control
+    const openModal = () => { modal.style.display = 'flex'; };
+    const closeModal = () => { modal.style.display = 'none'; };
+
+    editBtn.addEventListener('click', openModal);
+    closeBtn.addEventListener('click', closeModal);
+    cancelBtn.addEventListener('click', closeModal);
+
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+    });
+
+    // Form Submission
+    editForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const submitBtn = document.getElementById('saveBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Saving...";
+
+        const updatedData = {
+            Username: document.getElementById('editUsername').value.trim(),
+            Bio: document.getElementById('editBio').value.trim(),
+            UserProfile: urlInput.value.trim() // Sending the URL as a string
+        };
+
+        try {
+            const response = await fetch('/api/user/update-profile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedData)
+            });
+
+            if (response.ok) {
+                location.reload(); 
+            } else {
+                const errorText = await response.text();
+                alert("Update failed: " + errorText);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("A network error occurred.");
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Save Changes";
+        }
+    });
+</script>
