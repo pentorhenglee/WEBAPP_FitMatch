@@ -14,5 +14,7 @@ namespace WEBAPP_FitMatch.Data
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
 
     public DbSet<Mission> Missions { get; set; } 
+
+    public DbSet<History> Histories {get;set;}
 }
 }

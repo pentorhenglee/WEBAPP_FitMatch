@@ -23,7 +23,7 @@ namespace WEBAPP_FitMatch.Controllers
         {
             var user_id = HttpContext.Session.GetInt32("user_id");
             if (user_id == null)
-                return Unauthorized("User no logged in");
+                return Unauthorized("User not logged in");
 
             var post = await _db.Posts.FirstOrDefaultAsync(p=>p.PostId == postid);
             if (post == null)
@@ -44,6 +44,15 @@ namespace WEBAPP_FitMatch.Controllers
             };
             _db.Members.Add(member);
             await _db.SaveChangesAsync();
+
+            var histories = new History
+            {
+                UserId = user_id.Value,
+                PostId = post.PostId,
+                ActionType = $"Join Post {post.Title}"
+            };
+            _db.Histories.Add(histories);
+            await _db.SaveChangesAsync();
             return Ok(member);
         }
 
@@ -53,12 +62,24 @@ namespace WEBAPP_FitMatch.Controllers
             var user_id = HttpContext.Session.GetInt32("user_id");
             if (user_id == null) return Unauthorized("User not logged in");
 
+            var post = await _db.Posts.FirstOrDefaultAsync(p=>p.PostId == id);
+            if (post == null)
+                return NotFound("Post not found");
             var member = await _db.Members.FirstOrDefaultAsync(m=>m.PostId ==id && m.UserId == user_id.Value);
             if (member == null) return NotFound("You are not member in this post");
 
             if (member.Status == "owner") return BadRequest("Owner can not leave the post");
 
             _db.Members.Remove(member);
+            await _db.SaveChangesAsync();
+
+            var histories = new History
+            {
+                UserId = user_id.Value,
+                PostId = post.PostId,
+                ActionType = $"Leave Post {post.Title}"
+            };
+            _db.Histories.Add(histories);
             await _db.SaveChangesAsync();
 
             return Ok(new { message = "Leave post successful" });
