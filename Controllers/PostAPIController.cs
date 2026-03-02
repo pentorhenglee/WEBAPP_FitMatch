@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Xml;
 using System.Security.Cryptography.X509Certificates;
 using System.ComponentModel;
+using Microsoft.Extensions.FileProviders;
 
 namespace WEBAPP_FitMatch.Controllers
 {
@@ -38,51 +39,53 @@ namespace WEBAPP_FitMatch.Controllers
             if (user_id == null)
                 return Unauthorized("User not logged in");
 
-            
 
-                var posts = await _db.Posts
-                    .Where(p => p.UserId == user_id.Value)
-                    .Select(p => new 
-                    {
-                        p.PostId,
-                        p.UserId,
-                        
-                        Owner = _db.Users.Where(u => u.Id == p.UserId).Select(u => u.Username).FirstOrDefault(),
-                        p.Title,
-                        p.Location,
-                        p.EventDateTime,
-                        p.Description,
-                        p.SportType,
-                        p.CreateDate,
-                        p.MaxPeople,
-                        p.ImageUrl,
-                        p.Status,
-                        
-                        
-                        Members = p.Members.Join(_db.Users, 
-                            m => m.UserId, 
-                            u => u.Id, 
-                            (m, u) => new {
-                                m.UserId,
-                                name = u.Username,
-                                Join = m.JoinedAt,
-                                status = m.Status
-                            }).ToList(),
 
-                        
-                        Comments = p.Comments.Join(_db.Users,
-                            c => c.UserId,
-                            u => u.Id,
-                            (c, u) => new {
-                                c.CommentId,
-                                c.UserId,
-                                username = u.Username,
-                                profileUrl = u.ProfileUrl,
-                                Comment_date = c.CreatedAt,
-                                c.Text
-                            }).ToList()
-                    })
-                    .ToArrayAsync();
+            var posts = await _db.Posts
+                .Where(p => p.UserId == user_id.Value)
+                .Select(p => new
+                {
+                    p.PostId,
+                    p.UserId,
+
+                    Owner = _db.Users.Where(u => u.Id == p.UserId).Select(u => u.Username).FirstOrDefault(),
+                    p.Title,
+                    p.Location,
+                    p.EventDateTime,
+                    p.Description,
+                    p.SportType,
+                    p.CreateDate,
+                    p.MaxPeople,
+                    p.ImageUrl,
+                    p.Status,
+
+
+                    Members = p.Members.Join(_db.Users,
+                        m => m.UserId,
+                        u => u.Id,
+                        (m, u) => new
+                        {
+                            m.UserId,
+                            name = u.Username,
+                            Join = m.JoinedAt,
+                            status = m.Status
+                        }).ToList(),
+
+
+                    Comments = p.Comments.Join(_db.Users,
+                        c => c.UserId,
+                        u => u.Id,
+                        (c, u) => new
+                        {
+                            c.CommentId,
+                            c.UserId,
+                            username = u.Username,
+                            profileUrl = u.ProfileUrl,
+                            Comment_date = c.CreatedAt,
+                            c.Text
+                        }).ToList()
+                })
+                .ToArrayAsync();
 
             return Ok(posts);
         }
@@ -96,11 +99,11 @@ namespace WEBAPP_FitMatch.Controllers
 
             var post = new Post
             {
-                
-                
+
+
                 Title = dto.Title,
                 CreateDate = DateTime.UtcNow,
-                EventDateTime = DateTime.SpecifyKind(dto.EventDateTime,DateTimeKind.Utc),
+                EventDateTime = DateTime.SpecifyKind(dto.EventDateTime, DateTimeKind.Utc),
                 Description = dto.Description ?? "",
                 SportType = dto.SportType ?? "",
                 MaxPeople = dto.MaxPeople,
@@ -110,7 +113,7 @@ namespace WEBAPP_FitMatch.Controllers
                 Status = "open"
             };
 
-            
+
 
             _db.Posts.Add(post);
             await _db.SaveChangesAsync();
@@ -138,24 +141,25 @@ namespace WEBAPP_FitMatch.Controllers
                 return Unauthorized("User not logged in");
 
             var post = await _db.Posts.FirstOrDefaultAsync(p => p.PostId == postid);
-            
+
             if (post == null)
                 return NotFound("Post not found");
 
             if (post.UserId != user_id.Value)
                 return Forbid("You are not the owner of this post");
 
-            
+
             post.Status = "close";
 
             try
             {
                 await _db.SaveChangesAsync();
-                
-                return Ok(new { 
-                    message = "Close Post successfully", 
-                    postId = post.PostId, 
-                    status = post.Status 
+
+                return Ok(new
+                {
+                    message = "Close Post successfully",
+                    postId = post.PostId,
+                    status = post.Status
                 });
             }
             catch (Exception ex)
@@ -173,24 +177,25 @@ namespace WEBAPP_FitMatch.Controllers
                 return Unauthorized("User not logged in");
 
             var post = await _db.Posts.FirstOrDefaultAsync(p => p.PostId == postid);
-            
+
             if (post == null)
                 return NotFound("Post not found");
 
             if (post.UserId != user_id.Value)
                 return Forbid("You are not the owner of this post");
 
-            
+
             post.Status = "open";
 
             try
             {
                 await _db.SaveChangesAsync();
-                
-                return Ok(new { 
-                    message = "Open Post successfully", 
-                    postId = post.PostId, 
-                    status = post.Status 
+
+                return Ok(new
+                {
+                    message = "Open Post successfully",
+                    postId = post.PostId,
+                    status = post.Status
                 });
             }
             catch (Exception ex)
@@ -200,17 +205,17 @@ namespace WEBAPP_FitMatch.Controllers
         }
 
         [HttpGet]
-        [Route("/api/all_post")] 
+        [Route("/api/all_post")]
         public async Task<ActionResult> GetAllPost()
         {
-            try 
+            try
             {
                 var posts = await _db.Posts
-                    .Select(p => new 
+                    .Select(p => new
                     {
                         p.PostId,
                         p.UserId,
-                        
+
                         Owner = _db.Users.Where(u => u.Id == p.UserId).Select(u => u.Username).FirstOrDefault(),
                         p.Title,
                         p.Location,
@@ -221,27 +226,29 @@ namespace WEBAPP_FitMatch.Controllers
                         p.MaxPeople,
                         p.ImageUrl,
                         p.Status,
-                        
-                        
-                        Members = p.Members.Join(_db.Users, 
-                            m => m.UserId, 
-                            u => u.Id, 
-                            (m, u) => new {
+
+
+                        Members = p.Members.Join(_db.Users,
+                            m => m.UserId,
+                            u => u.Id,
+                            (m, u) => new
+                            {
                                 m.UserId,
                                 name = u.Username,
                                 Status = m.Status
                             }).ToList(),
 
-                        
+
                         Comments = p.Comments.Join(_db.Users,
                             c => c.UserId,
                             u => u.Id,
-                            (c, u) => new {
+                            (c, u) => new
+                            {
                                 c.CommentId,
                                 c.UserId,
                                 username = u.Username,
                                 profileUrl = u.ProfileUrl,
-                                Comment_date = c.CreatedAt, 
+                                Comment_date = c.CreatedAt,
                                 c.Text
                             }).ToList()
                     })
@@ -251,7 +258,7 @@ namespace WEBAPP_FitMatch.Controllers
             }
             catch (Exception ex)
             {
-                
+
                 return BadRequest(ex.Message);
             }
         }
@@ -312,6 +319,28 @@ namespace WEBAPP_FitMatch.Controllers
                 return NotFound("Post not found");
 
             return Ok(post);
+        }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var user_id = HttpContext.Session.GetInt32("user_id");
+            if (user_id == null)
+                return Unauthorized("User not logged in");
+
+            var post = await _db.Posts
+                .FirstOrDefaultAsync(p => p.PostId == id);
+
+            if (post == null)
+                return NotFound();
+
+            if (post.UserId != user_id.Value)
+                return Forbid();
+
+            _db.Posts.Remove(post);
+            await _db.SaveChangesAsync();
+
+            return Ok(new { message = "Delete successful" });
         }
 
     }
