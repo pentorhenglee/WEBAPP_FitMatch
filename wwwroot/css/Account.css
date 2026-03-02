@@ -176,3 +176,11 @@ input:-webkit-autofill:active {
     margin-bottom: 15px;
     border: 1px solid #ff4d4d;
 }
+
+.input-group.mismatch {
+    border: 1px solid #ff4d4d !important;
+}
+
+.input-group.match {
+    border: 1px solid var(--accent) !important;
+}
