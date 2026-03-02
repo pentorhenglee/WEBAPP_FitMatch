@@ -86,20 +86,17 @@
     }
 
     async function fetchSearchResults(query = null, category = null) {
-        // ถ้า query เป็น null (เกิดจากการโหลดหน้าแรก) ให้ดึงค่าว่างเพื่อดึงทั้งหมด
-        // ถ้าไม่ใช่ null ให้เช็กว่ามีข้อความไหม
         const searchTerm = (query === null) ? "" : query.trim();
-
+        const categoryTerm = (category === null) ? "" : category.trim();
+    
         try {
-            // const url = searchTerm
-            //     ? `/Home/search?query=${encodeURIComponent(searchTerm)}`
-            //     : '/Home/search?query=';
-            const url = `/api/all_post`;
+            const url = `/api/all_post?query=${encodeURIComponent(searchTerm)}&category=${encodeURIComponent(categoryTerm)}`;
 
             const response = await fetch(url);
             if (!response.ok) throw new Error('Network response was not ok');
             
             const results = await response.json();
+
             renderPosts(results);
 
         } catch (error) {
