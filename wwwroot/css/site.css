@@ -11,10 +11,6 @@
   --navbar-h:    70px;
 }
 
-.logout {
-    color: rgba(180, 28, 28, 0.534);
-}
-
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
