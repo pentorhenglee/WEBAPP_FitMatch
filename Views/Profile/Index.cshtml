@@ -1,20 +1,51 @@
 @{
-    ViewData["Title"] = "Profile ";
+    ViewData["Title"] = "My Profile";
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/Profile.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-}   
+    <link rel="stylesheet" href="~/css/Profile.css" asp-append-version="true"/>
+}
 
-<div class="container">
-    <div class="content">
-        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" id="displayUserAvatar" class="user-avatar" alt="Avatar"/>
-        <div class="profile-info">
-            <h1>@ViewData["UserName"]</h1>
-            <p>@ViewData["UserEmail"]</p>
-            <p>@ViewData["UserBio"]</p>
+<div class="profile-page-container">
+    <div class="profile-card">
+        <div class="profile-sidebar">
+            <div class="avatar-wrapper">
+                <img src="@(ViewData["UserAvatar"] ?? "https://via.placeholder.com/180")" 
+                     id="displayUserAvatar" 
+                     class="profile-image-large" 
+                     alt="User Avatar"/>
+                <div class="status-indicator"></div>
+            </div>
+            <button class="edit-profile-btn">
+                <i class="fas fa-edit"></i> Edit Profile
+            </button>
         </div>
-        <button class="edit-profile-btn">Edit Profile</button>
+
+        <div class="profile-main-info">
+            <div class="info-group">
+                <span class="label">Display Name</span>
+                <h1>@ViewData["UserName"]</h1>
+            </div>
+
+            <div class="info-group">
+                <span class="label">Email Address</span>
+                <p class="user-email-text">@ViewData["UserEmail"]</p>
+            </div>
+
+            <div class="info-group">
+                <span class="label">Bio</span>
+                <p class="user-bio-text">
+                    @(ViewData["UserBio"] ?? "Fitness enthusiast. No bio written yet.")
+                </p>
+            </div>
+
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <span class="stat-value">FitMatch</span>
+                    <span class="stat-label">Member</span>
+                </div>
+            </div>
+        </div>
     </div>
-	</div>
+</div>
