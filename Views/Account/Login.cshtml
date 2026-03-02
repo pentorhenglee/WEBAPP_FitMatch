@@ -1,44 +1,73 @@
+@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Account.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+}  
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Account.css" asp-append-version="true" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+</head>
+<body>
 <div class="container">
-    <div>
-        <h2 class="card">Sign In</h2>
-        <div id="errorMessage" role="alert"></div>
+        <div class="hero-section">
+            <p class="tagline">ITS TIME TO</p>
+            <div id="dynamic-logo" class="run-logo"></div>
+        </div>
 
-        <form id="loginForm">
-            <div>
-                <label>Email</label>
-                <input type="email" id="email" placeholder="your@email.com" required />
+        <div class="form-section">
+            <div class="login-card">
+                <h2>Welcome back!</h2>
+                <label for="loginLabel">Login</label>
+                <div id="errorMessage" role="alert" class="error d-none"></div>
+                <form id="loginForm">
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="email" id="email" placeholder="your@email.com" required />
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-circle-user"></i>
+                        <input type="password" id="password" placeholder="Enter your password" required />
+                    </div>
+                    <button type="submit" id="btnSubmit" class="login-btn">
+                        <span id="spinner"></span>LOGIN
+                    </button>
+                </form>
+                
+                <p class="login-text"> Don't have an account? <a href="/Account/Register">Sign up!</a></p>
             </div>
-
-            <div>
-                <label>Password</label>
-                <input type="password" id="password" placeholder="Enter your password" required />
-            </div>
-
-            <button type="submit" id="btnSubmit">
-                <span id="spinner"></span> Sign In
-            </button>
-        </form>
-
-        <p>
-            Don't have an account? <a asp-action="Register">Create one here</a>
-        </p>
+        </div>
     </div>
-</div>
 
 <script>
-    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+        document.getElementById("loginForm").addEventListener("submit", async function (e) {
         e.preventDefault();
-        
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
+    
         const errorDiv = document.getElementById("errorMessage");
         const btnSubmit = document.getElementById("btnSubmit");
-        const spinner = document.getElementById("spinner");
 
-        // ล้างสถานะเดิม
+        const originalContent = btnSubmit.innerHTML;
         errorDiv.classList.add("d-none");
+        errorDiv.innerText = "";
+
         btnSubmit.disabled = true;
-        spinner.classList.remove("d-none");
+        btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> LOADING...';
+
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
 
         try {
             const res = await fetch("/api/auth/login", {
@@ -50,25 +79,75 @@
             if (res.ok) {
                 window.location.href = "/Home/Index";
             } else {
-                // เปลี่ยนมาเช็คก่อนว่าข้อมูลที่ส่งมาเป็น JSON หรือไม่
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = originalContent;
                 const contentType = res.headers.get("content-type");
                 if (contentType && contentType.indexOf("application/json") !== -1) {
                     const errorData = await res.json();
                     errorDiv.innerText = errorData.message || "Login failed.";
                 } else {
-                    // ถ้าไม่ใช่ JSON (แปลว่า Backend พังหนัก) ให้แสดงข้อความนี้
-                    const errorText = await res.text();
-                    console.error("Server Error:", errorText);
-                    errorDiv.innerText = "ระบบเซิร์ฟเวอร์มีปัญหา (Error 500) กรุณาตรวจสอบ Terminal";
+                    errorDiv.innerText = "Error 500: Server error.";
                 }
                 errorDiv.classList.remove("d-none");
+
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = originalBtnText;  
             }
         } catch (err) {
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = originalContent;  
             errorDiv.innerText = "Network error: " + err.message;
             errorDiv.classList.remove("d-none");
-        } finally {
-            btnSubmit.disabled = false;
-            spinner.classList.add("d-none");
         }
     });
+
+    
+
+const words = ["RUN", "CYCLE", "BASKETBALL", "SOCCER", "VOLLEYBALL"];
+let wordIndex = 0;
+const logoContainer = document.getElementById('dynamic-logo');
+
+async function smoothChangeWord() {
+    // 1. Fade out current letters
+    const currentCols = logoContainer.querySelectorAll('.column');
+    currentCols.forEach(col => {
+        col.style.opacity = '0';
+        col.style.transform = 'translateY(-10px)';
+    });
+
+    // 2. Short pause for fade out to complete
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // 3. Clear and Build new word
+    logoContainer.innerHTML = '';
+    const currentWord = words[wordIndex];
+
+    [...currentWord].forEach((char, index) => {
+        const column = document.createElement('div');
+        column.className = 'column';
+        
+        for (let i = 0; i < 4; i++) {
+            const span = document.createElement('span');
+            span.textContent = char;
+            column.appendChild(span);
+        }
+        logoContainer.appendChild(column);
+
+        // 4. Staggered Entrance (the "Smooth" part)
+        setTimeout(() => {
+            column.classList.add('active');
+        }, index * 100); // 100ms delay between each letter
+    });
+
+    wordIndex = (wordIndex + 1) % words.length;
+}
+
+// Initial Run
+smoothChangeWord();
+
+// Interval (set slightly longer to account for animation time)
+setInterval(smoothChangeWord, 3000);
+
 </script>
+</body>
+</html>

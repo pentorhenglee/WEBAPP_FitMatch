@@ -1,0 +1,166 @@
+/* Centering the entire view */
+.profile-page-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - var(--navbar-h));
+    padding: 40px 20px;
+}
+
+/* Glassmorphism Card */
+.profile-card {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    max-width: 850px;
+    background: rgba(255, 255, 255, 0.03); /* Subtle white tint */
+    backdrop-filter: blur(15px); /* Frost effect */
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* Sidebar Styling (Image & Button) */
+.profile-sidebar {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 50px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.avatar-wrapper {
+    position: relative;
+    padding: 5px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+}
+
+.profile-image-large {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+}
+
+.status-indicator {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    width: 18px;
+    height: 18px;
+    background-color: var(--accent);
+    border: 3px solid #131313;
+    border-radius: 50%;
+}
+
+/* Info Section Styling */
+.profile-main-info {
+    flex: 1;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    font-weight: 700;
+}
+
+.profile-main-info h1 {
+    font-size: 2.2rem;
+    margin: 0;
+    color: var(--text);
+}
+
+.user-email-text {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+}
+
+.user-bio-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    max-width: 400px;
+}
+
+/* Button Styling */
+.edit-profile-btn {
+    width: 100%;
+    padding: 12px 20px;
+    background-color: var(--accent);
+    color: #000;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.edit-profile-btn:hover {
+    background-color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(46, 204, 113, 0.2);
+}
+
+/* Stats Footer */
+.profile-stats {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--text);
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .profile-card {
+        flex-direction: column;
+        margin: 20px;
+    }
+    
+    .profile-sidebar {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 30px;
+    }
+
+    .profile-main-info {
+        padding: 30px;
+        text-align: center;
+    }
+
+    .info-group {
+        align-items: center;
+    }
+
+    .edit-profile-btn {
+        max-width: 200px;
+    }
+}

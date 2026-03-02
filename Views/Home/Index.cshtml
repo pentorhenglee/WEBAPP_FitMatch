@@ -11,22 +11,22 @@
     <div id="categorySidebar" class="category-sidebar">
         <div class="category-items-wrapper">
             <div class="category-item active" data-category="">
-                <i class="fas fa-infinity"></i> <span class="category-label">All Sports</span>
+                <i class="fas fa-infinity"></i> <span class="category-label">ALL SPORTS</span>
             </div>
             <div class="category-item" data-category="Running">
-                <i class="fas fa-running"></i> <span class="category-label">Running</span>
+                <i class="fas fa-running"></i> <span class="category-label">RUNNING</span>
             </div>
             <div class="category-item" data-category="Cycling">
-                <i class="fas fa-bicycle"></i> <span class="category-label">Cycling</span>
+                <i class="fas fa-bicycle"></i> <span class="category-label">CYCLING</span>
             </div>
             <div class="category-item" data-category="Basketball">
-                <i class="fas fa-basketball-ball"></i> <span class="category-label">Basketball</span>
+                <i class="fas fa-basketball-ball"></i> <span class="category-label">BASKETBALL</span>
             </div>
             <div class="category-item" data-category="Football">
-                <i class="fas fa-futbol"></i> <span class="category-label">Football</span>
+                <i class="fas fa-futbol"></i> <span class="category-label">SOCCER</span>
             </div>
-            <div class="category-item" data-category="Tennis">
-                <i class="fas fa-table-tennis"></i> <span class="category-label">Tennis</span>
+            <div class="category-item" data-category="Volleyball">
+                <i class="fas fa-volleyball-ball"></i> <span class="category-label">VOLLEYBALL</span>
             </div>
         </div>
     </div>
@@ -53,7 +53,7 @@
 
 
 <script>
-    async function renderPosts(posts) {
+    async function renderPosts(posts, query = null, catagory = null) {
         const postsDisplay = document.getElementById('postsDisplay');
         postsDisplay.innerHTML = '';
 
@@ -67,7 +67,7 @@
             card.className = 'post-card';
 
             card.onclick = () => {
-                window.location.href = `/Post/Detail/${post.postId}`;
+                window.location.href = `/Post/Detail?id=${post.postId}`;
             };
 
             card.innerHTML = `
@@ -100,7 +100,7 @@
             if (!response.ok) throw new Error('Network response was not ok');
             
             const results = await response.json();
-            renderPosts(results);
+            renderPosts(results, query, category);
 
         } catch (error) {
             console.error('Error:', error);
@@ -169,5 +169,12 @@
                 fetchSearchResults(searchTerms, category);
             });
         });
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("addpostButton")
+            .addEventListener("click", function () {
+                window.location.href = "/Post/Create";
+            });
     });
 </script>
