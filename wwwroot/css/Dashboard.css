@@ -8,7 +8,8 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 20px;
-    height: calc(100vh - 150px); 
+    /* 🌟 ล็อกความสูงสูงสุดไว้ที่หน้าจอ เพื่อให้ Scrollbar ทำงาน */
+    height: calc(90vh - 80px); 
 }
 
 /* ============================================================
@@ -18,7 +19,7 @@
     width: 450px; 
     background-color: var(--surface); 
     border-radius: 12px;
-    padding: 20px;
+    padding: 30px;
     display: flex;
     flex-direction: column;
     overflow: hidden; /* 🌟 กันเนื้อหาล้น */
@@ -43,7 +44,7 @@
 .dash-header h2 {
     font-size: 1.8rem;
     font-weight: bold;
-    color: var(--text);
+    color: #ffffff; /* 🌟 ปรับเป็นสีขาวสว่าง */
 }
 
 .tabs {
@@ -55,7 +56,7 @@
 
 .tab-btn {
     background-color: transparent;
-    color: var(--text-muted);
+    color: var(--text-muted); /* สีเทาสำหรับแท็บที่ไม่ได้เลือก */
     border: 1px solid var(--border);
     padding: 8px 20px;
     border-radius: 20px;
@@ -67,7 +68,7 @@
 
 .tab-btn.active {
     background-color: #555555;
-    color: var(--text);
+    color: #ffffff; /* 🌟 ปรับเป็นสีขาวสว่างเมื่อถูกเลือก */
     border-color: #555555;
 }
 
@@ -116,16 +117,16 @@
 .event-info h4 {
     font-size: 0.95rem;
     margin-bottom: 5px;
-    color: var(--text);
+    color: #ffffff; /* 🌟 ชื่อโพสต์เป็นสีขาว */
 }
 .event-time {
     font-size: 0.75rem;
-    color: var(--text-muted);
+    color: #aaaaaa; /* เวลาเป็นสีเทา */
     margin-bottom: 5px;
 }
 .event-desc {
     font-size: 0.7rem;
-    color: #888;
+    color: #888888; /* คำอธิบายเป็นสีเทา */
     line-height: 1.2;
 }
 
@@ -140,7 +141,7 @@
 .stats-grid {
     display: grid;
     grid-template-columns: 1fr 1fr; 
-    grid-template-rows: 1fr 1fr;    
+    grid-template-rows: 250px 1fr;    
     gap: 20px;
     flex-grow: 1; 
     height: 100%;
@@ -149,21 +150,21 @@
 .stat-card {
     background-color: var(--surface);
     border-radius: 12px;
-    padding: 20px;
-    color: white;
+    padding: 30px;
+    color: #ffffff; /* 🌟 ตัวหนังสือพื้นฐานในกล่องเป็นสีขาว */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     display: flex;         
     flex-direction: column; 
-    overflow: hidden; 
+    overflow: hidden;
 }
 
 .stat-card h3 {
     margin-top: 0;
     font-size: 1rem;
-    color: #ddd;
+    color: #ffffff; /* 🌟 หัวข้อกล่องสถิติเป็นสีขาว */
     margin-bottom: 15px;
     font-weight: 500;
-    flex-shrink: 0; /* 🌟 ห้ามหด */
+    flex-shrink: 0; 
 }
 
 /* Progress Bar */
@@ -174,36 +175,38 @@
     width: 100%;
     overflow: hidden;
     margin-top: 10px;
-    flex-shrink: 0; /* 🌟 ห้ามหด */
+    flex-shrink: 0; 
 }
 
 .progress-fill {
-    background-color: var(--accent); /* 🌟 ดึงสีจากตัวแปรของคุณเลย */
+    background-color: var(--accent); 
     height: 100%;
     transition: width 0.5s ease-in-out;
 }
 
 /* Typography for Stats */
 .stat-main-val {
+    margin-top: 25px;
     font-size: 3rem;
     font-weight: bold;
     text-align: center;
+    color: #ffffff; /* 🌟 ตัวเลขหลักเป็นสีขาว */
 }
 
 .stat-sub-val {
     text-align: right;
     font-size: 0.8rem;
-    color: #aaa;
+    color: #aaaaaa; /* 🌟 ตัวเลขเป้าหมาย (รอง) เป็นสีเทา */
 }
 
 .stat-header-flex {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-shrink: 0; /* 🌟 ห้ามหด */
+    flex-shrink: 0; 
 }
 
-/* 🌟 ล็อกพื้นที่และใส่ Scrollbar ให้ Mission กับ Partners */
+/* ล็อกพื้นที่และใส่ Scrollbar ให้ Mission กับ Partners */
 #partnersContainer, #missionsContainer {
     flex-grow: 1;
     overflow-y: auto;
@@ -219,8 +222,10 @@
     align-items: center;
     margin-bottom: 12px;
     background-color: #444;
-    padding: 10px;
+    padding: 25px;
     border-radius: 8px;
+    color: #ffffff;
+    font-size: 0.9rem;
 }
 
 .partner-item:last-child {
@@ -228,8 +233,8 @@
 }
 
 .partner-item img {
-    width: 35px;
-    height: 35px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     margin-right: 15px;
     object-fit: cover;
@@ -243,6 +248,7 @@
     border-radius: 8px;
     margin-bottom: 8px;
     font-size: 0.9rem;
+    color: #ffffff; /* 🌟 รายการ Mission เป็นสีขาว */
 }
 
 .mission-item input[type="checkbox"] {
@@ -254,7 +260,7 @@
 
 .loading-text {
     text-align: center;
-    color: #888;
+    color: #888888; /* 🌟 Loading (รอง) เป็นสีเทา */
     font-size: 0.8rem;
     padding: 20px 0;
 }
