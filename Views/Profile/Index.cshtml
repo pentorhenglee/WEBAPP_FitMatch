@@ -11,8 +11,7 @@
     <div class="profile-card">
         <div class="profile-sidebar">
             <div class="avatar-wrapper">
-                <img src="@(ViewData["UserAvatar"] ?? "https://scontent-bkk1-1.xx.fbcdn.net/v/t1.6435-1/131682447_906678186740615_1405287260129360996_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=110&ccb=1-7&_nc_sid=1d2534&_nc_ohc=eppxjz_V9C8Q7kNvwHpTDMe&_nc_oc=Admx1GLaea7f0zhJtPCXyXbnvjQfPPmEZe7VXNv8cv1rO7JKumLKnCKbHQO6cs836CU&_nc_zt=24&_nc_ht=scontent-bkk1-1.xx&_nc_gid=m2s5ylZ2zPqnifot4EukhA&_nc_ss=8&oh=00_Afx9DMJRaArEuWmYycbdCPzmSKjwbIaEMUrQoIiOtEPIRw&oe=69CD1D72")" 
-                     id="displayUserAvatar" 
+                <img id="displayUserAvatar" 
                      class="profile-image-large" 
                      alt="User Avatar"/>
             </div>
@@ -24,18 +23,18 @@
         <div class="profile-main-info">
             <div class="info-group">
                 <span class="label">Display Name</span>
-                <h1>@ViewData["UserName"]</h1>
+                <h1></h1>
             </div>
 
             <div class="info-group">
                 <span class="label">Email Address</span>
-                <p class="user-email-text">@ViewData["UserEmail"]</p>
+                <p class="user-email-text"></p>
             </div>
 
             <div class="info-group">
                 <span class="label">Bio</span>
                 <p class="user-bio-text">
-                    @(ViewData["UserBio"] ?? "Fitness enthusiast. No bio written yet.")
+                    "Fitness enthusiast. No bio written yet."
                 </p>
             </div>
 
@@ -59,24 +58,25 @@
                 <div class="form-group" style="text-align: center;">
                     <label>New Avatar Preview</label>
                     <div class="avatar-wrapper" style="margin: 10px auto; width: 100px; height: 100px; border: 2px solid var(--accent);">
-                        <img id="urlPreview" src="@(ViewData["UserAvatar"] ?? "https://scontent-bkk1-1.xx.fbcdn.net/v/t1.6435-1/131682447_906678186740615_1405287260129360996_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=110&ccb=1-7&_nc_sid=1d2534&_nc_ohc=eppxjz_V9C8Q7kNvwHpTDMe&_nc_oc=Admx1GLaea7f0zhJtPCXyXbnvjQfPPmEZe7VXNv8cv1rO7JKumLKnCKbHQO6cs836CU&_nc_zt=24&_nc_ht=scontent-bkk1-1.xx&_nc_gid=m2s5ylZ2zPqnifot4EukhA&_nc_ss=8&oh=00_Afx9DMJRaArEuWmYycbdCPzmSKjwbIaEMUrQoIiOtEPIRw&oe=69CD1D72")" alt="Avatar Preview"
+                        <img id="urlPreview"
+                             src="https://via.placeholder.com/100?text=No+Image"
                              style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" />
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Profile Image URL</label>
-                    <input type="text" id="editAvatarUrl" placeholder="Paste image link (e.g., https://...)" value="@ViewData["UserAvatar"]" />
+                    <input type="text" id="editAvatarUrl" placeholder="Paste image link..." value=""/>
                 </div>
 
                 <div class="form-group">
                     <label>Username</label>
-                    <input type="text" id="editUsername" value="@ViewData["UserName"]" required />
+                    <input type="text" id="editUsername" value="" required/>
                 </div>
 
                 <div class="form-group">
                     <label>Bio</label>
-                    <textarea id="editBio" rows="4">@ViewData["UserBio"]</textarea>
+                    <textarea id="editBio" rows="4"></textarea>
                 </div>
 
                 <div class="modal-actions">
@@ -89,6 +89,42 @@
 </div>
 
 <script>
+    async function fetchUserProfile() {
+            try {
+                const res = await fetch("/api/profileapi", { credentials: 'same-origin' });
+
+                if (res.ok) {
+                    const user = await res.json();
+                    console.log('Fetched user object:', user); // debug output
+
+                    document.querySelector('.info-group h1').innerText = user.username || "Unknown User";
+                    
+                    const emailElem = document.querySelector('.user-email-text');
+                    if(emailElem) emailElem.innerText = user.email;
+
+                    const bioElem = document.querySelector('.user-bio-text');
+                    // backend uses property 'info' so fall back accordingly
+                    const bioValue = user.info || "";
+                    if(bioElem) bioElem.innerText = bioValue || "Fitness enthusiast. No bio written yet.";
+                    
+                    const mainAvatar = document.getElementById('displayUserAvatar');
+                    // always set src, use placeholder if emptiness
+                    if (mainAvatar) {
+                        // เช็คทั้ง profileUrl และ ProfileUrl
+                        mainAvatar.src = user.profileUrl || "/images/default-avatar.png";
+                    }
+
+                } else {
+                    console.error("ไม่สามารถดึงข้อมูลโปรไฟล์ได้");
+                }
+
+            } catch (error) {
+                console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', fetchUserProfile);
+
+
     const modal = document.getElementById('editProfileModal');
     const editBtn = document.getElementById('edit-profile-btn');
     const closeBtn = document.getElementById('closeModal');
@@ -103,7 +139,7 @@
     urlInput.addEventListener('input', () => {
         const url = urlInput.value.trim();
         // Update preview image source immediately
-        previewImg.src = url || "https://via.placeholder.com/100";
+        previewImg.src = url || "https://via.placeholder.com/100?text=No+Image";
     });
 
     // Handle broken image URLs
@@ -112,7 +148,21 @@
     };
 
     // Modal Control
-    const openModal = () => { modal.style.display = 'flex'; };
+    const openModal = async () => { 
+        const currentName = document.querySelector('.info-group h1').innerText;
+        const currentBio = document.querySelector('.user-bio-text').innerText;
+        const currentAvatar = document.getElementById('displayUserAvatar').src;
+
+        document.getElementById('editUsername').value = currentName;
+        // ล้างข้อความ default ออกถ้ายังไม่ได้เขียน bio
+        document.getElementById('editBio').value = currentBio.includes("No bio written yet") ? "" : currentBio;
+        
+        // สำคัญ: ส่งค่าไปที่ Input และตัว Preview
+        document.getElementById('editAvatarUrl').value = currentAvatar;
+        previewImg.src = currentAvatar; // อัปเดตตัว preview ใน modal ให้ตรงกับหน้าหลัก
+
+        modal.style.display = 'flex';
+    };
     const closeModal = () => { modal.style.display = 'none'; };
 
     editBtn.addEventListener('click', openModal);
@@ -128,24 +178,47 @@
         e.preventDefault();
 
         const submitBtn = document.getElementById('saveBtn');
+        const avatarInput = document.getElementById('editAvatarUrl').value.trim();
+        const nameInput = document.getElementById('editUsername').value.trim();
+        const bioInput = document.getElementById('editBio').value.trim();
+
         submitBtn.disabled = true;
         submitBtn.innerText = "Saving...";
 
         const updatedData = {
-            Username: document.getElementById('editUsername').value.trim(),
-            Bio: document.getElementById('editBio').value.trim(),
-            UserProfile: urlInput.value.trim() // Sending the URL as a string
+            username: nameInput,
+            info: bioInput,
+            profileUrl: avatarInput
         };
 
         try {
-            const response = await fetch('/api/user/update-profile', {
+            const response = await fetch('/api/profileapi/update', {
                 method: 'POST',
+                credentials: 'same-origin',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updatedData)
             });
 
             if (response.ok) {
-                location.reload(); 
+                // --- ส่วนที่เพิ่มเข้ามา: อัปเดต UI ทันทีโดยไม่ต้อง Reload ---
+                // 1. อัปเดตชื่อในหน้า Profile
+                document.querySelector('.info-group h1').innerText = nameInput;
+                
+                // 2. อัปเดต Bio (ถ้าว่างให้โชว์ Default)
+                document.querySelector('.user-bio-text').innerText = bioInput || "Fitness enthusiast. No bio written yet.";
+                
+                // 3. อัปเดตรูป Profile หลัก
+                const mainAvatar = document.getElementById('displayUserAvatar');
+                if (avatarInput) {
+                    mainAvatar.src = avatarInput;
+                }
+
+                // 4. ปิด Modal
+                closeModal();
+                
+                // (Optional) แสดงแจ้งเตือนเล็กๆ ว่าบันทึกสำเร็จ
+                console.log("Profile updated successfully!");
+                
             } else {
                 const errorText = await response.text();
                 alert("Update failed: " + errorText);

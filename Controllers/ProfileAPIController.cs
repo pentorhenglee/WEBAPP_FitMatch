@@ -9,8 +9,10 @@ using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using WEBAPP_FitMatch.Models;
 using WEBAPP_FitMatch.Data;
 
+using System.Text.Encodings.Web;
+
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/profileapi")]
 public class ProfileAPIController : ControllerBase
 {
     private readonly AppDbContext _db;
@@ -28,6 +30,36 @@ public class ProfileAPIController : ControllerBase
             return NotFound(new { message = "User not found or not logged in" });
         }
         return Ok(user);
+    }
+
+    [HttpPost("update")]
+    public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfile req)
+    {   
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        var user_id = HttpContext.Session.GetInt32("user_id");
+        if (user_id == null) return Unauthorized("กรุณาเข้าสู่ระบบ");
+
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == user_id);
+        if (user == null) return NotFound("ไม่พบข้อมูลผู้ใช้");
+
+        if (string.IsNullOrWhiteSpace(req.username)) 
+            return BadRequest("ชื่อผู้ใช้ห้ามว่าง");
+
+        user.Username = req.username ?? user.Username;
+        user.ProfileUrl = req.profileUrl;
+        user.Info = !string.IsNullOrEmpty(req.info) 
+                ? HtmlEncoder.Default.Encode(req.info) 
+                : "";
+        try 
+        {
+            await _db.SaveChangesAsync();
+            return Ok(new { message = "อัปเดตสำเร็จ" });
+        }
+        catch (DbUpdateException)
+        {
+            return StatusCode(500, "เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+        }
     }
 
 }
