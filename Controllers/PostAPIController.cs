@@ -128,6 +128,15 @@ namespace WEBAPP_FitMatch.Controllers
 
             _db.Members.Add(member);
             await _db.SaveChangesAsync();
+
+            var histories = new History
+            {
+                UserId = user_id.Value,
+                PostId = post.PostId,
+                ActionType = $"Create Post {post.Title}"
+            };
+            _db.Histories.Add(histories);
+            await _db.SaveChangesAsync();
             return Ok(post);
 
         }
@@ -153,6 +162,14 @@ namespace WEBAPP_FitMatch.Controllers
 
             try
             {
+                await _db.SaveChangesAsync();
+                var histories = new History
+                {
+                    UserId = user_id.Value,
+                    PostId = post.PostId,
+                    ActionType = $"Close Post {post.Title}"
+                };
+                _db.Histories.Add(histories);
                 await _db.SaveChangesAsync();
 
                 return Ok(new
@@ -189,6 +206,14 @@ namespace WEBAPP_FitMatch.Controllers
 
             try
             {
+                await _db.SaveChangesAsync();
+                var histories = new History
+                {
+                    UserId = user_id.Value,
+                    PostId = post.PostId,
+                    ActionType = $"Open Post {post.Title}"
+                };
+                _db.Histories.Add(histories);
                 await _db.SaveChangesAsync();
 
                 return Ok(new
@@ -338,6 +363,15 @@ namespace WEBAPP_FitMatch.Controllers
                 return Forbid();
 
             _db.Posts.Remove(post);
+            await _db.SaveChangesAsync();
+            
+            var histories = new History
+            {
+                UserId = user_id.Value,
+                PostId = post.PostId,
+                ActionType = $"Delete Post {post.Title}"
+            };
+            _db.Histories.Add(histories);
             await _db.SaveChangesAsync();
 
             return Ok(new { message = "Delete successful" });

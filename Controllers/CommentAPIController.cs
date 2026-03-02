@@ -22,6 +22,9 @@ namespace WEBAPP_FitMatch.Controllers
             var user_id = HttpContext.Session.GetInt32("user_id");
             if (user_id == null) return Unauthorized("User not logged in");
 
+            var post = await _db.Posts.FirstOrDefaultAsync(p=>p.PostId == post_id);
+            if (post == null)
+                return NotFound("Post not found");
             var createcomment = new Comment
             {
                 UserId = user_id.Value,
@@ -30,8 +33,7 @@ namespace WEBAPP_FitMatch.Controllers
                 Text = comment.Text
             };
 
-            _db.Comments.Add(createcomment);
-            await _db.SaveChangesAsync();
+            
             return Ok(createcomment);
         }
 
@@ -61,6 +63,8 @@ namespace WEBAPP_FitMatch.Controllers
             
             _db.Comments.Remove(comment);
             await _db.SaveChangesAsync();
+
+
 
             return Ok(new { success = true, message = "Comment deleted successfully" });
         }
