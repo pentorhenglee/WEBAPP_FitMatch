@@ -67,7 +67,7 @@
             card.className = 'post-card';
 
             card.onclick = () => {
-                window.location.href = `/Post/Detail/${post.postId}`;
+                window.location.href = `/Post/Detail?id=${post.postId}`;
             };
 
             card.innerHTML = `
