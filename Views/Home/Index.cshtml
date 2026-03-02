@@ -53,7 +53,7 @@
 
 
 <script>
-    function renderPosts(posts) {
+    async function renderPosts(posts) {
         const postsDisplay = document.getElementById('postsDisplay');
         postsDisplay.innerHTML = '';
 
@@ -77,7 +77,7 @@
                 <div class="card-content">
                     <h3 class="post-title">${post.title || 'Untitled'}</h3>
                     <p class="post-location">${post.location || 'Unknown Location'}</p>
-                    <p class="post-date">${post.date || 'TBA'}</p>
+                    <p class="post-date">${post.eventDateTime || 'TBA'}</p>
                     <p class="post-description">${post.description || ''}</p>
                 </div>
             `;
@@ -94,7 +94,7 @@
             // const url = searchTerm
             //     ? `/Home/search?query=${encodeURIComponent(searchTerm)}`
             //     : '/Home/search?query=';
-            const url = `/Home/search?query=${encodeURIComponent(searchTerm)}&category=${encodeURIComponent(category)}`;
+            const url = `/api/all_post`;
 
             const response = await fetch(url);
             if (!response.ok) throw new Error('Network response was not ok');
