@@ -38,6 +38,22 @@ a { text-decoration: none; }
   align-items: center;
   justify-content: space-between;
   gap: 40px;       
+  
+  display: flex;
+  flex-direction: row;
+  background: rgba(255, 255, 255, 0.03); /* Subtle white tint */
+  backdrop-filter: blur(15px); /* Frost effect */
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
 }
 
 .links {
@@ -123,6 +139,7 @@ a { text-decoration: none; }
    ============================================================ */
 .page-wrapper {
   padding: 30px 40px;
+  margin-top: var(--navbar-h);
 }
 
 /* ================= Dropdown Menu ================= */

@@ -20,7 +20,7 @@
 <body>
 <div class="container">
     <div class="hero-section">
-            <p class="tagline">ITS TIME TO</p>
+            <p class="tagline">IT'S TIME TO</p>
             <div id="dynamic-logo" class="run-logo"></div>
     </div>
 
@@ -45,6 +45,11 @@
                     <i class="fa-solid fa-lock"></i>
                     <input type="password" id="password" placeholder="Enter your password" required />
                 </div>
+                <label>Confirm Password</label>
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="confirmPassword" placeholder="Confirm your password" required />
+                </div>
 
                 <button type="submit" id="btnSubmit" class="register-btn">
                     <span id="spinner"></span> REGISTER
@@ -58,44 +63,59 @@
 
 <script>
     document.getElementById("registerForm").addEventListener("submit", async function (e) {
-        e.preventDefault();
-        
-        const email = document.getElementById("email").value.trim();
-        const username = document.getElementById("username").value.trim();
-        const password = document.getElementById("password").value;
-        const errorDiv = document.getElementById("errorMessage");
-        const btnSubmit = document.getElementById("btnSubmit");
-        const spinner = document.getElementById("spinner");
+    e.preventDefault();
+    
+    const email = document.getElementById("email").value.trim();
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+    
+    const errorDiv = document.getElementById("errorMessage");
+    const btnSubmit = document.getElementById("btnSubmit");
+    const spinner = document.getElementById("spinner");
 
-        // ล้างสถานะเดิม
-        errorDiv.classList.add("d-none");
-        btnSubmit.disabled = true;
-        spinner.classList.remove("d-none");
+    // 1. Password Confirmation Logic
+    if (password !== confirmPassword) {
+        errorDiv.innerText = "Passwords do not match!";
+        errorDiv.classList.remove("d-none");
+        document.getElementById("confirmPassword").focus();
+        return; // Stop the function here
+    }
 
-        try {
-            const res = await fetch("/api/auth/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ Email: email, Username: username, Password: password }) // Key ต้องตรงกับ DTO ใน Backend
-            });
+    // 2. Simple Length Check (Optional but recommended)
+    if (password.length < 6) {
+        errorDiv.innerText = "Password must be at least 6 characters long.";
+        errorDiv.classList.remove("d-none");
+        return;
+    }
 
-            if (res.ok) {
-                // ถ้า Register สำเร็จ ส่งไปหน้า Index
-                window.location.href = "/Home/Index";
-            } else {
-                // ถ้าไม่สำเร็จ ดึง Error message มาโชว์
-                const errorData = await res.json(); 
-                errorDiv.innerText = errorData.message || "Registration failed. Please check your inputs.";
-                errorDiv.classList.remove("d-none");
-            }
-        } catch (err) {
-            errorDiv.innerText = "Network error: " + err.message;
+    // Clear previous errors and show loading state
+    errorDiv.classList.add("d-none");
+    btnSubmit.disabled = true;
+    spinner.classList.remove("d-none");
+
+    try {
+        const res = await fetch("/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ Email: email, Username: username, Password: password })
+        });
+
+        if (res.ok) {
+            window.location.href = "/Account/Login";
+        } else {
+            const errorData = await res.json(); 
+            errorDiv.innerText = errorData.message || "Registration failed.";
             errorDiv.classList.remove("d-none");
-        } finally {
-            btnSubmit.disabled = false;
-            spinner.classList.add("d-none");
         }
-    });
+    } catch (err) {
+        errorDiv.innerText = "Network error: " + err.message;
+        errorDiv.classList.remove("d-none");
+    } finally {
+        btnSubmit.disabled = false;
+        spinner.classList.add("d-none");
+    }
+});
 
     const words = ["RUN", "CYCLE", "BASKETBALL", "SOCCER", "VOLLEYBALL"];
 let wordIndex = 0;
@@ -141,6 +161,7 @@ smoothChangeWord();
 
 // Interval (set slightly longer to account for animation time)
 setInterval(smoothChangeWord, 3000);
+
 </script>
 
 </body>

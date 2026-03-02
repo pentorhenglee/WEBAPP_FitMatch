@@ -79,7 +79,7 @@ body {
     background-color: var(--surface);
     padding: 50px 40px;
     border-radius: 12px;
-    width: 360px;
+    width: 400px;
     box-shadow: 0 20px 50px rgba(0,0,0,0.6);
 }
 
@@ -175,4 +175,12 @@ input:-webkit-autofill:active {
     border-radius: 4px;
     margin-bottom: 15px;
     border: 1px solid #ff4d4d;
+}
+
+.input-group.mismatch {
+    border: 1px solid #ff4d4d !important;
+}
+
+.input-group.match {
+    border: 1px solid var(--accent) !important;
 }
