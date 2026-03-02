@@ -1,32 +1,58 @@
+@{
+    ViewData["Title"] = "Register";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Account.css" asp-append-version="true" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+
+</head>
+<body>
 <div class="container">
-    <div>
-        <h2 class="card">Register</h2>
-        <div id="errorMessage" role="alert"></div>
+    <div class="hero-section">
+            <p class="tagline">ITS TIME TO</p>
+            <div id="dynamic-logo" class="run-logo"></div>
+    </div>
 
-        <form id="registerForm">
-            <div>
+    <div class="form-section">
+        <div class="register-card">
+            <h2 class="card">Register</h2>
+            <div id="errorMessage" role="alert" class="error d-none"></div>
+            <form id="registerForm">
                 <label>Email</label>
-                <input type="email" id="email" placeholder="your@email.com" required />
-            </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" id="email" placeholder="your@email.com" required />
+                </div>
 
-            <div>
                 <label>Username</label>
-                <input type="text" id="username" placeholder="Enter your username" required />
-            </div>
-
-            <div>
+                <div class="input-group">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="username" placeholder="Enter your username" required />
+                </div>
                 <label>Password</label>
-                <input type="password" id="password" placeholder="Enter your password" required />
-            </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="password" placeholder="Enter your password" required />
+                </div>
 
-            <button type="submit" id="btnSubmit">
-                <span id="spinner"></span> Register
-            </button>
-        </form>
+                <button type="submit" id="btnSubmit" class="register-btn">
+                    <span id="spinner"></span> REGISTER
+                </button>
+            </form>
 
-        <p>
-            Already have an account? <a asp-action="Login">Sign in here</a>
-        </p>
+            <p class="login-text">Already have an account? <a href="/Account/Login">Login here!</a></p>
+        </div>
     </div>
 </div>
 
@@ -70,4 +96,52 @@
             spinner.classList.add("d-none");
         }
     });
+
+    const words = ["RUN", "CYCLE", "BASKETBALL", "SOCCER", "VOLLEYBALL"];
+let wordIndex = 0;
+const logoContainer = document.getElementById('dynamic-logo');
+
+async function smoothChangeWord() {
+    // 1. Fade out current letters
+    const currentCols = logoContainer.querySelectorAll('.column');
+    currentCols.forEach(col => {
+        col.style.opacity = '0';
+        col.style.transform = 'translateY(-10px)';
+    });
+
+    // 2. Short pause for fade out to complete
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // 3. Clear and Build new word
+    logoContainer.innerHTML = '';
+    const currentWord = words[wordIndex];
+
+    [...currentWord].forEach((char, index) => {
+        const column = document.createElement('div');
+        column.className = 'column';
+        
+        for (let i = 0; i < 4; i++) {
+            const span = document.createElement('span');
+            span.textContent = char;
+            column.appendChild(span);
+        }
+        logoContainer.appendChild(column);
+
+        // 4. Staggered Entrance (the "Smooth" part)
+        setTimeout(() => {
+            column.classList.add('active');
+        }, index * 100); // 100ms delay between each letter
+    });
+
+    wordIndex = (wordIndex + 1) % words.length;
+}
+
+// Initial Run
+smoothChangeWord();
+
+// Interval (set slightly longer to account for animation time)
+setInterval(smoothChangeWord, 3000);
 </script>
+
+</body>
+</html>
