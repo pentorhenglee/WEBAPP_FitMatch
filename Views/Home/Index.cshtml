@@ -31,6 +31,23 @@
         </div>
     </div>
 
+    <div class="mission-sidebar" id="missionSidebar">
+        <div class="mission-text-container">
+            <span>M</span>
+            <span>I</span>
+            <span>S</span>
+            <span>S</span>
+            <span>I</span>
+            <span>O</span>
+            <span>N</span>
+        </div>
+        
+        <div class="mission-content-hover">
+            <div id="missionListContainer" class="mission-list">
+            </div>
+        </div>
+    </div>
+
     <div class="fixes-top-section">
         <div class="welcome-message">
             <h1>Find Your Fitness Community</h1>
@@ -55,6 +72,63 @@
 
 
 <script>
+    async function fetchMissions() {
+        const container = document.getElementById('missionListContainer'); 
+        try {
+            const response = await fetch('/api/missions');
+            if (!response.ok) throw new Error('Network response was not ok');
+            
+            const missions = await response.json();
+            renderMissionList(missions); 
+
+        } catch (error) {
+            console.error('Error fetching missions:', error);
+            if (container) {
+                container.innerHTML = '<p style="color: #aaa; text-align: center;">Failed to load missions.</p>';
+            }
+        }
+    }
+
+    async function updateMissionStatus(missionId, isCompleted) {
+        try {
+            const response = await fetch(`/api/missions/${missionId}/status`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ isCompleted: isCompleted }) 
+            });
+
+            if (!response.ok) throw new Error('Update failed');
+            console.log(`Mission ${missionId} updated to ${isCompleted}`);
+
+        } catch (error) {
+            console.error('Update error:', error);
+            alert('Failed to update mission status.');
+            // คืนค่า checkbox กลับไปสถานะเดิมถ้าล้มเหลว
+            const checkbox = document.getElementById(`m-${missionId}`);
+            if(checkbox) checkbox.checked = !isCompleted;
+        }
+    }
+
+    function renderMissionList(missions) {
+        const container = document.getElementById('missionListContainer');
+        if (!container) return;
+        
+        container.innerHTML = ''; 
+
+        missions.forEach(mission => {
+            const item = document.createElement('div');
+            item.className = 'mission-item';
+            
+            item.innerHTML = `
+                <input type="checkbox" id="m-${mission.id}" 
+                    ${mission.isCompleted ? 'checked' : ''} 
+                    onchange="updateMissionStatus(${mission.id}, this.checked)">
+                <label for="m-${mission.id}">${mission.title}</label>
+            `;
+            container.appendChild(item);
+        });
+    }
+
     async function renderPosts(posts) {
         const postsDisplay = document.getElementById('postsDisplay');
         postsDisplay.innerHTML = '';
@@ -110,7 +184,6 @@
             if (query && query.trim() !== "") params.append('query', query.trim());
             if (category && category.trim() !== "") params.append('category', category.trim());
 
-            // build URL using all parameters collected in params
             const queryString = params.toString();
             const url = `/api/all_post${queryString ? '?' + queryString : ''}`;
 
@@ -130,6 +203,7 @@
     // เมื่อโหลดหน้าเว็บ: เรียกโดยไม่ส่งค่า (ดึงทั้งหมด)
     document.addEventListener('DOMContentLoaded', () => {
         fetchSearchResults(null); 
+        fetchMissions();
     });
 
     document.getElementById('searchButton').addEventListener('click', () => {
