@@ -31,9 +31,9 @@
         </div>
     </div>
 
-    <div class="main-content">
+    <div class="fixes-top-section">
         <div class="welcome-message">
-             <h1>Find Your Fitness Community</h1>
+            <h1>Find Your Fitness Community</h1>
         </div>
         
         <div class="search-container">
@@ -46,7 +46,9 @@
             +
             </button>
         </div>
+    </div>
 
+    <div class="main-content">
         <div id="postsDisplay" class="posts-display"></div>
     </div>
 </div>
@@ -66,21 +68,38 @@
             const card = document.createElement('div');
             card.className = 'post-card';
 
-            card.onclick = () => {
-                window.location.href = `/Post/Detail?id=${post.postId}`;
-            };
-
             card.innerHTML = `
                 <div class="card-image">
                     <img src="${post.imageUrl || '/images/default-post.jpg'}" alt="${post.title || 'Post Image'}" />
                 </div>
                 <div class="card-content">
                     <h3 class="post-title">${post.title || 'Untitled'}</h3>
-                    <p class="post-location">${post.location || 'Unknown Location'}</p>
-                    <p class="post-date">${post.eventDateTime || 'TBA'}</p>
+                    
+                    <div class="post-meta-row">
+                        <p class="post-location">
+                            <i class="fas fa-map-marker-alt"></i> ${post.location || 'Unknown Location'}
+                        </p>
+                        <p class="post-date">
+                            <i class="fas fa-calendar-alt"></i> ${post.eventDateTime || 'TBA'}
+                        </p>
+                    </div>
                     <p class="post-description">${post.description || ''}</p>
                 </div>
-            `;
+
+                <div class="card-footer">
+                    <button class="view-more-btn" data-post-id="${post.postId}">View More</button>
+                </div>
+                `;
+
+            const viewMoreBtn = card.querySelector(".view-more-btn");
+            viewMoreBtn.addEventListener("click", function (e) {
+                e.stopPropagation();
+                const id = this.getAttribute("data-post-id"); 
+                if (id) {
+                    window.location.href = `/Post/Detail?id=${id}`;
+                }
+            });
+
             postsDisplay.appendChild(card);
         });
     }
@@ -110,16 +129,6 @@
         fetchSearchResults(null); 
     });
 
-    // เมื่อคลิกปุ่ม SEARCH: ดึงค่าจาก Input มาส่งให้ฟังก์ชัน
-    // document.getElementById('searchButton').addEventListener('click', () => {
-    //     const query = document.getElementById('searchInput').value;
-    //     if (!query.trim()) {
-    //         alert('Please enter a search term.');
-    //         return;
-    //     }
-    //     fetchSearchResults(query);
-    // });
-
     document.getElementById('searchButton').addEventListener('click', () => {
         const query = document.getElementById('searchInput').value;
         // หาหมวดหมู่ที่ถูกเลือกอยู่ในขณะนั้น (ตัวที่มีคลาส active)
@@ -129,19 +138,6 @@
         fetchSearchResults(query, activeCat);
     });
 
-    // เมื่อกดปุ่ม Enter
-    // document.getElementById('searchInput').addEventListener('keydown', function(event) {
-    //     if (event.key === 'Enter') {
-    //         event.preventDefault();
-    //         const query = event.target.value;
-    //         if (!query.trim()) {
-    //             alert('Please enter a search term.');
-    //             return;
-    //         }
-    //         fetchSearchResults(query);
-    //     }
-    // });
-    
     document.getElementById('searchInput').addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
             event.preventDefault();
