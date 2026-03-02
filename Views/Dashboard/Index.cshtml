@@ -4,6 +4,7 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 }
 
 <div class="dashboard-container">
@@ -12,7 +13,7 @@
         <div class="dash-header">
             <h2>Dashboard</h2>
             <div style="font-size: 0.8rem; color: var(--text-muted);">
-                Sort: <select style="background:transparent; color:white; border:none; outline:none;"><option>Last Month</option></select>
+                Sort: <select style="background:transparent; color:rgb(203, 203, 203); border:none; outline:none;"><option>Last Month</option></select>
             </div>
         </div>
 
@@ -22,65 +23,83 @@
         </div>
 
         <div id="upcoming-content" class="tab-content active">
-            <div style="text-align: center; color: var(--text-muted); padding: 40px 0;">Loading...</div>
+            <div class="loading-text">Loading...</div>
         </div>
 
         <div id="history-content" class="tab-content">
-            <div style="text-align: center; color: var(--text-muted); padding: 40px 0;">Loading...</div>
+            <div class="loading-text">Loading...</div>
         </div>
     </div>
 
     <div class="dash-right-panel">
-        <div>
-            <h2>olo</h2>
+        <div class="stats-grid">
+            
+            <div class="stat-card">
+                <h3>Participated Rate</h3>
+                <div class="stat-main-val" id="partCount">0</div>
+                <div class="stat-sub-val" id="partTarget">0 / 30</div>
+                <div class="progress-bg">
+                    <div class="progress-fill" id="partProgress" style="width: 0%;"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Activity Stats</h3>
+                <div style="height: 150px; width: 80%; margin: 0 auto;">
+                    <canvas id="activityChart"></canvas>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <h3>Favorite Partners</h3>
+                <div id="partnersContainer">
+                    <div class="loading-text">Loading partners...</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header-flex">
+                    <h3>Mission Succeeded</h3>
+                    <button style="background:none; border:none; color:white; cursor:pointer;"><i class="fa-solid fa-plus"></i></button>
+                </div>
+                <div class="stat-main-val" id="missionCount" style="text-align: left;">0 <span style="font-size:1rem; color:#aaa;" id="missionTotal">/ 0</span></div>
+                <div class="progress-bg" style="margin-bottom: 15px;">
+                    <div class="progress-fill" id="missionProgress" style="width: 0%;"></div>
+                </div>
+                <div id="missionsContainer">
+                    <div class="loading-text">Loading missions...</div>
+                </div>
+            </div>
+
         </div>
     </div>
 
 </div>
 
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
-        // 1. จำลองข้อมูล (Mockup Object) ที่จะได้รับจาก Database
-        const mockUpcomingData = [
-            {
-                id: 1,
-                title: "SUVANAPHUM AIRPORT",
-                date: "14 - 2 - 2026",
-                time: "08:00 - 09:00",
-                description: "We are going for a run make sure we are going for a run mate eiei",
-                icon: "fa-person-running"
-            },
-            {
-                id: 2,
-                title: "SUVANAPHUM AIRPORT",
-                date: "14 - 2 - 2026",
-                time: "08:00 - 09:00",
-                description: "We are going for a run make sure we are going for a run mate eiei",
-                icon: "fa-person-running"
-            }
-        ];
-
-        // ประวัติจำลองให้เป็น Array ว่าง เพื่อเทสต์ว่าระบบโชว์ข้อความ "ยังไม่มีประวัติ" ได้ถูกต้อง
-        const mockHistoryData = []; 
-
-        // 2. ฟังก์ชันจำลองการ Fetch Data (เปลี่ยนไปเรียก API จริงตรงนี้ในอนาคต)
-        async function fetchEventData(type) {
-            // ในอนาคตจะเปลี่ยนเป็น: const response = await fetch(`/api/events/${type}`); return await response.json();
-            
-            return new Promise(resolve => {
-                setTimeout(() => { // หน่วงเวลา 0.5 วิ ให้ดูเหมือนโหลดจากเน็ตจริงๆ
-                    if(type === 'upcoming') resolve(mockUpcomingData);
-                    else resolve(mockHistoryData);
-                }, 500);
-            });
+        // ==========================================
+        // 1. Utilities
+        // ==========================================
+        function getSportIcon(sportType) {
+            const type = (sportType || "").toLowerCase();
+            if (type.includes("run")) return "fa-person-running";
+            if (type.includes("soccer") || type.includes("football")) return "fa-futbol";
+            if (type.includes("basket")) return "fa-basketball";
+            if (type.includes("volleyball")) return "fa-volleyball";
+            if (type.includes("cycl") || type.includes("bike")) return "fa-person-biking";
+            return "fa-infinity"; 
         }
 
-        // 3. ฟังก์ชันสร้าง HTML (Render)
+        // ==========================================
+        // 2. Render Left Panel (Activities)
+        // ==========================================
         function renderCards(containerId, events, emptyMessage) {
             const container = document.getElementById(containerId);
-            container.innerHTML = ''; // เคลียร์ข้อความ "กำลังโหลดข้อมูล..."
+            container.innerHTML = ''; 
 
-            // ถ้าไม่มีข้อมูล
             if (!events || events.length === 0) {
                 container.innerHTML = `
                     <div style="text-align: center; color: var(--text-muted); padding: 40px 0;">
@@ -90,16 +109,20 @@
                 return;
             }
 
-            // ถ้ามีข้อมูล ให้วนลูปสร้างการ์ด
             let htmlContent = '';
             events.forEach(ev => {
+                const dateObj = new Date(ev.eventDateTime);
+                const dateStr = dateObj.toLocaleDateString('en-GB').replace(/\//g, ' - '); 
+                const timeStr = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+                const iconClass = getSportIcon(ev.sportType);
+
                 htmlContent += `
-                    <div class="event-card">
-                        <div class="event-icon"><i class="fa-solid ${ev.icon}"></i></div>
+                    <div class="event-card" onclick="window.location.href='/Post/Detail?id=${ev.postId}'" style="cursor: pointer;">
+                        <div class="event-icon"><i class="fa-solid ${iconClass}"></i></div>
                         <div class="event-info">
-                            <h4>${ev.title}</h4>
-                            <div class="event-time">${ev.date} • ${ev.time}</div>
-                            <div class="event-desc">${ev.description}</div>
+                            <h4>${(ev.location || "UNKNOWN").toUpperCase()}</h4>
+                            <div class="event-time">${dateStr} • ${timeStr}</div>
+                            <div class="event-desc">${ev.title}</div>
                         </div>
                         <div class="event-arrow"><i class="fa-solid fa-chevron-right"></i></div>
                     </div>
@@ -108,16 +131,136 @@
             container.innerHTML = htmlContent;
         }
 
-        // 4. โหลดข้อมูลตอนเปิดหน้าเว็บ
-        async function initDashboard() {
-            const upcomingEvents = await fetchEventData('upcoming');
-            renderCards('upcoming-content', upcomingEvents, 'ไม่มีกิจกรรมที่กำลังจะมาถึง');
+        async function fetchMyActivities() {
+            try {
+                const response = await fetch('/api/dashboard/my-activities');
+                if (!response.ok) throw new Error("Failed to load activities");
+                const data = await response.json();
 
-            const historyEvents = await fetchEventData('history');
-            renderCards('history-content', historyEvents, 'ยังไม่มีประวัติกิจกรรม<br><span style="font-size: 0.8rem;">(กิจกรรมที่จบไปแล้วจะมาแสดงที่นี่)</span>');
+                renderCards('upcoming-content', data.upcoming, 'No upcoming!');
+                renderCards('history-content', data.history, 'No History!<br><span style="font-size: 0.8rem;">(Event ended will show here!)</span>');
+                
+            } catch (error) {
+                console.error(error);
+                document.getElementById('upcoming-content').innerHTML = "<div class='loading-text' style='color:#ff4d4d;'>Error Loading Data</div>";
+                document.getElementById('history-content').innerHTML = "<div class='loading-text' style='color:#ff4d4d;'>Error Loading Data</div>";
+            }
         }
 
-        // 5. ระบบสลับ Tab (เหมือนเดิม)
+        // ==========================================
+        // 3. Render Right Panel (Stats)
+        // ==========================================
+        async function fetchDashboardStats() {
+            try {
+                const response = await fetch('/api/dashboard/stats');
+                if (!response.ok) throw new Error("Failed to load stats");
+                const data = await response.json();
+
+                // --- Participated Rate ---
+                document.getElementById('partCount').innerText = data.participated;
+                document.getElementById('partTarget').innerText = `${data.participated} / ${data.targetParticipated}`;
+                let partPercent = (data.participated / data.targetParticipated) * 100;
+                document.getElementById('partProgress').style.width = `${Math.min(partPercent, 100)}%`;
+
+                // --- Activity Stats (Chart) ---
+                renderChart(data.activityStats);
+
+                // --- Favorite Partners ---
+                const partnersDiv = document.getElementById('partnersContainer');
+                partnersDiv.innerHTML = '';
+                if(data.favoritePartners.length === 0) {
+                    partnersDiv.innerHTML = '<div class="loading-text">No partners yet</div>';
+                } else {
+                    data.favoritePartners.forEach(p => {
+                        partnersDiv.innerHTML += `
+                            <div class="partner-item">
+                                <img src="${p.profileUrl}" alt="${p.username}">
+                                <div style="flex-grow: 1;">
+                                    <div style="font-weight: bold; font-size: 0.9rem; color: #fff;">${p.username}</div>
+                                    <div style="font-size: 0.75rem; color: #aaa;">Met ${p.meetCount} times</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                // --- Missions Succeeded ---
+                const missionsDiv = document.getElementById('missionsContainer');
+                missionsDiv.innerHTML = '';
+                let completedMissions = 0;
+                let totalMissions = data.missions.length;
+
+                if(totalMissions === 0) {
+                    missionsDiv.innerHTML = '<div class="loading-text">No missions added</div>';
+                } else {
+                    data.missions.forEach(m => {
+                        if(m.isCompleted) completedMissions++;
+                        const isChecked = m.isCompleted ? 'checked' : '';
+                        const textStyle = m.isCompleted ? 'text-decoration: line-through; color: #888;' : 'color: #fff;';
+                        
+                        missionsDiv.innerHTML += `
+                            <div class="mission-item">
+                                <input type="checkbox" ${isChecked} disabled>
+                                <span style="${textStyle}">${m.description}</span>
+                            </div>
+                        `;
+                    });
+                }
+                
+                const maxMissionTarget = Math.max(totalMissions, 12); // Defualt target is 12 if less
+                document.getElementById('missionCount').innerHTML = `${completedMissions} <span class="stat-sub-inline" style="font-size:1rem; color:#aaa;" id="missionTotal">/ ${maxMissionTarget}</span>`;
+                let missionPercent = (completedMissions / maxMissionTarget) * 100;
+                document.getElementById('missionProgress').style.width = `${Math.min(missionPercent, 100)}%`;
+
+            } catch (error) {
+                console.error("Error loading stats:", error);
+                document.getElementById('partnersContainer').innerHTML = "<div class='loading-text' style='color:#ff4d4d;'>Failed to load stats</div>";
+            }
+        }
+
+        function renderChart(statsData) {
+            const ctx = document.getElementById('activityChart').getContext('2d');
+            
+            const labels = statsData.map(s => s.sport);
+            const dataValues = statsData.map(s => s.count);
+            
+            if(dataValues.length === 0) {
+                labels.push("No Data");
+                dataValues.push(1);
+            }
+
+            new Chart(ctx, {
+                type: 'doughnut', 
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: dataValues,
+                        backgroundColor: ['#2ecc71', '#3498db', '#e74c3c', '#f1c40f', '#9b59b6', '#95a5a6'],
+                        borderWidth: 0 
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '55%',
+                    plugins: {
+                        legend: { 
+                            position: 'right', 
+                            align: 'center', // 🌟 บังคับให้อยู่กึ่งกลางแนวตั้งพอดีกราฟ
+                            labels: { 
+                                color: '#ffffff', 
+                                usePointStyle: true, // ใช้จุดกลมๆ
+                                padding: 15
+                            } 
+                        }
+                    }
+                }
+            });
+        }
+
+        // ==========================================
+        // 4. Initialization
+        // ==========================================
         function switchTab(tabId, btnElement) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');
@@ -126,7 +269,9 @@
             document.getElementById(tabId + '-content').classList.add('active');
         }
 
-        // สั่งให้ทำงานเมื่อหน้าเว็บโหลดเสร็จ
-        document.addEventListener('DOMContentLoaded', initDashboard);
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchMyActivities(); // Load left panel
+            fetchDashboardStats(); // Load right panel
+        });
     </script>
 }

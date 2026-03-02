@@ -262,7 +262,63 @@ namespace WEBAPP_FitMatch.Controllers
             }
         }
 
+        [HttpGet("detail/{id}")]
+        public async Task<ActionResult> GetPostDetail(int id)
+        {
+            var user_id = HttpContext.Session.GetInt32("user_id");
+            if (user_id == null)
+                return Unauthorized("User not logged in");
 
+            var post = await _db.Posts
+                .Where(p => p.PostId == id)
+                .Select(p => new 
+                {
+                    p.PostId,
+                    ownerId = p.UserId, // ส่ง ownerId กลับไปด้วย เผื่อ JS เอาไปเช็คสิทธิ์
+                    currentUserId = user_id.Value, // ส่ง id คนที่ล็อกอินอยู่ไปด้วย
+                    Owner = _db.Users.Where(u => u.Id == p.UserId).Select(u => u.Username).FirstOrDefault(),
+                    p.Title,
+                    p.Location,
+                    p.EventDateTime,
+                    p.Description,
+                    p.SportType,
+                    p.CreateDate,
+                    p.MaxPeople,
+                    p.ImageUrl,
+                    p.Status,
+                    
+                    // ดึง Members มาด้วย จะได้เอาไป .length นับจำนวนคน และโชว์รายชื่อได้
+                    Members = p.Members.Join(_db.Users, 
+                        m => m.UserId, 
+                        u => u.Id, 
+                        (m, u) => new {
+                            userId = m.UserId,
+                            name = u.Username,
+                            join = m.JoinedAt,
+                            status = m.Status,
+                            profileUrl = u.ProfileUrl
+                        }).ToList(),
+
+                    // ดึง Comments มาเผื่อทำระบบ Chat
+                    Comments = p.Comments.Join(_db.Users,
+                        c => c.UserId,
+                        u => u.Id,
+                        (c, u) => new {
+                            c.CommentId,
+                            c.UserId,
+                            username = u.Username,
+                            profileUrl = u.ProfileUrl,
+                            comment_date = c.CreatedAt,
+                            c.Text
+                        }).ToList()
+                })
+                .FirstOrDefaultAsync();
+
+            if (post == null)
+                return NotFound("Post not found");
+
+            return Ok(post);
+        }
 
     }
 }

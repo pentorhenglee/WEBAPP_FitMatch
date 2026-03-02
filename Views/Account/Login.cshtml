@@ -1,3 +1,13 @@
+@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/Account.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+}  
+
 <div class="container">
     <div>
         <h2 class="card">Sign In</h2>
@@ -23,10 +33,63 @@
             Don't have an account? <a asp-action="Register">Create one here</a>
         </p>
     </div>
-</div>
+</div> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/Account.css" asp-append-version="true" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        /* Ensuring the layout fills the screen since we aren't using _Layout */
+        body {
+            margin: 0;
+            background-color: #121212;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+        <div class="hero-section">
+            <p class="tagline">ITS TIME TO</p>
+            <div id="dynamic-logo" class="run-logo"></div>
+        </div>
+
+        <div class="form-section">
+            <div class="login-card">
+                <h2>Welcome back!</h2>
+                <p class="subtitle">Login</p>
+                
+                <form id="loginForm">
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="text" placeholder="Username" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-circle-user"></i>
+                        <input type="password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="login-btn">LOGIN</button>
+                </form>
+                
+                <p class="signup-text">Dont have an account? <a href="#">Sign up!</a></p>
+            </div>
+        </div>
+    </div>
 
 <script>
-    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+        document.getElementById("loginForm").addEventListener("submit", async function (e) {
         e.preventDefault();
         
         const email = document.getElementById("email").value.trim();
@@ -71,4 +134,55 @@
             spinner.classList.add("d-none");
         }
     });
+
+    
+
+    const words = ["RUN", "CYCLE", "BASKETBALL", "SOCCER", "VOLLEYBALL"];
+let wordIndex = 0;
+const logoContainer = document.getElementById('dynamic-logo');
+
+function changeWord() {
+    const currentWord = words[wordIndex];
+    logoContainer.innerHTML = ''; // Clear previous word
+
+    // Create a column for each letter
+    [...currentWord].forEach((char, index) => {
+        const column = document.createElement('div');
+        column.className = 'column';
+        
+        // Stagger the entrance of each letter slightly
+        column.style.animationDelay = `${index * 0.05}s`;
+
+        // Create the 4 vertical repetitions
+        for (let i = 0; i < 4; i++) {
+            const span = document.createElement('span');
+            span.textContent = char;
+            column.appendChild(span);
+        }
+
+        logoContainer.appendChild(column);
+    });
+
+    // Cycle to next word
+    wordIndex = (wordIndex + 1) % words.length;
+}
+
+// Initial Run
+changeWord();
+
+// Swap word every 3 seconds
+setInterval(changeWord, 3000);
+
+// Simple Form Logic
+document.getElementById('loginForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const btn = document.querySelector('.login-btn');
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+    setTimeout(() => {
+        alert("Login successful!");
+        btn.innerHTML = "LOGIN";
+    }, 1500);
+});
 </script>
+</body>
+</html>
