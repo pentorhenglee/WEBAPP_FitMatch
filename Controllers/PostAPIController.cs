@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Xml;
 using System.Security.Cryptography.X509Certificates;
 using System.ComponentModel;
+using Microsoft.Extensions.FileProviders;
 
 namespace WEBAPP_FitMatch.Controllers
 {
@@ -318,6 +319,28 @@ namespace WEBAPP_FitMatch.Controllers
                 return NotFound("Post not found");
 
             return Ok(post);
+        }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var user_id = HttpContext.Session.GetInt32("user_id");
+            if (user_id == null)
+                return Unauthorized("User not logged in");
+
+            var post = await _db.Posts
+                .FirstOrDefaultAsync(p => p.PostId == id);
+
+            if (post == null)
+                return NotFound();
+
+            if (post.UserId != user_id.Value)
+                return Forbid();
+
+            _db.Posts.Remove(post);
+            await _db.SaveChangesAsync();
+
+            return Ok(new { message = "Delete successful" });
         }
 
     }

@@ -46,5 +46,27 @@ namespace WEBAPP_FitMatch.Controllers
             await _db.SaveChangesAsync();
             return Ok(member);
         }
+
+        [HttpDelete("leave/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var user_id = HttpContext.Session.GetInt32("user_id");
+            if (user_id == null) return Unauthorized("User not logged in");
+
+            var member = await _db.Members.FirstOrDefaultAsync(m=>m.PostId ==id && m.UserId == user_id.Value);
+            if (member == null) return NotFound("You are not member in this post");
+
+            if (member.Status == "owner") return BadRequest("Owner can not leave the post");
+
+            _db.Members.Remove(member);
+            await _db.SaveChangesAsync();
+
+            return Ok(new { message = "Leave post successful" });
+
+        }
+            
+
+            
+            
     }
 }
