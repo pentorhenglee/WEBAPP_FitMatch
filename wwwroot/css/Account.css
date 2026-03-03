@@ -128,8 +128,7 @@ h2 { margin: 0 0 8px 0; font-size: 1.8rem; }
     margin-top: 10px;
 }
 
-.login-btn, .register-btn:hover {
-    background-color: var(--accent);
+.login-btn:hover , .register-btn:hover {
     transform: translateY(-5px);
 }
 
@@ -182,12 +181,12 @@ input:-webkit-autofill:active {
     left: 30px;
     color: var(--text-muted);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 3rem;
     display: flex;
     align-items: center;
     gap: 5px;
 }
 
-.back-link i {
-    font-size: 3rem;
+.back-link:hover {
+    color: var(--accent);
 }
