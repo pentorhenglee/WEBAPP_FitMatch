@@ -247,6 +247,10 @@ namespace WEBAPP_FitMatch.Controllers
                         (p.Location != null && p.Location.Contains(query)) || 
                         (p.Description != null && p.Description.Contains(query)));
                 }
+                
+                var now = DateTime.UtcNow.AddHours(7);
+                post_filter = post_filter.Where(p => p.EventDateTime > now);
+                
 
                 var posts = await post_filter
                     .OrderByDescending(p => p.EventDateTime)
