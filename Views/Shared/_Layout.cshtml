@@ -40,13 +40,6 @@
                     
                     <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
                         id="displayUserAvatar" class="user-avatar" alt="Avatar"/>
-                    
-                    <div id="userDropdown" class="user-dropdown-menu">
-                        <a asp-controller="Profile" asp-action="Index" class="dropdown-item">My Profile</a>
-                        <a asp-controller="Dashboard" asp-action="Index" class="dropdown-item">Dashboard</a>
-                        <div class="dropdown-divider"></div>
-                        <button onclick="logout()" class="dropdown-item text-danger" style="width: 100%; text-align: left; background: none; border: none; font-family: inherit;">Logout</button>
-                    </div>
 
                 </div>
             }
@@ -69,7 +62,7 @@
     </div>
 
     <script>
-        @* async function fetchUserProfile() {
+        async function fetchUserProfile() {
             const userSection = document.getElementById('userSection');
             const authLinks = document.getElementById('authLinks');
 
@@ -97,7 +90,7 @@
                 console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
             }
         }
-        fetchUserProfile(); *@
+        fetchUserProfile();
 
         async function logout(){
             const res = await fetch('/api/auth/logout', {

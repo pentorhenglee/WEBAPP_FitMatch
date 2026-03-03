@@ -180,7 +180,8 @@ a { text-decoration: none; }
 }
 
 .text-danger:hover {
-  color: #ff4d4d !important;  
+  color: #ff4d4d !important; 
+  cursor: pointer;
 }
 
 /* ================= Auth Links (สถานะยังไม่ล็อกอิน) ================= */
@@ -218,4 +219,27 @@ a { text-decoration: none; }
     color: #000000 !important;
     transform: translateY(-2px); /* ลูกเล่นเด้งลอยขึ้นนิดนึงตอนชี้ */
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        padding: 0 20px;
+    }
+    
+    .links {
+        display: none; /* ซ่อนลิงก์หลักบนมือถือ */
+    }
+
+    .auth-links {
+        gap: 10px;
+    }
+
+    .auth-links .nav-link {
+        font-size: 0.9rem;
+    }
+
+    .auth-links .btn-register {
+        padding: 6px 18px;
+        font-size: 0.9rem;
+    }
 }
