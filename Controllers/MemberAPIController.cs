@@ -39,7 +39,7 @@ namespace WEBAPP_FitMatch.Controllers
             {
                 PostId = postid,
                 UserId = user_id.Value,
-                Status = "panding",
+                Status = "pending",
                 JoinedAt = DateTime.UtcNow,
             };
             _db.Members.Add(member);
