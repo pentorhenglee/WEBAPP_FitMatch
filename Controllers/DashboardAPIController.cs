@@ -38,7 +38,8 @@ namespace WEBAPP_FitMatch.Controllers
                 })
                 .ToListAsync();
 
-            var now = DateTime.UtcNow;
+            // DB เก็บเวลาไทย (ค่าจริงเป็น +7 แต่ Kind=Unspecified) → ต้องเทียบกับเวลาไทยเช่นกัน
+            var now = DateTime.UtcNow.AddHours(7);
 
             // 3. คัดแยก Upcoming (เวลายังไม่ถึง และ สถานะยังไม่ปิด)
             var upcoming = myPosts
