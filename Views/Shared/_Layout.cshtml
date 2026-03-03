@@ -70,7 +70,7 @@
     </div>
 
     <script>
-        @* async function fetchUserProfile() {
+        async function fetchUserProfile() {
             const userSection = document.getElementById('userSection');
             const authLinks = document.getElementById('authLinks');
 
@@ -98,7 +98,7 @@
                 console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
             }
         }
-        fetchUserProfile(); *@
+        fetchUserProfile();
 
         async function logout(){
             const res = await fetch('/api/auth/logout', {
