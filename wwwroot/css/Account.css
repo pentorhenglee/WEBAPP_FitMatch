@@ -1,13 +1,12 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--bg);
+    background: var(--bg);
     color: var(--text);
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    overflow-x: hidden;;
-    min-height: 100vh;
+    overflow-x: hidden;
     width: 100vw;
 }
 
@@ -65,28 +64,33 @@ body {
     to { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 
-/* Login Card Styling */
+/* Login / Register Card — Glassmorphism */
 .login-card, .register-card {
-    background-color: var(--surface);
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.09);
     padding: 50px 40px;
-    border-radius: 12px;
-    width: 400px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    border-radius: 20px;
+    width: 420px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55);
 }
 
 label {
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    color: var(--text);
-}   
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    letter-spacing: 0.03em;
+}
 
-h2 { margin: 0 0 8px 0; font-size: 1.8rem; }
+h2 { margin: 0 0 6px 0; font-size: 1.9rem; font-weight: 700; color: var(--text); }
 .subtitle { color: var(--text-muted); margin-bottom: 30px; font-size: 0.95rem; }
 
 .input-group {
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .input-group i {
@@ -94,63 +98,80 @@ h2 { margin: 0 0 8px 0; font-size: 1.8rem; }
     left: 15px;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--text-muted);
+    color: #555;
+    font-size: 0.9rem;
 }
 
 .input-group input {
     width: 100%;
-    padding: 14px 15px 14px 45px;
-    background: transparent;
-    border: 1px solid #3e3e3e;
-    border-radius: 6px;
+    padding: 13px 15px 13px 44px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
     color: var(--text);
-    font-size: 1rem;
+    font-size: 0.95rem;
     box-sizing: border-box;
     outline: none;
-    transition: border 0.3s;
+    transition: border-color 0.25s, background 0.25s;
+}
+
+.input-group input::placeholder {
+    color: #555;
 }
 
 .input-group input:focus {
     border-color: var(--accent);
+    background: rgba(46, 204, 113, 0.05);
 }
 
-.login-btn ,.register-btn {
+.login-btn, .register-btn {
     width: 100%;
     padding: 14px;
     background-color: var(--accent);
     border: none;
-    border-radius: 6px;
-    color: white;
+    border-radius: 10px;
+    color: #fff;
     font-weight: 700;
     font-size: 1rem;
+    letter-spacing: 0.08em;
     cursor: pointer;
-    transition: transform 0.2s, background-color 0.3s;
-    margin-top: 10px;
+    transition: opacity 0.2s, transform 0.15s;
+    margin-top: 14px;
 }
 
-.login-btn:hover , .register-btn:hover {
-    transform: translateY(-5px);
+.login-btn:hover, .register-btn:hover {
+    opacity: 0.88;
+    transform: translateY(-2px);
+}
+
+.login-btn:active, .register-btn:active {
+    transform: translateY(0);
+    opacity: 1;
 }
 
 .signup-text, .login-text {
     font-size: 0.85rem;
     color: var(--text-muted);
     text-align: center;
-    margin-top: 25px;
+    margin-top: 24px;
 }
 
-.signup-text , .login-text a {
+.signup-text a, .login-text a {
     color: var(--accent);
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 700;
+}
+
+.signup-text a:hover, .login-text a:hover {
+    text-decoration: underline;
 }
 
 input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 1000px var(--surface) inset !important;
-    -webkit-text-fill-color: var(--text)  !important;
+    -webkit-box-shadow: 0 0 0 1000px #1a1a1a inset !important;
+    -webkit-text-fill-color: var(--text) !important;
     border: 1px solid var(--accent) !important;
 }
 
@@ -160,19 +181,20 @@ input:-webkit-autofill:active {
 
 .error {
     color: #ff4d4d;
-    background: rgba(255, 77, 77, 0.1);
-    padding: 10px;
-    border-radius: 4px;
-    margin-bottom: 15px;
-    border: 1px solid #ff4d4d;
+    background: rgba(255, 77, 77, 0.08);
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255, 77, 77, 0.4);
+    font-size: 0.88rem;
 }
 
-.input-group.mismatch {
-    border: 1px solid #ff4d4d !important;
+.input-group.mismatch input {
+    border-color: #ff4d4d !important;
 }
 
-.input-group.match {
-    border: 1px solid var(--accent) !important;
+.input-group.match input {
+    border-color: var(--accent) !important;
 }
 
 .back-link {
@@ -185,6 +207,7 @@ input:-webkit-autofill:active {
     display: flex;
     align-items: center;
     gap: 5px;
+    transition: color 0.2s;
 }
 
 .back-link:hover {
