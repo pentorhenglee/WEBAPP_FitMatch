@@ -39,8 +39,6 @@ namespace WEBAPP_FitMatch.Controllers
             if (user_id == null)
                 return Unauthorized("User not logged in");
 
-
-
             var posts = await _db.Posts
                 .Where(p => p.UserId == user_id.Value)
                 .Select(p => new
@@ -57,7 +55,7 @@ namespace WEBAPP_FitMatch.Controllers
                     p.CreateDate,
                     p.MaxPeople,
                     p.ImageUrl,
-                    p.Status,
+                    Status = (p.Status == "open" && p.EventDateTime <= DateTime.UtcNow) ? "close" : p.Status,
 
 
                     Members = p.Members.Join(_db.Users,
@@ -94,13 +92,10 @@ namespace WEBAPP_FitMatch.Controllers
         public async Task<ActionResult> CreatePost([FromBody] CreatePostDto dto)
         {
             var user_id = HttpContext.Session.GetInt32("user_id");
-            if (user_id == null)
-                return Unauthorized("User not logged in ");
+            if (user_id == null) return Unauthorized("User not logged in ");
 
             var post = new Post
             {
-
-
                 Title = dto.Title,
                 CreateDate = DateTime.UtcNow,
                 EventDateTime = DateTime.SpecifyKind(dto.EventDateTime, DateTimeKind.Utc),
@@ -112,8 +107,6 @@ namespace WEBAPP_FitMatch.Controllers
                 ImageUrl = dto.ImageUrl,
                 Status = "open"
             };
-
-
 
             _db.Posts.Add(post);
             await _db.SaveChangesAsync();
@@ -137,8 +130,8 @@ namespace WEBAPP_FitMatch.Controllers
             };
             _db.Histories.Add(histories);
             await _db.SaveChangesAsync();
+            
             return Ok(post);
-
         }
 
         [HttpPut]
@@ -235,7 +228,10 @@ namespace WEBAPP_FitMatch.Controllers
         {                 
             try
             {               
-                var post_filter = _db.Posts.AsQueryable();
+                var post_filter = _db.Posts
+                    .Where(p => p.Status == "open")
+                    .AsQueryable();
+
                 if (!string.IsNullOrEmpty(category))
                 {
                     post_filter = post_filter.Where(p => p.SportType == category);
@@ -266,6 +262,7 @@ namespace WEBAPP_FitMatch.Controllers
                         p.ImageUrl,
                         p.Status,
 
+                        
 
                         Members = p.Members.Join(_db.Users,
                             m => m.UserId,
@@ -306,8 +303,7 @@ namespace WEBAPP_FitMatch.Controllers
         public async Task<ActionResult> GetPostDetail(int id)
         {
             var user_id = HttpContext.Session.GetInt32("user_id");
-            if (user_id == null)
-                return Unauthorized("User not logged in");
+            if (user_id == null) return Unauthorized("User not logged in");
 
             var post = await _db.Posts
                 .Where(p => p.PostId == id)

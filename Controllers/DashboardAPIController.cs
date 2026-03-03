@@ -16,43 +16,49 @@ namespace WEBAPP_FitMatch.Controllers
         }
 
         [HttpGet("my-activities")]
-        public async Task<IActionResult> GetMyActivities()
+        public async Task<ActionResult> GetMyActivities()
         {
-            // 1. เช็คว่าใครล็อกอินอยู่
-            var userId = HttpContext.Session.GetInt32("user_id");
-            if (userId == null) return Unauthorized(new { message = "กรุณาล็อกอิน" });
+            var user_id = HttpContext.Session.GetInt32("user_id");
+            if (user_id == null) return Unauthorized("User not logged in");
 
-            // 2. ดึงโพสต์ทั้งหมดที่เราเป็นสมาชิกอยู่ (รวมถึงโพสต์ที่เราเป็นคนสร้าง)
-            var myPosts = await _db.Posts
-                .Include(p => p.Members)
-                .Where(p => p.UserId == userId || p.Members.Any(m => m.UserId == userId))
-                .OrderBy(p => p.EventDateTime) 
-                .Select(p => new 
-                {
+            // 1. ดึง ID โพสต์ทั้งหมดที่ User คนนี้เข้าร่วม
+            var myJoinedPostIds = await _db.Members
+                .Where(m => m.UserId == user_id.Value)
+                .Select(m => m.PostId)
+                .ToListAsync();
+
+            // 🌟 ใช้ DateTime.UtcNow เป็นเกณฑ์มาตรฐานโลก
+            var currentTime = DateTime.UtcNow;
+
+            // 🌟 2. ให้ Database กรอง Upcoming: เวลายังไม่ถึง (>) และ ต้องยังเปิดรับอยู่ (open)
+            var upcoming = await _db.Posts
+                .Where(p => myJoinedPostIds.Contains(p.PostId) && p.Status.ToLower() == "open" && p.EventDateTime > currentTime)
+                .OrderBy(p => p.EventDateTime) // เรียงจากงานที่ใกล้จะถึงที่สุดขึ้นก่อน
+                .Select(p => new {
                     p.PostId,
                     p.Title,
                     p.Location,
                     p.EventDateTime,
-                    p.Status,
-                    p.SportType // ดึงประเภทกีฬามาด้วยเพื่อไปเปลี่ยนไอคอนที่หน้าเว็บ
-                })
-                .ToListAsync();
+                    p.SportType
+                }).ToListAsync();
 
-            var now = DateTime.UtcNow;
+            // 🌟 3. ให้ Database กรอง History: เวลาผ่านไปแล้ว (<=) หรือ โพสต์ถูกปิดไปแล้ว (close)
+            var history = await _db.Posts
+                .Where(p => myJoinedPostIds.Contains(p.PostId) && (p.Status.ToLower() == "close" || p.EventDateTime <= currentTime))
+                .OrderByDescending(p => p.EventDateTime) // เรียงจากงานที่เพิ่งจบไปหางานเก่าๆ
+                .Select(p => new {
+                    p.PostId,
+                    p.Title,
+                    p.Location,
+                    p.EventDateTime,
+                    p.SportType
+                }).ToListAsync();
 
-            // 3. คัดแยก Upcoming (เวลายังไม่ถึง และ สถานะยังไม่ปิด)
-            var upcoming = myPosts
-                .Where(p => p.EventDateTime > now && p.Status.ToLower() != "closed" && p.Status.ToLower() != "close")
-                .ToList();
-
-            // 4. คัดแยก History (เวลาผ่านมาแล้ว หรือ สถานะถูกปิดไปแล้ว)
-            var history = myPosts
-                .Where(p => p.EventDateTime <= now || p.Status.ToLower() == "closed" || p.Status.ToLower() == "close")
-                .OrderByDescending(p => p.EventDateTime) 
-                .ToList();
-
-            // 5. ส่งข้อมูล 2 ก้อนกลับไปให้ JavaScript ที่หน้าเว็บ
-            return Ok(new { upcoming, history });
+            return Ok(new 
+            {
+                upcoming = upcoming,
+                history = history
+            });
         }
 
         [HttpGet("stats")]
