@@ -71,6 +71,28 @@
         const currentPostId = @ViewBag.PostId; 
         let globalPostData = null; 
 
+        function getSportPlaceholder(sportType) {
+            const map = {
+                'Running':    '/images/running_placeholder.jpg',
+                'Soccer':     '/images/soccer_placeholder.jpg',
+                'Basketball': '/images/basketball_placeholder.jpg',
+                'Volleyball': '/images/volleyball_placeholder.jpg',
+                'Cycling':    '/images/biking_placeholder.jpg',
+            };
+            return map[sportType] || '/images/placeholder-default.jpg';
+        }
+
+        function getSportIcon(sportType) {
+            const icons = {
+                'Running': 'fa-running',
+                'Cycling': 'fa-bicycle',
+                'Basketball': 'fa-basketball-ball',
+                'Soccer': 'fa-futbol',
+                'Volleyball': 'fa-volleyball-ball'
+            };
+            return icons[sportType] || 'fa-infinity';
+        }
+
         // ==========================================
         // 1. ดึงข้อมูลโพสต์หลัก
         // ==========================================
@@ -96,14 +118,16 @@
                 if (data.imageUrl && data.imageUrl.trim() !== "") {
                     coverImg.src = data.imageUrl;
                 } else {
-                    coverImg.src = 'https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=2070&auto=format&fit=crop'; // รูปกีฬากลางๆ
+                    coverImg.src = getSportPlaceholder(data.sportType);
                 }
                 coverImg.style.display = "block";
 
                 document.getElementById('displayTitle').innerText = data.title;
                 
-                // ตกแต่ง Meta data (สถานที่ วันเวลา)
+                // ตกแต่ง Meta data (สถานที่ วันเวลา และประเภทกีฬา)
+                const sportIconClass = getSportIcon(data.sportType);
                 document.getElementById('displayMeta').innerHTML = `
+                    <span style="color: #2ecc71; font-weight: bold;"><i class="fas ${sportIconClass}"></i> ${(data.sportType || 'Unknown Sport').toUpperCase()}</span>
                     <span><i class="fa-solid fa-location-dot"></i> ${data.location}</span>
                     <span><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
                     <span><i class="fa-regular fa-clock"></i> ${timeStr}</span>

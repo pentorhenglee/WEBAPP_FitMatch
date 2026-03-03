@@ -164,14 +164,14 @@
 
         posts.forEach(post => {
             const card = document.createElement('div');
-            card.className = 'post-card';
-
-        sortedPosts.forEach(post => {
-            const card = document.createElement('div');
             card.className = `post-card ${post.status === 'close' ? 'post-closed' : ''}`;
+            const sportIconClass = getSportIcon(post.sportType);
         
             card.innerHTML = `
                 <div class="card-image">
+                    <div class="sport-icon-badge">
+                        <i class="fas ${sportIconClass}"></i>
+                    </div>
                     <img src="${post.imageUrl || getSportPlaceholder(post.sportType)}" alt="${post.title || 'Post Image'}" />
                 </div>
                 
