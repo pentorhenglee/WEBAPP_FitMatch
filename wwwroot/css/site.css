@@ -180,7 +180,8 @@ a { text-decoration: none; }
 }
 
 .text-danger:hover {
-  color: #ff4d4d !important;  
+  color: #ff4d4d !important; 
+  cursor: pointer;
 }
 
 /* ================= Auth Links (สถานะยังไม่ล็อกอิน) ================= */

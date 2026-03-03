@@ -22,7 +22,7 @@
 .profile-card {
     display: flex;
     flex-direction: row;
-    width: 600px;
+    width: 550px;
     max-width: 850px;
     background: rgba(92, 76, 76, 0.03); /* Subtle tint */
     backdrop-filter: blur(15px); /* Frost effect */
