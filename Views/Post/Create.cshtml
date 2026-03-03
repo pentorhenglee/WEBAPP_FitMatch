@@ -52,7 +52,7 @@
 
                 <div class="form-group full-width">
                     <label>Cover Image URL (Optional)</label>
-                    <input type="url" id="postImageUrl" placeholder="https://example.com/image.jpg" />
+                    <input type="url" id="postImageUrl" placeholder="" />
                 </div>
 
                 <div class="form-group full-width">
@@ -87,7 +87,7 @@
                 MaxPeople: parseInt(document.getElementById('postMaxPeople').value),
                 Location: document.getElementById('postLocation').value,
                 EventDateTime: `${dateVal}T${timeVal}:00`,
-                ImageUrl: document.getElementById('postImageUrl').value,
+                ImageUrl: document.getElementById('postImageUrl').value || null,
                 Description: document.getElementById('postDescription').value
             };
 

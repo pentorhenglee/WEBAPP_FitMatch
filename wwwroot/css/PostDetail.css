@@ -1,294 +1,300 @@
+
 /* ============================================================
-   Post Detail Layout
-   ============================================================ */
+    Theme หลัก ดึงมาจาก Dashboard
+    ============================================================ */
 .post-detail-container {
     display: flex;
-    max-width: 1500px;
-    margin: 40px auto;
-    background-color: #4a4a4a; /* สีพื้นหลังของกล่องรวม */
-    height: 700px;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    gap: 20px;
+    align-items: stretch;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    height: calc(90vh - 80px); 
 }
 
 /* ============================================================
-   ฝั่งซ้าย: กล่อง Chat
-   ============================================================ */
+    ฝั่งซ้าย: กล่อง Chat
+    ============================================================ */
 .post-chat-section {
-    width: 300px;
-    background-color: #555555;
+    width: 400px;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
     display: flex;
     flex-direction: column;
-    border-right: 1px solid #333;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    flex-shrink: 0;
 }
 
 .chat-header {
-    padding: 20px;
+    padding: 20px 30px;
     font-size: 1.5rem;
     font-weight: bold;
-    border-bottom: 1px solid #444;
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255,255,255,0.02);
 }
 
 .chat-messages {
     flex: 1;
-    padding: 15px;
+    padding: 20px 30px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
 }
 
-/* ============================================================
-   Chat UI (มีรูปโปรไฟล์และชื่อ)
-   ============================================================ */
+/* สไตล์ Scrollbar ให้กลืนกับ Theme */
+.chat-messages::-webkit-scrollbar { width: 6px; }
+.chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+/* การจัดวางข้อความ Chat */
 .chat-message-wrapper {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     margin-bottom: 8px;
-    align-items: flex-end; /* ให้รูปโปรไฟล์อยู่ระดับเดียวกับขอบล่างของแชท */
+    align-items: flex-end; 
 }
+.chat-message-wrapper.others { flex-direction: row; align-self: flex-start; }
+.chat-message-wrapper.mine { flex-direction: row-reverse; align-self: flex-end; }
 
-/* ฝั่งคนอื่น (อยู่ซ้าย) */
-.chat-message-wrapper.others {
-    flex-direction: row;
-    align-self: flex-start;
-}
-
-/* ฝั่งเราเอง (อยู่ขวา) */
-.chat-message-wrapper.mine {
-    flex-direction: row-reverse; /* สลับให้รูปไปอยู่ขวา */
-    align-self: flex-end;
-}
-
-/* รูปโปรไฟล์แชท */
 .chat-avatar {
-    width: 28px;
-    height: 28px;
+    width: 32px; height: 32px;
     border-radius: 50%;
     object-fit: cover;
-    background-color: #777;
+    background-color: #555;
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
-/* กล่องห่อชื่อและข้อความ */
-.chat-message-content {
-    display: flex;
-    flex-direction: column;
-    max-width: 200px;
-}
-
+.chat-message-content { display: flex; flex-direction: column; max-width: 250px; }
 .chat-message-wrapper.others .chat-message-content { align-items: flex-start; }
 .chat-message-wrapper.mine .chat-message-content { align-items: flex-end; }
 
-/* ชื่อคนพิมพ์ */
-.chat-username {
-    font-size: 0.65rem;
-    color: #aaaaaa;
-    margin-bottom: 3px;
-    padding: 0 5px;
-}
+.chat-username { font-size: 0.7rem; color: #aaaaaa; margin-bottom: 4px; padding: 0 5px; }
+.chat-time { font-size: 0.6rem; color: #888888; margin-left: 5px; font-weight: normal; }
 
-/* เพิ่มสไตล์สำหรับเวลาแชท */
-.chat-time {
-    font-size: 0.55rem;
-    color: #888888;
-    margin-left: 5px;
-    font-weight: normal;
-}
-
-/* บับเบิ้ลข้อความ */
 .chat-bubble {
-    padding: 8px 12px;
-    border-radius: 15px;
-    font-size: 0.85rem;
+    padding: 10px 15px;
+    border-radius: 18px;
+    font-size: 0.9rem;
     word-wrap: break-word;
+    line-height: 1.4;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
-
 .chat-message-wrapper.others .chat-bubble {
-    background-color: #666;
-    color: white;
-    border-bottom-left-radius: 2px; /* ทำมุมแหลมชี้ไปหารูป */
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-bottom-left-radius: 4px; 
+    border: 1px solid rgba(255,255,255,0.05);
 }
-
 .chat-message-wrapper.mine .chat-bubble {
-    background-color: var(--accent);
-    color: #000;
-    border-bottom-right-radius: 2px; /* ทำมุมแหลมชี้ไปหารูป */
+    background: var(--accent); /* สีเขียวหลัก */
+    color: #000000;
+    border-bottom-right-radius: 4px; 
+    font-weight: 500;
 }
 
+/* ช่องพิมพ์ข้อความ */
 .chat-input-area {
-    padding: 15px;
-    background-color: #4a4a4a;
+    padding: 20px 30px;
+    background: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
-    gap: 10px;
+    gap: 12px;
+    align-items: center;
 }
-
 .chat-input-area input {
     flex: 1;
-    padding: 10px;
-    border-radius: 20px;
-    border: none;
-    outline: none;
-    background-color: #333;
+    padding: 12px 20px;
+    border-radius: 25px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
     color: white;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+.chat-input-area input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: rgba(255,255,255,0.1);
+}
+/* ============================================================
+    ช่องพิมพ์ข้อความ และปุ่มส่ง (Chat Input Area)
+    ============================================================ */
+.chat-input-area button {
+    width: 42px; 
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08); /* พื้นหลังจางๆ สไตล์ Glass */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--accent); /* 🌟 เปลี่ยนสีลูกศรเป็นสีเขียวหลักของเว็บ */
+    cursor: pointer;
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.chat-input-area button i {
+    font-size: 1.1rem; /* ขนาดลูกศร */
+}
+
+.chat-input-area button:active {
+    transform: scale(0.9); /* ยุบลงนิดนึงตอนกดจริง */
 }
 
 /* ============================================================
-   ฝั่งขวา: รายละเอียดโพสต์ & ปุ่ม Join
-   ============================================================ */
+    ฝั่งขวา: รายละเอียดโพสต์ & ปุ่ม Join
+    ============================================================ */
 .post-info-section {
-    flex: 1;
+    flex-grow: 1;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     position: relative;
 }
 
-/* รูปภาพด้านบน */
 .post-cover-img {
     width: 100%;
-    height: 300px;
+    height: 35vh; /* ความสูงแบบยืดหยุ่น */
     object-fit: cover;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
-/* กล่องรายละเอียดตรงกลาง */
 .post-details {
-    padding: 30px;
+    padding: 40px;
     flex: 1;
-    background-color: #666666; /* สีเทาตามดีไซน์ */
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+.post-details::-webkit-scrollbar { width: 6px; }
+.post-details::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+.post-details h2 { margin-bottom: 15px; font-size: 2.5rem; color: #ffffff; }
+.post-meta { font-size: 0.95rem; color: #aaaaaa; margin-bottom: 25px; display:flex; gap: 15px; align-items: center;}
+.post-meta i { color: var(--accent); }
+.post-desc { font-size: 1.05rem; line-height: 1.6; color: #dddddd; margin-bottom: 30px; }
+
+.participants-count {
+    margin-top: auto; /* ดันลงล่างสุดถ้ามีที่เหลือ */
+    font-size: 1.1rem;
+    color: #ffffff;
+    background: rgba(255,255,255,0.05);
+    padding: 15px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    display: inline-block;
+    align-self: flex-start;
 }
 
-.post-details h2 { margin-bottom: 10px; font-size: 2rem; }
-.post-meta { font-size: 0.9rem; color: #ccc; margin-bottom: 20px; }
-.post-desc { font-size: 1rem; line-height: 1.5; color: #eee; }
-
-/* ปุ่ม Join ขวาล่าง */
-.join-btn-container {
+/* ============================================================
+    ปุ่ม Actions (ขวาล่าง)
+    ============================================================ */
+#actionButtonsArea {
     position: absolute;
-    bottom: 0;
-    right: 0;
+    bottom: 30px;
+    right: 40px;
 }
 
 .btn-join {
-    background-color: #e0e0e0; /* สีขาวเทาตามรูป */
-    color: #000;
-    border: none;
-    padding: 20px 50px;
-    margin: 10px 10px;
-    font-size: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--accent);
+    border: 1px solid rgba(46, 204, 113, 0.4);
+    padding: 15px 40px;
+    font-size: 1.2rem;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s;
-    border-radius: 15px;
+    transition: all 0.3s;
+    border-radius: 30px;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    letter-spacing: 1px;
+}
+.btn-join:hover:not(:disabled) {
+    background: rgba(46, 204, 113, 0.15);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+.btn-join:disabled {
+    background-color: #555 !important;
+    color: #aaa !important;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
 }
 
-.btn-join:hover {
-    background-color: var(--accent); /* แก้เป็น --accent แล้ว */
-    color: white;
-}
-
-/* ============================================================
-   ปุ่มสำหรับเจ้าของโพสต์ (Owner Actions)
-   ============================================================ */
+/* ปุ่มฝั่ง Owner */
 .owner-actions-container {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    display: none; /* ซ่อนไว้ก่อน JS จะเป็นตัวเปิด */
+    display: none; 
+    gap: 15px;
 }
-
 .owner-actions-container button {
-    border: none;
-    padding: 20px 30px;
-    margin: 10px 10px;
-    border-radius: 15px;
-    font-size: 1.1rem;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 12px 25px;
+    border-radius: 30px;
+    font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.3s;
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    backdrop-filter: blur(5px);
 }
-
-.btn-manage {
-    background-color: #e0e0e0; /* สีเทา */
-    color: #000;
-}
-.btn-manage:hover { background-color: #ccc; }
-
-.btn-edit {
-    background-color: #e0e0e0; /* สีเทา */
-    color: #000;
-}
-.btn-edit:hover { background-color: #ccc; }
-
-.btn-close {
-    background-color: #e0e0e0; /* สีเทา */
-    color: #000;
-}
-.btn-close:hover { background-color: #ccc; }
+.owner-actions-container button:hover { background: rgba(255,255,255,0.15); border-color: #fff; }
+.owner-actions-container .btn-close:hover { background: #ff4d4d; border-color: #ff4d4d; color: white; }
 
 /* ============================================================
-   Participants Modal Styles
-   ============================================================ */
+    Participants Modal 
+    ============================================================ */
 .modal-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    display: flex; justify-content: center; align-items: center;
     z-index: 1000;
 }
-
 .modal-content {
-    background-color: #2a2a2a;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 400px;
-    padding: 20px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    background: #2a2a2a;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    width: 90%; max-width: 450px;
+    padding: 30px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
 }
-
 .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #444;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-bottom: 15px; margin-bottom: 20px;
 }
-
-.modal-header h3 { margin: 0; color: #fff; }
-
-.close-modal {
-    font-size: 24px;
-    cursor: pointer;
-    color: #888;
-}
+.modal-header h3 { margin: 0; color: #fff; font-size: 1.5rem; }
+.close-modal { font-size: 28px; cursor: pointer; color: #aaa; transition: 0.2s; }
 .close-modal:hover { color: #fff; }
 
 .participant-item {
-    display: flex;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #333;
+    display: flex; align-items: center; padding: 12px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 12px; margin-bottom: 10px;
+    border: 1px solid rgba(255,255,255,0.05);
 }
-.participant-item:last-child { border-bottom: none; }
-
 .participant-avatar {
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    background-color: #555;
-    margin-right: 15px;
-    object-fit: cover;
+    width: 45px; height: 45px; border-radius: 50%;
+    background-color: #555; margin-right: 15px; object-fit: cover;
 }
-
 .participant-info { flex-grow: 1; }
-.participant-name { color: #fff; font-weight: bold; }
-.participant-role { font-size: 0.8rem; color: #aaa; }
+.participant-name { color: #fff; font-weight: bold; font-size: 1rem; }
 .owner-badge {
-    background-color: var(--accent);
-    color: white;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    margin-left: 8px;
+    background-color: var(--accent); color: #000;
+    padding: 3px 8px; border-radius: 12px; font-size: 0.7rem; margin-left: 10px; font-weight: bold;
 }
