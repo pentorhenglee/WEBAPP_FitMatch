@@ -1,29 +1,43 @@
 body {
-    background: #0f0f0f;
     font-family: 'Segoe UI';
     background: radial-gradient(circle at top left, #0f2027, #000000 60%);
     margin: 0;
     padding: 0;
 }
 
+.fixed-top-section {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    z-index: 500;
+    background: #0f0f0f;
+    padding-bottom: 20px;
+    transition: none;
+}
+
+.main-content {
+    margin-left: 100px;
+    max-width: 100%;
+    margin-right: 60px;
+    transition: margin-left 0.4s ease, margin-right 0.4s ease;
+}
+
 .welcome-message {
     color: #2ecc71;
-    font-size: 25px;
+    font-size: 20px;
     text-align: center;
     font-weight: bold;
 }
 
-/* ส่วนที่ครอบทั้ง Search Bar และปุ่ม + */
 .search-container {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 15px;
-    /* ระยะห่างระหว่างช่องค้นหากับปุ่มบวก */
     margin-top: 50px;
 }
 
-/* ตัว Search Bar ที่เป็นกระจกใส */
 .search-bar {
     display: flex;
     align-items: center;
@@ -33,10 +47,8 @@ body {
     padding: 5px 20px;
     width: 600px;
     backdrop-filter: blur(5px);
-    /* เพิ่มเอฟเฟกต์กระจกฝ้า (ถ้าต้องการ) */
 }
 
-/* ปรับแต่งช่องพิมพ์ข้อความข้างใน */
 .search-bar input {
     background: transparent;
     border: none;
@@ -46,11 +58,9 @@ body {
     outline: none;
     font-size: 16px;
     text-align: left;
-    /* ให้ตัวหนังสืออยู่ตรงกลางแบบในรูป */
     letter-spacing: 1px;
 }
 
-/* ปรับแต่งสี Placeholder ให้จางลง */
 .search-bar input::placeholder {
     color: rgba(255, 255, 255, 0.4);
 }
@@ -131,13 +141,17 @@ body {
     color: white;
 }
 
+.category-sidebar:hover~.main-content {
+    margin-left: 240px;
+}
+
 /* จัดกลุ่ม Card ให้เรียงเป็นแถวละ 3 ตัว (Responsive) */
 .posts-display {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 40px;
     padding: 20px;
-    width: 90%;
+    width: 100%;
     margin: 0 auto;
 }
 
@@ -145,7 +159,7 @@ body {
 .post-card {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 15px;
+    border-radius: 20px;
     overflow: hidden;
     transition: 0.3s;
     cursor: pointer;
@@ -155,12 +169,14 @@ body {
 .post-card:hover {
     transform: translateY(-5px);
     background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(46, 204, 113, 0.3);
 }
 
 /* ส่วนรูปภาพและไอคอนมุมขวา */
 .card-image {
     position: relative;
     height: 180px;
+    opacity: 0.9;
 }
 
 .card-image img {
@@ -184,6 +200,13 @@ body {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
+.post-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    margin-top: 10px;
+}
+
 /* เนื้อหาภายในการ์ด */
 .card-content {
     padding: 15px;
@@ -195,20 +218,33 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-top: 10px;
-    font-size: 14px;
+    font-size: px;
+}
+
+.post-meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    width: 100%;
 }
 
 .post-location {
+    font-size: 20px;
     font-weight: bold;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .post-date {
     color: #aaa;
-    font-size: 12px;
+    font-size: 16px;
+    text-align: right;
 }
 
 .post-description {
-    font-size: 12px;
+    font-size: 14px;
     color: #ccc;
     margin: 10px 0;
     display: -webkit-box;
@@ -220,18 +256,32 @@ body {
 /* ส่วนท้ายของการ์ด (จำนวนคนและปุ่ม View More) */
 .card-footer {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     padding: 10px 15px;
-    background: rgba(255, 255, 255, 0.03);
+    background: transparent;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .view-more-btn {
-    color: #2ecc71;
-    text-decoration: none;
-    font-size: 12px;
-    font-weight: bold;
+    background: #ffffff;
+    color: black;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+}
+
+/* Hover Glow */
+.view-more-btn:hover {
+    background: #27ae60;
+    transform: scale(1.07);
+    box-shadow: 0 0 18px rgba(46, 204, 113, 0.7);
 }
 
 .no-post {
@@ -243,4 +293,108 @@ body {
     font-size: 28px;
     color: #2ecc71;
     width: 100%;
+}
+
+.mission-sidebar {
+    position: fixed;
+    top: 50%;
+    right: 0;
+    width: 60px;
+    height: auto;
+    max-height: 80vh;
+    transform: translateY(-50%);
+    background: rgba(26, 26, 26, 0.95);
+    z-index: 1000;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    border-radius: 20px 0 0 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    overflow: hidden;
+    display: flex;
+}
+
+/* เมื่อ Hover ให้กางออกกว้างพอสำหรับอ่าน Mission */
+.mission-sidebar:hover {
+    width: 350px;
+    padding: 20px;
+    background: rgba(20, 20, 20, 0.98);
+}
+
+/* จัดการส่วนตัวอักษรแนวตั้ง */
+.mission-text-container {
+    min-width: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* ส่วนเนื้อหาภารกิจที่ซ่อนไว้ */
+.mission-content-hover {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease;
+    width: 100%;
+    padding-left: 20px;
+}
+
+.mission-sidebar:hover .mission-content-hover {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ปรับ Mission Item ให้เล็กลงพอดีกับ Sidebar */
+.mission-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.mission-item input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 28px;
+    height: 28px;
+    background: #fff;
+    /* สีขาวเริ่มต้น */
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.3s;
+}
+
+/* เมื่อติ๊กถูกให้เป็นสีเขียว */
+.mission-item input[type="checkbox"]:checked {
+    background: #2ecc71;
+}
+
+/* ใส่เครื่องหมายถูกสีดำ */
+.mission-item input[type="checkbox"]:checked::after {
+    content: '\f00c';
+    /* FontAwesome Check Icon */
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    color: black;
+    font-size: 16px;
+    left: 4px;
+    top: 1px;
+}
+
+/* ปรับฟอนต์ข้อความใน Mission */
+.mission-item label {
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.mission-sidebar:hover~.main-content {
+    margin-right: 320px;
 }

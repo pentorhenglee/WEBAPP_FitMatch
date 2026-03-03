@@ -31,9 +31,26 @@
         </div>
     </div>
 
-    <div class="main-content">
+    <div class="mission-sidebar" id="missionSidebar">
+        <div class="mission-text-container">
+            <span>M</span>
+            <span>I</span>
+            <span>S</span>
+            <span>S</span>
+            <span>I</span>
+            <span>O</span>
+            <span>N</span>
+        </div>
+        
+        <div class="mission-content-hover">
+            <div id="missionListContainer" class="mission-list">
+            </div>
+        </div>
+    </div>
+
+    <div class="fixes-top-section">
         <div class="welcome-message">
-             <h1>Find Your Fitness Community</h1>
+            <h1>Find Your Fitness Community</h1>
         </div>
         
         <div class="search-container">
@@ -46,13 +63,72 @@
             +
             </button>
         </div>
+    </div>
 
+    <div class="main-content">
         <div id="postsDisplay" class="posts-display"></div>
     </div>
 </div>
 
 
 <script>
+    async function fetchMissions() {
+        const container = document.getElementById('missionListContainer'); 
+        try {
+            const response = await fetch('/api/missions');
+            if (!response.ok) throw new Error('Network response was not ok');
+            
+            const missions = await response.json();
+            renderMissionList(missions); 
+
+        } catch (error) {
+            console.error('Error fetching missions:', error);
+            if (container) {
+                container.innerHTML = '<p style="color: #aaa; text-align: center;">Failed to load missions.</p>';
+            }
+        }
+    }
+
+    async function updateMissionStatus(missionId, isCompleted) {
+        try {
+            const response = await fetch(`/api/missions/${missionId}/status`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ isCompleted: isCompleted }) 
+            });
+
+            if (!response.ok) throw new Error('Update failed');
+            console.log(`Mission ${missionId} updated to ${isCompleted}`);
+
+        } catch (error) {
+            console.error('Update error:', error);
+            alert('Failed to update mission status.');
+            // คืนค่า checkbox กลับไปสถานะเดิมถ้าล้มเหลว
+            const checkbox = document.getElementById(`m-${missionId}`);
+            if(checkbox) checkbox.checked = !isCompleted;
+        }
+    }
+
+    function renderMissionList(missions) {
+        const container = document.getElementById('missionListContainer');
+        if (!container) return;
+        
+        container.innerHTML = ''; 
+
+        missions.forEach(mission => {
+            const item = document.createElement('div');
+            item.className = 'mission-item';
+            
+            item.innerHTML = `
+                <input type="checkbox" id="m-${mission.id}" 
+                    ${mission.isCompleted ? 'checked' : ''} 
+                    onchange="updateMissionStatus(${mission.id}, this.checked)">
+                <label for="m-${mission.id}">${mission.title}</label>
+            `;
+            container.appendChild(item);
+        });
+    }
+
     async function renderPosts(posts) {
         const postsDisplay = document.getElementById('postsDisplay');
         postsDisplay.innerHTML = '';
@@ -66,21 +142,38 @@
             const card = document.createElement('div');
             card.className = 'post-card';
 
-            card.onclick = () => {
-                window.location.href = `/Post/Detail?id=${post.postId}`;
-            };
-
             card.innerHTML = `
                 <div class="card-image">
                     <img src="${post.imageUrl || '/images/default-post.jpg'}" alt="${post.title || 'Post Image'}" />
                 </div>
                 <div class="card-content">
                     <h3 class="post-title">${post.title || 'Untitled'}</h3>
-                    <p class="post-location">${post.location || 'Unknown Location'}</p>
-                    <p class="post-date">${post.eventDateTime || 'TBA'}</p>
+                    
+                    <div class="post-meta-row">
+                        <p class="post-location">
+                            <i class="fas fa-map-marker-alt"></i> ${post.location || 'Unknown Location'}
+                        </p>
+                        <p class="post-date">
+                            <i class="fas fa-calendar-alt"></i> ${post.eventDateTime || 'TBA'}
+                        </p>
+                    </div>
                     <p class="post-description">${post.description || ''}</p>
                 </div>
-            `;
+
+                <div class="card-footer">
+                    <button class="view-more-btn" data-post-id="${post.postId}">View More</button>
+                </div>
+                `;
+
+            const viewMoreBtn = card.querySelector(".view-more-btn");
+            viewMoreBtn.addEventListener("click", function (e) {
+                e.stopPropagation();
+                const id = this.getAttribute("data-post-id"); 
+                if (id) {
+                    window.location.href = `/Post/Detail?id=${id}`;
+                }
+            });
+
             postsDisplay.appendChild(card);
         });
     }
@@ -91,7 +184,6 @@
             if (query && query.trim() !== "") params.append('query', query.trim());
             if (category && category.trim() !== "") params.append('category', category.trim());
 
-            // build URL using all parameters collected in params
             const queryString = params.toString();
             const url = `/api/all_post${queryString ? '?' + queryString : ''}`;
 
@@ -111,17 +203,8 @@
     // เมื่อโหลดหน้าเว็บ: เรียกโดยไม่ส่งค่า (ดึงทั้งหมด)
     document.addEventListener('DOMContentLoaded', () => {
         fetchSearchResults(null); 
+        fetchMissions();
     });
-
-    // เมื่อคลิกปุ่ม SEARCH: ดึงค่าจาก Input มาส่งให้ฟังก์ชัน
-    // document.getElementById('searchButton').addEventListener('click', () => {
-    //     const query = document.getElementById('searchInput').value;
-    //     if (!query.trim()) {
-    //         alert('Please enter a search term.');
-    //         return;
-    //     }
-    //     fetchSearchResults(query);
-    // });
 
     document.getElementById('searchButton').addEventListener('click', () => {
         const query = document.getElementById('searchInput').value;
@@ -132,19 +215,6 @@
         fetchSearchResults(query, activeCat);
     });
 
-    // เมื่อกดปุ่ม Enter
-    // document.getElementById('searchInput').addEventListener('keydown', function(event) {
-    //     if (event.key === 'Enter') {
-    //         event.preventDefault();
-    //         const query = event.target.value;
-    //         if (!query.trim()) {
-    //             alert('Please enter a search term.');
-    //             return;
-    //         }
-    //         fetchSearchResults(query);
-    //     }
-    // });
-    
     document.getElementById('searchInput').addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
             event.preventDefault();
