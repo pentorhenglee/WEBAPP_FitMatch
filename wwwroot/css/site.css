@@ -34,7 +34,6 @@ a { text-decoration: none; }
   align-items: center;
   justify-content: space-between;
   gap: 40px;       
-  
   display: flex;
   flex-direction: row;
   background: rgba(255, 255, 255, 0.03); /* Subtle white tint */
@@ -43,7 +42,6 @@ a { text-decoration: none; }
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-bottom-left-radius: 24px;
   border-bottom-right-radius: 24px;
-  overflow: hidden;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 
   position: fixed;
@@ -97,8 +95,6 @@ a { text-decoration: none; }
 .text-fit { color: var(--text); }
 .text-match { color: var(--accent); }
 
-
-
 /* ฝั่งขวา: ข้อมูล User */
 .user-section {
   display: flex;
@@ -130,6 +126,8 @@ a { text-decoration: none; }
   object-fit: cover;
 }
 
+
+
 /* ============================================================
    พื้นที่ตรงกลาง (Dashboard)
    ============================================================ */
@@ -138,45 +136,89 @@ a { text-decoration: none; }
   margin-top: var(--navbar-h);
 }
 
-/* ================= Dropdown Menu ================= */
-.user-dropdown-menu {
-    display: none;
-    position: absolute;
-    top: 60px; /* ระยะห่างจากด้านบน (ปรับให้ตรงกับความสูง Navbar) */
-    right: 0;
-    background-color: #333333;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
-    border-radius: 8px;
-    z-index: 1000;
-    overflow: hidden;
+/* ================= Notification Menu ================= */
+.notification-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
-.user-dropdown-menu.show {
-    display: block;
+.notification-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 60px; 
+  right: 0;
+  width: 300px;
+  min-height: 50px;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.05); /* Slightly more visible tint */
+  backdrop-filter: blur(20px); /* Stronger frosted glass effect */
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  overflow: hidden; /* Ensures highlight doesn't bleed out of corners */
+}
+
+.notification-dropdown-menu.show {
+  display: block;
+}
+
+/* Base card style */
+.notification-card {
+  padding: 15px; /* Increased padding for better hit area */
+  background-color: transparent;
+  transition: background-color 0.2s ease;
+  text-align: left;
+}
+
+.notification-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.notification-card p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* FIX: Hover effect on the entire button area */
+.view-more-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  width: 100%;
+  cursor: pointer;
+  display: block; /* Ensures it fills the width */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Subtle separator */
+}
+
+.view-more-btn:last-child {
+  border-bottom: none;
+}
+
+/* HIGHLIGHT ALL: This targets the card inside the button when button is hovered */
+.view-more-btn:hover {
+  background-color: rgba(255, 255, 255, 0.15); /* Brighter highlight */
+}
+
+/* Keep the text color white on hover */
+.view-more-btn:hover h3 {
+  color: var(--accent); /* Optional: turn title green on hover */
 }
 
 .dropdown-item {
-    color: white;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.2s;
-    
-}
-
-.dropdown-item:hover {
-    background-color: #444444;
-    color: var(--accent); /* ใช้สีเขียวของเว็บเราเวลามีเมาส์ชี้ */
-}
-
-.dropdown-divider {
-    height: 1px;
-    margin: 0;
-    overflow: hidden;
-    background-color: #555555;
+  color: white;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
 }
 
 .text-danger:hover {

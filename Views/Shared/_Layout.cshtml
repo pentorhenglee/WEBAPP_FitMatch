@@ -12,7 +12,6 @@
         <nav class="navbar">
             @using Microsoft.AspNetCore.Http
             @{
-                // ดึงค่าจาก Session มาเช็คตรงๆ
                 var userName = Context.Session.GetString("user");
                 var userEmail = Context.Session.GetString("user_email");
                 var userAvatar = Context.Session.GetString("user_profile");
@@ -39,27 +38,24 @@
                         <div class="user-email" id="displayUserEmail">@userEmail</div>
                     </div>
                     
-                    <img src="@(string.IsNullOrEmpty(userAvatar) ? "/images/default-avatar.png" : userAvatar)" 
-                        id="displayUserAvatars" class="user-avatar" alt="Avatar"/>
+                    <button id="notificationBtn" class="notification-btn">
+                        <img src="@(string.IsNullOrEmpty(userAvatar) ? "/images/default-avatar.png" : userAvatar)" 
+                            id="displayUserAvatars" class="user-avatar" alt="Avatar"/>
+                    </button>
                     
-                    <div id="userDropdown" class="user-dropdown-menu">
-                        <a asp-controller="Profile" asp-action="Index" class="dropdown-item">My Profile</a>
-                        <a asp-controller="Dashboard" asp-action="Index" class="dropdown-item">Dashboard</a>
-                        <div class="dropdown-divider"></div>
-                        <button onclick="logout()" class="dropdown-item text-danger" style="width: 100%; text-align: left; background: none; border: none; font-family: inherit;">Logout</button>
+                    <div id="notificationDropdown" class="notification-dropdown-menu">
+                        <div id="notificationDisplay" class="notification-display"></div>
                     </div>
 
                 </div>
             }
             else
             {
-            <div id="authLinks"  class="auth-links">   
-                <a asp-controller="Account" asp-action="Login" class="nav-link">Login</a>
-                <a asp-controller="Account" asp-action="Register" class="nav-link btn-register">Register</a>
-            </div>
-
+                <div id="authLinks"  class="auth-links">   
+                    <a asp-controller="Account" asp-action="Login" class="nav-link">Login</a>
+                    <a asp-controller="Account" asp-action="Register" class="nav-link btn-register">Register</a>
+                </div>
             }
-
         </nav>
     </header>
 
@@ -84,7 +80,7 @@
                     document.getElementById('displayUserEmail').innerText = user.email;
                     
                     if (user.profileUrl && user.profileUrl !== "") {
-                        document.getElementById('displayUserAvatar').src = user.profileUrl;
+                        document.getElementById('displayUserAvatars').src = user.profileUrl;
                     }
 
                     userSection.style.display = 'flex';
@@ -113,9 +109,86 @@
             }
         }
 
-        document.querySelectorAll('.links a').forEach(a => {
-            if (a.href === window.location.href) a.classList.add('active');
-        });
+// Toggle dropdown when clicking the avatar or button
+document.getElementById('notificationBtn').addEventListener('click', function(event) {
+    event.stopPropagation(); // Prevents the event from bubbling up to the document
+    const dropdown = document.getElementById('notificationDropdown');
+    dropdown.classList.toggle('show');
+});
+
+// Close dropdown when clicking anywhere else on the page
+document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('notificationDropdown');
+    const notificationBtn = document.getElementById('notificationBtn');
+
+    // If the click is NOT on the dropdown or the button, hide it
+    if (!dropdown.contains(event.target) && !notificationBtn.contains(event.target)) {
+        dropdown.classList.remove('show');
+    }
+});
+        async function renderNotifications(notifications) {
+            const notificationDisplay = document.getElementById('notificationDisplay');
+            notificationDisplay.innerHTML = '';
+
+            if (!notifications || (Array.isArray(notifications) && notifications.length === 0)) {
+                notificationDisplay.innerHTML = '<p class="no-notifications">No notifications found.</p>';
+                return;
+            }
+
+            const notificationArray = Array.isArray(notifications) ? notifications : [notifications];
+
+            notificationArray.forEach(notification => {
+                const card = document.createElement('div');
+                card.className = 'notification-card';
+
+                card.innerHTML = `
+                    <button class="view-more-btn" data-post-id="${notification.postId}">
+                        <div class="notification-card">
+                            <h3 class="notification-title">${notification.title || 'Untitled'}</h3>
+                            <p class="notification-description">${notification.description || ''}</p>
+                        </div>
+                    </button>
+                    `;
+
+                const viewMoreBtn = card.querySelector(".view-more-btn");
+                viewMoreBtn.addEventListener("click", function (e) {
+                    e.stopPropagation();
+                    const id = this.getAttribute("data-post-id"); 
+                    if (id) {
+                        window.location.href = `/Post/Detail?id=${id}`;
+                    }
+                });
+
+                notificationDisplay.appendChild(card);
+            });
+        }
+
+        async function fetchNotifications() {
+            try {
+                const mockNotifications = [
+                    {
+                        postId: 1,
+                        title: "New Workout Challenge",
+                        description: "Join our 30-day fitness challenge"
+                    },
+                    {
+                        postId: 2,
+                        title: "Gym Opening Announcement",
+                        description: "New gym location is now open"
+                    },
+                    {
+                        postId: 3,
+                        title: "Fitness Tips Update",
+                        description: "Check out our latest fitness tips and tricks"
+                    }
+                ];
+                renderNotifications(mockNotifications);
+            } catch (error) {
+                console.error("Error fetching notifications:", error);
+            }
+        }
+
+        fetchNotifications();
     </script>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
