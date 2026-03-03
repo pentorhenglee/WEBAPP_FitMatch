@@ -63,7 +63,7 @@
             <div class="stat-card">
                 <div class="stat-header-flex">
                     <h3>Mission Succeeded</h3>
-                    <button style="background:none; border:none; color:white; cursor:pointer;"><i class="fa-solid fa-plus"></i></button>
+                    <button style="background:none; border:none; color:white; cursor:pointer;" onclick="window.location.href='/Profile/Missions'" title="Manage Missions"><i class="fa-solid fa-plus"></i></button>
                 </div>
                 <div class="stat-main-val" id="missionCount" style="text-align: left;">0 <span style="font-size:1rem; color:#aaa;" id="missionTotal">/ 0</span></div>
                 <div class="progress-bg" style="margin-bottom: 15px;">
@@ -193,7 +193,7 @@
                 let totalMissions = data.missions.length;
 
                 if(totalMissions === 0) {
-                    missionsDiv.innerHTML = '<div class="loading-text">No missions added</div>';
+                    missionsDiv.innerHTML = '<div class="loading-text">No missions yet — <a href="/Profile/Missions" style="color:var(--accent,#28a745);">add one</a></div>';
                 } else {
                     data.missions.forEach(m => {
                         if(m.isCompleted) completedMissions++;
@@ -201,17 +201,16 @@
                         const textStyle = m.isCompleted ? 'text-decoration: line-through; color: #888;' : 'color: #fff;';
                         
                         missionsDiv.innerHTML += `
-                            <div class="mission-item">
-                                <input type="checkbox" ${isChecked} disabled>
+                            <div class="mission-item" id="dash-m-${m.missionId}">
+                                <input type="checkbox" ${isChecked} onchange="tickMissionDashboard(${m.missionId}, this)">
                                 <span style="${textStyle}">${m.description}</span>
                             </div>
                         `;
                     });
                 }
                 
-                const maxMissionTarget = Math.max(totalMissions, 12); // Defualt target is 12 if less
-                document.getElementById('missionCount').innerHTML = `${completedMissions} <span class="stat-sub-inline" style="font-size:1rem; color:#aaa;" id="missionTotal">/ ${maxMissionTarget}</span>`;
-                let missionPercent = (completedMissions / maxMissionTarget) * 100;
+                document.getElementById('missionCount').innerHTML = `${completedMissions} <span class="stat-sub-inline" style="font-size:1rem; color:#aaa;" id="missionTotal">/ ${totalMissions}</span>`;
+                let missionPercent = totalMissions > 0 ? (completedMissions / totalMissions) * 100 : 0;
                 document.getElementById('missionProgress').style.width = `${Math.min(missionPercent, 100)}%`;
 
             } catch (error) {
@@ -286,6 +285,24 @@
         // ==========================================
         // 4. Initialization
         // ==========================================
+        async function tickMissionDashboard(id, checkbox) {
+            const row = document.getElementById(`dash-m-${id}`);
+            if (row) row.style.opacity = '0.5';
+            try {
+                const res = await fetch('/api/MissionAPI/tick', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ missionId: id })
+                });
+                if (!res.ok) throw new Error();
+                // Refresh stats section to update count/progress
+                await fetchDashboardStats();
+            } catch {
+                checkbox.checked = !checkbox.checked;
+                if (row) row.style.opacity = '1';
+            }
+        }
+
         function switchTab(tabId, btnElement) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');
