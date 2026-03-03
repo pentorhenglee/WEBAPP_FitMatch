@@ -219,3 +219,26 @@ a { text-decoration: none; }
     transform: translateY(-2px); /* ลูกเล่นเด้งลอยขึ้นนิดนึงตอนชี้ */
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
+
+@media (max-width: 768px) {
+    .navbar {
+        padding: 0 20px;
+    }
+    
+    .links {
+        display: none; /* ซ่อนลิงก์หลักบนมือถือ */
+    }
+
+    .auth-links {
+        gap: 10px;
+    }
+
+    .auth-links .nav-link {
+        font-size: 0.9rem;
+    }
+
+    .auth-links .btn-register {
+        padding: 6px 18px;
+        font-size: 0.9rem;
+    }
+}
