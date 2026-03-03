@@ -11,11 +11,8 @@
     <div class="profile-card">
         <div class="profile-sidebar">
             <div class="avatar-wrapper">
-                <img id="displayUserAvatar" 
-                     src="/images/default-avatar.png"
-                     data-raw-src=""
-                     class="profile-image-large" 
-                     alt="Profile Picture"/>
+                <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                        id="ProfileDisplayUserAvatar" class="profile-image-large" alt="Avatar"/>
             </div>
             <button class="edit-profile-btn" id="edit-profile-btn">
                 <i class="fas fa-edit"></i> Edit Profile
@@ -25,18 +22,18 @@
         <div class="profile-main-info">
             <div class="info-group">
                 <span class="label">Display Name</span>
-                <h1 id="displayName">Loading...</h1>
+                <h1 id="ProfileDisplayUserName">Loading...</h1>
             </div>
 
             <div class="info-group">
                 <span class="label">Email Address</span>
-                <p id="displayEmail" class="user-email-text"></p>
+                <p id="ProfileDisplayUserEmail" class="user-email-text">email@example.com</p>
             </div>
 
             <div class="info-group">
                 <span class="label">Bio</span>
-                <p id="displayBio" class="user-bio-text">
-                    No bio written yet.
+                <p id="ProfileDisplayUserBio" class="user-bio-text">
+                    Loading bio...
                 </p>
             </div>
         </div>
@@ -90,23 +87,23 @@
             const res = await fetch("/api/profileapi", { credentials: 'same-origin' });
             if (res.ok) {
                 const user = await res.json();
+
+                document.getElementById('ProfileDisplayUserName').innerText = user.username || "Unknown User";
+                document.getElementById('ProfileDisplayUserEmail').innerText = user.email || "No email provided";
+                document.getElementById('ProfileDisplayUserBio').innerText = user.info || "No bio written yet.";
                 
-                // Update UI text
-                document.getElementById('displayName').innerText = user.username || "Unknown User";
-                document.getElementById('displayEmail').innerText = user.email || "";
-                document.getElementById('displayBio').innerText = user.info || "Fitness enthusiast. No bio written yet.";
-                
-                // Update Image and save the raw URL string
-                const mainAvatar = document.getElementById('displayUserAvatar');
-                const rawUrl = user.profileUrl || "";
-                mainAvatar.src = rawUrl || "/images/default-avatar.png";
-                mainAvatar.setAttribute('data-raw-src', rawUrl);
+                if (user.profileUrl && user.profileUrl !== "") {
+                    document.getElementById('ProfileDisplayUserAvatar').src = user.profileUrl;
+                } else {
+                    document.getElementById('ProfileDisplayUserAvatar').src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+                }    
             }
         } catch (error) {
             console.error("Error fetching profile:", error);
         }
     }
-
+    
+    fetchUserProfile();
     document.addEventListener('DOMContentLoaded', fetchUserProfile);
 
     // --- Modal Logic ---
@@ -122,17 +119,17 @@
     // Live Preview
     urlInput.addEventListener('input', () => {
         const url = urlInput.value.trim();
-        previewImg.src = url || "https://via.placeholder.com/100?text=No+Image";
+        previewImg.src = url || "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
     });
 
     previewImg.onerror = () => {
-        previewImg.src = "https://via.placeholder.com/100?text=Invalid+URL";
+        previewImg.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
     };
 
     const openModal = () => {
         const currentName = document.getElementById('displayName').innerText;
         const currentBio = document.getElementById('displayBio').innerText;
-        const currentRawAvatar = document.getElementById('displayUserAvatar').getAttribute('data-raw-src');
+        const currentRawAvatar = document.getElementById('displayUserAvatar').getAttribute('src');
 
         document.getElementById('editUsername').value = currentName === "Loading..." ? "" : currentName;
         document.getElementById('editBio').value = currentBio.includes("No bio written yet") ? "" : currentBio;
