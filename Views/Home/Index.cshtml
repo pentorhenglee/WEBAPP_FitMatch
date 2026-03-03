@@ -165,10 +165,6 @@
         posts.forEach(post => {
             const card = document.createElement('div');
             card.className = 'post-card';
-
-        sortedPosts.forEach(post => {
-            const card = document.createElement('div');
-            card.className = `post-card ${post.status === 'close' ? 'post-closed' : ''}`;
         
             card.innerHTML = `
                 <div class="card-image">
