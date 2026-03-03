@@ -15,6 +15,7 @@
                 // ดึงค่าจาก Session มาเช็คตรงๆ
                 var userName = Context.Session.GetString("user");
                 var userEmail = Context.Session.GetString("user_email");
+                var userAvatar = Context.Session.GetString("user_profile");
             }
             <a class="brand" asp-controller="Home" asp-action="Index">
                 <img src="~/images/logo.png" alt="Logo" />
@@ -38,8 +39,15 @@
                         <div class="user-email" id="displayUserEmail">@userEmail</div>
                     </div>
                     
-                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
-                        id="displayUserAvatar" class="user-avatar" alt="Avatar"/>
+                    <img src="@(string.IsNullOrEmpty(userAvatar) ? "/images/default-avatar.png" : userAvatar)" 
+                        id="displayUserAvatars" class="user-avatar" alt="Avatar"/>
+                    
+                    <div id="userDropdown" class="user-dropdown-menu">
+                        <a asp-controller="Profile" asp-action="Index" class="dropdown-item">My Profile</a>
+                        <a asp-controller="Dashboard" asp-action="Index" class="dropdown-item">Dashboard</a>
+                        <div class="dropdown-divider"></div>
+                        <button onclick="logout()" class="dropdown-item text-danger" style="width: 100%; text-align: left; background: none; border: none; font-family: inherit;">Logout</button>
+                    </div>
 
                 </div>
             }
