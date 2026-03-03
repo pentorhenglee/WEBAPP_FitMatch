@@ -12,32 +12,36 @@
         <div class="chat-header">Chat</div>
         
         <div class="chat-messages" id="chatHistoryContainer">
-            <div style="text-align:center; color:#ccc; font-size:0.8rem; margin-top:20px;">Loading chat...</div>
+            <div style="text-align:center; color:#888; font-size:0.8rem; margin-top:40px;">Loading chat...</div>
         </div>
 
         <div class="chat-input-area">
             <input type="text" id="chatInputMessage" placeholder="Type a message..." onkeypress="handleEnterKey(event)" />
-            <button onclick="sendChatMessage()" style="background:none; border:none; color:white; cursor:pointer;">
+            <button onclick="sendChatMessage()">
                 <i class="fa-solid fa-paper-plane"></i>
             </button>
         </div>
     </div>
 
     <div class="post-info-section">
-        <img src="" id="displayCoverImg" class="post-cover-img" alt="Event Cover" style="display:none;" />
+        <img src="https://via.placeholder.com/800x400?text=Cover+Image" id="displayCoverImg" class="post-cover-img" alt="Event Cover" style="display:none;" />
         
         <div class="post-details">
             <h2 id="displayTitle">Loading...</h2>
-            <div class="post-meta" id="displayMeta">Location | Date | Time</div>
+            
+            <div class="post-meta" id="displayMeta">
+                <span><i class="fa-solid fa-location-dot"></i> Loading...</span>
+            </div>
+
             <div class="post-desc" id="displayDesc">Please wait, fetching data from database...</div>
             
-            <div style="margin-top:20px; font-weight:bold; color: var(--accent);" id="displayParticipants">
+            <div class="participants-count" id="displayParticipants">
                 Participants: - / -
             </div>
         </div>
 
         <div id="actionButtonsArea">
-            <button class="btn-join" id="btnJoin" onclick="joinPost()" style="position: absolute; bottom: 0; right: 0; display: none;">JOIN</button>
+            <button class="btn-join" id="btnJoin" onclick="joinPost()" style="display: none;">JOIN</button>
 
             <div class="owner-actions-container" id="ownerActions">
                 <button class="btn-manage" onclick="manageParticipants()">MANAGE</button>
@@ -54,7 +58,7 @@
                 <span class="close-modal" onclick="closeParticipantsModal()">&times;</span>
             </div>
             <div class="modal-body" id="participantsListContainer">
-                <div style="text-align: center; color: #ccc;">Loading members...</div>
+                <div style="text-align: center; color: #888;">Loading members...</div>
             </div>
         </div>
     </div>
@@ -66,6 +70,9 @@
         const currentPostId = @ViewBag.PostId; 
         let globalPostData = null; 
 
+        // ==========================================
+        // 1. ดึงข้อมูลโพสต์หลัก
+        // ==========================================
         async function fetchPostDetail() {
             try {
                 const response = await fetch(`/api/postapi/detail/${currentPostId}`);
@@ -83,77 +90,74 @@
                 const dateStr = dateObj.toLocaleDateString('en-GB').replace(/\//g, ' - ');
                 const timeStr = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
 
-                if (data.imageUrl) {
-                    document.getElementById('displayCoverImg').src = data.imageUrl;
-                    document.getElementById('displayCoverImg').style.display = "block";
+                // จัดการรูปภาพ (ถ้าไม่มีให้โชว์ Placeholder เท่ๆ)
+                const coverImg = document.getElementById('displayCoverImg');
+                if (data.imageUrl && data.imageUrl.trim() !== "") {
+                    coverImg.src = data.imageUrl;
+                } else {
+                    coverImg.src = 'https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=2070&auto=format&fit=crop'; // รูปกีฬากลางๆ
                 }
+                coverImg.style.display = "block";
+
                 document.getElementById('displayTitle').innerText = data.title;
-                document.getElementById('displayMeta').innerText = `${data.location} | ${dateStr} | ${timeStr}`;
-                document.getElementById('displayDesc').innerText = data.description;
+                
+                // ตกแต่ง Meta data (สถานที่ วันเวลา)
+                document.getElementById('displayMeta').innerHTML = `
+                    <span><i class="fa-solid fa-location-dot"></i> ${data.location}</span>
+                    <span><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
+                    <span><i class="fa-regular fa-clock"></i> ${timeStr}</span>
+                `;
+                
+                document.getElementById('displayDesc').innerText = data.description || "No description provided.";
 
                 const participantsDiv = document.getElementById('displayParticipants');
-                participantsDiv.innerHTML = `Participants: <span style="text-decoration:underline; cursor:pointer;" onclick="openParticipantsModal()">${currentPeopleCount} / ${data.maxPeople}</span>`;
+                participantsDiv.innerHTML = `<span style="color:#aaa; font-size:0.9rem;">Participants:</span> <span style="font-weight:bold; cursor:pointer; margin-left:10px; color:var(--accent);" onclick="openParticipantsModal()"><i class="fa-solid fa-users" style="margin-right:5px;"></i> ${currentPeopleCount} / ${data.maxPeople}</span>`;
 
                 // ==========================================
-                // 🌟 ลอจิกปุ่ม (Owner vs Normal User) อัปเกรดใหม่!
+                // ลอจิกปุ่ม 
                 // ==========================================
-                
-                // 1. เช็คว่าคนเปิดเว็บอยู่ คือเจ้าของโพสต์ไหม?
                 const isOwner = data.ownerId === data.currentUserId;
-                
-                // 2. เช็คว่าคนเปิดเว็บอยู่ จอยกิจกรรมนี้ไปหรือยัง? (หา id ตัวเองใน array members)
                 const isAlreadyJoined = data.members.some(m => m.userId === data.currentUserId);
-                
-                // 3. เช็คว่าคนเต็มหรือยัง?
                 const isFull = currentPeopleCount >= data.maxPeople;
-                
-                // 4. เช็คว่าโพสต์ปิดรับสมัครหรือยัง?
                 const isClosed = data.status.toLowerCase() === "close" || data.status.toLowerCase() === "closed";
 
                 const btnJoin = document.getElementById('btnJoin');
 
                 if (isOwner) {
-                    // มุมมองเจ้าของ: ซ่อน JOIN, โชว์ปุ่มจัดการ
                     btnJoin.style.display = "none";
                     document.getElementById('ownerActions').style.display = "flex";
                 } else {
-                    // มุมมองคนอื่น: ซ่อนปุ่มจัดการ, โชว์ปุ่มเข้าร่วม
                     document.getElementById('ownerActions').style.display = "none";
                     btnJoin.style.display = "block";
                     
                     if (isClosed) {
-                        // โพสต์ปิดรับแล้ว
                         btnJoin.innerText = "CLOSED";
                         btnJoin.disabled = true;
-                        btnJoin.style.backgroundColor = "#333";
-                        btnJoin.style.color = "#888";
                         btnJoin.onclick = null;
                     } 
                     else if (isAlreadyJoined) {
-                        // 🌟 จอยไปแล้ว (ทำปุ่มให้กดเพื่อยกเลิกได้)
                         btnJoin.innerText = "LEAVE EVENT";
                         btnJoin.disabled = false;
-                        btnJoin.style.backgroundColor = "#ff4d4d"; // สีแดงสื่อถึงการออก
+                        btnJoin.style.backgroundColor = "#ff4d4d"; 
                         btnJoin.style.color = "white";
-                        btnJoin.onclick = leavePost; // ชี้ไปที่ฟังก์ชันออกกลุ่ม
+                        btnJoin.onclick = leavePost; 
                     } 
                     else if (isFull) {
-                        // 🌟 คนเต็มแล้ว
                         btnJoin.innerText = "FULL";
                         btnJoin.disabled = true;
-                        btnJoin.style.backgroundColor = "#555";
-                        btnJoin.style.color = "#ccc";
                         btnJoin.onclick = null;
                     } 
                     else {
-                        // 🌟 ยังไม่จอย และมีที่ว่าง
                         btnJoin.innerText = "JOIN";
                         btnJoin.disabled = false;
-                        btnJoin.style.backgroundColor = "var(--accent)"; // สีหลักของคุณ
-                        btnJoin.style.color = "white";
-                        btnJoin.onclick = joinPost; // ชี้ไปที่ฟังก์ชันเข้ากลุ่ม
+                        btnJoin.style.backgroundColor = "var(--accent)"; 
+                        btnJoin.style.color = "#000";
+                        btnJoin.onclick = joinPost; 
                     }
                 }
+
+                // ดึงแชทมาแสดงด้วย
+                renderChats();
 
             } catch (error) { 
                 console.error("Error fetching post detail:", error); 
@@ -161,7 +165,123 @@
             }
         }
 
-        async function openParticipantsModal() {
+        // ==========================================
+        // 2. ฟังก์ชัน API สำหรับปุ่มต่างๆ
+        // ==========================================
+        async function joinPost() {
+            const btn = document.getElementById('btnJoin');
+            btn.innerText = "JOINING...";
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`/api/memberapi/join/${currentPostId}`, { method: 'POST' });
+                if (response.ok) {
+                    await fetchPostDetail(); 
+                } else {
+                    const errorText = await response.text();
+                    alert("Failed to join: " + errorText);
+                    btn.innerText = "JOIN";
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                btn.innerText = "JOIN";
+                btn.disabled = false;
+            }
+        }
+
+        async function leavePost() {
+            if(!confirm("Are you sure you want to leave this event?")) return;
+            try {
+                const response = await fetch(`/api/memberapi/leave/${currentPostId}`, { method: 'DELETE' });
+                if (response.ok) {
+                    await fetchPostDetail();
+                } else {
+                    const errorText = await response.text();
+                    alert("Failed to leave: " + errorText);
+                }
+            } catch (error) { console.error("Error:", error); }
+        }
+
+        async function closePost() {
+            if (!confirm("Are you sure to close this post?")) return;
+            try {
+                const response = await fetch(`/api/postapi/close/${currentPostId}`, { method: 'PUT' });
+                if (response.ok) {
+                    await fetchPostDetail();
+                } else {
+                    const errorText = await response.text();
+                    alert("Failed to close post: " + errorText);
+                }
+            } catch (error) { console.error("Error:", error); }
+        }
+
+        function editPost() { alert("Edit API coming soon!"); }
+        function manageParticipants() { alert("Manage coming soon!"); }
+
+        // ==========================================
+        // 3. ระบบ Chat
+        // ==========================================
+        function renderChats() {
+            const chatContainer = document.getElementById('chatHistoryContainer');
+            if (!globalPostData || !globalPostData.comments || globalPostData.comments.length === 0) {
+                chatContainer.innerHTML = '<div style="text-align:center; color:#888; margin-top:40px;">No messages yet.<br>Be the first to say hi!</div>';
+                return;
+            }
+
+            chatContainer.innerHTML = '';
+            
+            globalPostData.comments.forEach(chat => {
+                const isMine = chat.userId === globalPostData.currentUserId;
+                const wrapperClass = isMine ? "mine" : "others";
+                const avatarUrl = chat.profileUrl || 'https://via.placeholder.com/40';
+                
+                const dateObj = new Date(chat.comment_date);
+                const timeStr = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+
+                chatContainer.innerHTML += `
+                    <div class="chat-message-wrapper ${wrapperClass}">
+                        <img src="${avatarUrl}" class="chat-avatar" alt="${chat.username}">
+                        <div class="chat-message-content">
+                            <div class="chat-username">${chat.username} <span class="chat-time">${timeStr}</span></div>
+                            <div class="chat-bubble">${chat.text}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            // เลื่อนลงไปล่างสุดเสมอเมื่อมีข้อความใหม่
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInputMessage');
+            const message = input.value.trim();
+            if (!message) return;
+
+            try {
+                const response = await fetch(`/api/commentapi/${currentPostId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ Text: message })
+                });
+
+                if (response.ok) {
+                    input.value = ""; 
+                    await fetchPostDetail(); // โหลดข้อมูลใหม่เพื่อดึงแชท
+                } else {
+                    alert("Failed to send message.");
+                }
+            } catch (error) {
+                console.error("Error sending message:", error);
+            }
+        }
+
+        function handleEnterKey(e) { if (e.key === 'Enter') sendChatMessage(); }
+
+        // ==========================================
+        // 4. Modal รายชื่อคน
+        // ==========================================
+        function openParticipantsModal() {
             document.getElementById('participantsModal').style.display = 'flex';
             renderParticipants(); 
         }
@@ -172,14 +292,11 @@
 
         function renderParticipants() {
             const container = document.getElementById('participantsListContainer');
-            
             if (!globalPostData || !globalPostData.members || globalPostData.members.length === 0) {
-                container.innerHTML = '<div style="text-align:center; color:#ccc;">No members yet.</div>';
+                container.innerHTML = '<div style="text-align:center; color:#888;">No members yet.</div>';
                 return;
             }
-
             container.innerHTML = '';
-            
             globalPostData.members.forEach(member => {
                 const avatarSrc = member.profileUrl || 'https://via.placeholder.com/40'; 
                 const isOwner = member.userId === globalPostData.ownerId;
@@ -196,32 +313,11 @@
             });
         }
 
-        async function fetchChatHistory() {
-            document.getElementById('chatHistoryContainer').innerHTML = '<div style="text-align:center; color:#ccc; font-size:0.8rem; margin-top:20px;">Chat system coming soon...</div>';
-        }
-
-        function handleEnterKey(e) { /* Placeholder */ }
-        function sendChatMessage() { /* Placeholder */ }
-        
-        function joinPost() { 
-            // รอเชื่อม API เข้าร่วม
-            alert("Join API coming soon!"); 
-        }
-
-        function leavePost() {
-            // 🌟 เพิ่มฟังก์ชันใหม่ สำหรับกดยกเลิก
-            if(confirm("Are you sure you want to leave this event?")) {
-                alert("Leave API coming soon!");
-            }
-        }
-
-        function editPost() { alert("Edit API coming soon!"); }
-        function closePost() { alert("Close API coming soon!"); }
-        function manageParticipants() { alert("Manage coming soon!"); }
-
+        // ==========================================
+        // Initialize
+        // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
             fetchPostDetail();
-            fetchChatHistory();
         });
     </script>
 }

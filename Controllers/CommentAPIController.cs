@@ -33,7 +33,6 @@ namespace WEBAPP_FitMatch.Controllers
                 Text = comment.Text
             };
 
-            
             return Ok(createcomment);
         }
 

@@ -16,13 +16,17 @@
    ฝั่งซ้าย: กล่อง Up Coming / History
    ============================================================ */
 .dash-left-panel {
-    width: 450px; 
-    background-color: var(--surface); 
-    border-radius: 12px;
+    width: 450px;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
     padding: 30px;
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* 🌟 กันเนื้อหาล้น */
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
 .dash-right-panel {
@@ -67,9 +71,9 @@
 }
 
 .tab-btn.active {
-    background-color: #555555;
-    color: #ffffff; /* 🌟 ปรับเป็นสีขาวสว่างเมื่อถูกเลือก */
-    border-color: #555555;
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 /* ============================================================
@@ -87,10 +91,11 @@
 
 /* ตกแต่ง Scrollbar ฝั่งซ้าย */
 .tab-content.active::-webkit-scrollbar { width: 6px; }
-.tab-content.active::-webkit-scrollbar-thumb { background: #555; border-radius: 10px; }
+.tab-content.active::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
 
 .event-card {
-    background-color: #444444;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 15px;
     padding: 15px;
     display: flex;
@@ -98,12 +103,12 @@
     gap: 15px;
     margin-bottom: 15px;
     cursor: pointer;
-    transition: transform 0.2s;
+    transition: transform 0.2s, background 0.2s;
 }
 
 .event-card:hover {
     transform: translateY(-3px);
-    background-color: #4a4a4a;
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .event-icon {
@@ -148,13 +153,16 @@
 }
 
 .stat-card {
-    background-color: var(--surface);
-    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
     padding: 30px;
-    color: #ffffff; /* 🌟 ตัวหนังสือพื้นฐานในกล่องเป็นสีขาว */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    display: flex;         
-    flex-direction: column; 
+    color: #ffffff;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
 }
 
@@ -169,7 +177,7 @@
 
 /* Progress Bar */
 .progress-bg {
-    background-color: #555;
+    background-color: rgba(255, 255, 255, 0.15);
     border-radius: 10px;
     height: 10px;
     width: 100%;
@@ -214,16 +222,17 @@
 }
 
 #partnersContainer::-webkit-scrollbar, #missionsContainer::-webkit-scrollbar { width: 6px; }
-#partnersContainer::-webkit-scrollbar-thumb, #missionsContainer::-webkit-scrollbar-thumb { background: #555; border-radius: 10px; }
+#partnersContainer::-webkit-scrollbar-thumb, #missionsContainer::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
 
 /* Items inside cards */
 .partner-item {
     display: flex;
     align-items: center;
     margin-bottom: 12px;
-    background-color: #444;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     padding: 25px;
-    border-radius: 8px;
+    border-radius: 12px;
     color: #ffffff;
     font-size: 0.9rem;
 }
@@ -243,12 +252,13 @@
 .mission-item {
     display: flex;
     align-items: center;
-    background-color: #444;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     padding: 10px;
-    border-radius: 8px;
+    border-radius: 12px;
     margin-bottom: 8px;
     font-size: 0.9rem;
-    color: #ffffff; /* 🌟 รายการ Mission เป็นสีขาว */
+    color: #ffffff;
 }
 
 .mission-item input[type="checkbox"] {
