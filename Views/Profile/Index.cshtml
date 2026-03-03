@@ -127,9 +127,10 @@
     };
 
     const openModal = () => {
-        const currentName = document.getElementById('displayName').innerText;
-        const currentBio = document.getElementById('displayBio').innerText;
-        const currentRawAvatar = document.getElementById('displayUserAvatar').getAttribute('src');
+        const currentName = document.getElementById('ProfileDisplayUserName').innerText;
+        const currentBio = document.getElementById('ProfileDisplayUserBio').innerText;
+        const currentRawAvatar = document.getElementById('ProfileDisplayUserAvatar').getAttribute('src');
+        modal.style.display = 'flex';
 
         document.getElementById('editUsername').value = currentName === "Loading..." ? "" : currentName;
         document.getElementById('editBio').value = currentBio.includes("No bio written yet") ? "" : currentBio;
@@ -138,7 +139,6 @@
         urlInput.value = currentRawAvatar;
         previewImg.src = currentRawAvatar || "https://via.placeholder.com/100?text=No+Image";
 
-        modal.style.display = 'flex';
     };
 
     const closeModal = () => { modal.style.display = 'none'; };
@@ -174,16 +174,11 @@
                 body: JSON.stringify(updatedData)
             });
 
-            if (response.ok) {
-                // Update Main Page UI immediately
-                document.getElementById('displayName').innerText = nameValue;
-                document.getElementById('displayBio').innerText = bioValue || "Fitness enthusiast. No bio written yet.";
-                
-                const mainAvatar = document.getElementById('displayUserAvatar');
-                mainAvatar.src = avatarValue || "/images/default-avatar.png";
-                mainAvatar.setAttribute('data-raw-src', avatarValue);
 
+            // แปลกๆ
+            if (response.ok) {
                 closeModal();
+                location.reload();
             } else {
                 const errorText = await response.text();
                 alert("Update failed: " + errorText);
