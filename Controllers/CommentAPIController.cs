@@ -33,7 +33,16 @@ namespace WEBAPP_FitMatch.Controllers
                 Text = comment.Text
             };
 
-            return Ok(createcomment);
+            _db.Comments.Add(createcomment);
+            await _db.SaveChangesAsync();
+
+            return Ok(new {
+                createcomment.CommentId,
+                createcomment.UserId,
+                createcomment.PostId,
+                createcomment.Text,
+                createcomment.CreatedAt
+            });
         }
 
         [HttpDelete("delete/{comment_id}")]
@@ -59,10 +68,8 @@ namespace WEBAPP_FitMatch.Controllers
                 return StatusCode(403, "You do not have permission to delete this comment");
             }
 
-            
             _db.Comments.Remove(comment);
             await _db.SaveChangesAsync();
-
 
 
             return Ok(new { success = true, message = "Comment deleted successfully" });

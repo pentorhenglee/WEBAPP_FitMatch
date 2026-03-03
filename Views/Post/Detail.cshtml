@@ -4,6 +4,7 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/PostDetail.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 }
 
 <div class="post-detail-container">
@@ -18,7 +19,7 @@
         <div class="chat-input-area">
             <input type="text" id="chatInputMessage" placeholder="Type a message..." onkeypress="handleEnterKey(event)" />
             <button onclick="sendChatMessage()">
-                <i class="fa-solid fa-paper-plane"></i>
+                <i class="fa-solid fa-chevron-right"></i>
             </button>
         </div>
     </div>
@@ -137,9 +138,7 @@
                     } 
                     else if (isAlreadyJoined) {
                         btnJoin.innerText = "LEAVE EVENT";
-                        btnJoin.disabled = false;
-                        btnJoin.style.backgroundColor = "#ff4d4d"; 
-                        btnJoin.style.color = "white";
+                        btnJoin.disabled = false; 
                         btnJoin.onclick = leavePost; 
                     } 
                     else if (isFull) {
@@ -149,9 +148,7 @@
                     } 
                     else {
                         btnJoin.innerText = "JOIN";
-                        btnJoin.disabled = false;
-                        btnJoin.style.backgroundColor = "var(--accent)"; 
-                        btnJoin.style.color = "#000";
+                        btnJoin.disabled = false; 
                         btnJoin.onclick = joinPost; 
                     }
                 }

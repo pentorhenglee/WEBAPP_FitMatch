@@ -121,24 +121,31 @@
     border-color: var(--accent);
     background: rgba(255,255,255,0.1);
 }
+/* ============================================================
+    ช่องพิมพ์ข้อความ และปุ่มส่ง (Chat Input Area)
+    ============================================================ */
 .chat-input-area button {
-    width: 42px; height: 42px;
+    width: 42px; 
+    height: 42px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.08); /* พื้นหลังจางๆ สไตล์ Glass */
     border: 1px solid rgba(255, 255, 255, 0.2);
-    color: #ffffff;
+    color: var(--accent); /* 🌟 เปลี่ยนสีลูกศรเป็นสีเขียวหลักของเว็บ */
     cursor: pointer;
-    display: flex; justify-content: center; align-items: center;
-    transition: all 0.2s;
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
-    font-size: 1rem;
 }
-.chat-input-area button:hover {
-    background: rgba(46, 204, 113, 0.2);
-    border-color: var(--accent);
-    color: var(--accent);
-    transform: scale(1.05);
+
+.chat-input-area button i {
+    font-size: 1.1rem; /* ขนาดลูกศร */
+}
+
+.chat-input-area button:active {
+    transform: scale(0.9); /* ยุบลงนิดนึงตอนกดจริง */
 }
 
 /* ============================================================
