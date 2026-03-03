@@ -1,42 +1,57 @@
 /* ============================================================
-   Create Post Layout
+   Create Post Layout (ล้อตามสไตล์ Home.css)
    ============================================================ */
+
+/* ห่อหุ้มหน้าให้อยู่ตรงกลาง และใช้พื้นหลังล้อกับ Home */
 .create-post-wrapper {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: calc(100vh - 100px);
-    padding: 20px;
+    min-height: calc(100vh - 70px); /* หักความสูง Navbar */
+    padding: 60px 20px;
+    /* หาก Layout หลักไม่ได้ใส่พื้นหลังไว้ ให้เปิดใช้บรรทัดล่างนี้ครับ */
+    /* background: radial-gradient(circle at top left, #0f2027, #000000 60%); */
 }
 
+/* Card สไตล์ Glassmorphism แบบเดียวกับ post-card ใน Home */
 .create-post-container {
-    background-color: #333333; /* สีเทาเข้มเข้ากับเว็บ */
+    background: rgba(26, 26, 26, 0.6);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     width: 100%;
-    max-width: 1000px;
-    border-radius: 12px;
-    padding: 40px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+    max-width: 800px;
+    border-radius: 20px;
+    padding: 50px 40px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
     color: white;
 }
 
 .create-post-container h2 {
     text-align: center;
-    margin-bottom: 30px;
-    font-size: 2rem;
-    color: var(--accent); /* ใช้สีเขียวของเว็บ */
+    margin-bottom: 40px;
+    font-size: 28px;
+    font-weight: bold;
+    color: white;
+    letter-spacing: 1px;
+}
+
+.create-post-container h2 span {
+    color: #2ecc71;
+    text-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
 }
 
 /* การจัดวาง Grid สำหรับฟอร์ม */
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
+    gap: 25px;
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
-    margin-bottom: 15px;
 }
 
 /* ให้บางช่องกินพื้นที่เต็ม 2 คอลัมน์ */
@@ -46,97 +61,149 @@
 
 .form-group label {
     margin-bottom: 8px;
-    font-size: 0.9rem;
-    color: #cccccc;
+    font-weight: 600;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    letter-spacing: 0.5px;
 }
 
+/* สไตล์ช่อง Input ให้เข้ากับ Search Bar หน้า Home */
 .form-group input,
 .form-group select,
 .form-group textarea {
-    background-color: #4a4a4a;
-    border: 1px solid #555;
-    color: #ffffff;
-    padding: 12px 15px;
-    border-radius: 8px;
-    font-size: 1rem;
+    width: 100%;
+    padding: 14px 18px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 12px;
+    font-size: 15px;
+    box-sizing: border-box;
     outline: none;
-    transition: border-color 0.3s;
+    transition: all 0.3s ease;
     font-family: inherit;
 }
 
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* เมื่อ Focus ให้เรืองแสงสีเขียว */
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-    border-color: var(--accent);
-}
-
-/* ซ่อนไอคอนปฏิทิน/นาฬิกา สีดำของเบราว์เซอร์ให้กลืนกับเว็บ */
-::-webkit-calendar-picker-indicator {
-    filter: invert(1);
-    cursor: pointer;
-}
-
-/* ปุ่มกด Submit */
-.btn-submit-post {
-    width: 100%;
-    background-color: var(--accent);
-    color: #000;
-    font-size: 1.2rem;
-    font-weight: bold;
-    padding: 15px;
-    border: none;
-    border-radius: 8px;
-    margin-top: 20px;
-    cursor: pointer;
-    transition: transform 0.2s, background-color 0.2s;
-}
-
-.btn-submit-post:hover {
-    background-color: #ffffff;
-    transform: translateY(-2px);
+    border-color: #2ecc71;
+    background: rgba(46, 204, 113, 0.05);
+    box-shadow: 0 0 10px rgba(46, 204, 113, 0.2);
 }
 
 /* ============================================================
-   ตกแต่งสี Placeholder สีเทา (#888888)
+   ปรับแต่ง Select / Date / Time
    ============================================================ */
 
-/* 1. สำหรับ Text, Number, URL, Textarea ปกติ */
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-    color: #888888;
-    opacity: 1; /* บังคับให้ Firefox แสดงสีเทาชัดเจน */
-}
-
-/* 2. ทริคสำหรับ Select, Date, Time (ตอนที่ยังว่างเปล่า / :invalid) */
-.form-group select:invalid,
-.form-group input[type="date"]:invalid,
-.form-group input[type="time"]:invalid {
-    color: #888888;
-}
-
-/* 3. บังคับให้ตัวเลือก Option ใน Select กลับมาเป็นสีขาวตอนกดกางเมนู */
+/* บังคับสีข้อความใน Select Option เพื่อไม่ให้กลืนกับพื้นหลังขาวของเบราว์เซอร์ */
 .form-group select option {
-    color: #ffffff;
-    background-color: #4a4a4a; /* สีเดียวกับพื้นหลัง input */
+    background-color: #1a1a1a;
+    color: white;
 }
 
-/* ============================================================
-   ตกแต่งลูกศรของ Dropdown (Select) ให้ไม่ชิดขอบ
-   ============================================================ */
+/* ปิดลูกศร Default ของเบราว์เซอร์ และใส่ลูกศรใหม่ */
 .form-group select {
-    /* ปิดลูกศร Default ของเบราว์เซอร์ */
     appearance: none; 
     -webkit-appearance: none;
     -moz-appearance: none;
-    
-    /* สร้างลูกศรใหม่เป็นไอคอน SVG สีเทา */
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.5)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
     background-repeat: no-repeat;
-    
-    /* กำหนดระยะห่างของลูกศร: ชิดขวา ห่างเข้ามา 15px และอยู่กึ่งกลางแนวตั้ง */
     background-position: right 15px center; 
     background-size: 16px;
-    
-    /* ดันตัวหนังสือไม่ให้พิมพ์ไปทับลูกศร */
     padding-right: 40px; 
+    cursor: pointer;
+}
+
+/* เปลี่ยนสีไอคอนปฏิทินและนาฬิกาให้เป็นสีขาว */
+::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+    opacity: 0.5;
+    transition: 0.2s;
+}
+
+::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+/* ============================================================
+   ปุ่มกด Submit (สไตล์ Glow ล้อกับปุ่ม View More)
+   ============================================================ */
+.btn-submit-post {
+    width: 100%;
+    background-color: #2ecc71;
+    color: #000;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    padding: 16px;
+    border: none;
+    border-radius: 30px; /* มนเหมือนปุ่มหน้า Home */
+    margin-top: 35px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.2);
+}
+
+.btn-submit-post:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 0 20px rgba(46, 204, 113, 0.6);
+    background-color: #27ae60;
+    color: white;
+}
+
+.btn-submit-post:disabled {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.3);
+    transform: none;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    .create-post-container {
+        padding: 30px 20px;
+        border-radius: 15px;
+    }
+}
+
+/* ============================================================
+   แก้ไขสีข้อความของ Select, Date, Time ให้เหมือน Placeholder
+   ============================================================ */
+
+/* 1. เมื่อยังไม่ได้เลือกค่า (ว่างเปล่า = invalid) ให้ตัวหนังสือเป็นสีเทาจาง */
+.form-group select:invalid,
+.form-group input[type="date"]:invalid,
+.form-group input[type="time"]:invalid {
+    color: rgba(255, 255, 255, 0.3); 
+}
+
+/* 2. แต่พอผู้ใช้กดพิมพ์หรือเลือกค่าแล้ว (valid) ให้เปลี่ยนกลับมาเป็นสีขาวชัดๆ */
+.form-group select:valid,
+.form-group input[type="date"]:valid,
+.form-group input[type="time"]:valid {
+    color: white;
+}
+
+/* 3. บังคับให้ตัวเลือกใน Dropdown (Option) เป็นสีขาวเสมอ ไม่งั้นจะโดนดึงให้เป็นสีเทาตามข้อ 1 */
+.form-group select option {
+    color: white;
+    background-color: #1a1a1a; /* สีพื้นหลังของ dropdown ให้กลืนกับเว็บ */
+}
+
+/* 4. (แถม) ปรับแต่งช่อง Date/Time เพิ่มเติมสำหรับบางเบราว์เซอร์ (WebKit/Chrome) */
+.form-group input[type="date"]::-webkit-datetime-edit,
+.form-group input[type="time"]::-webkit-datetime-edit {
+    color: inherit; /* ให้รับสีตามที่เราตั้งไว้ด้านบน */
 }

@@ -56,6 +56,25 @@ namespace WEBAPP_FitMatch.Controllers
             return Ok(member);
         }
 
+        [HttpDelete("kick/{postId}/{userId}")]
+        public async Task<IActionResult> KickMember(int postId, int userId)
+        {
+            var current_user_id = HttpContext.Session.GetInt32("user_id");
+            if (current_user_id == null) return Unauthorized("User not logged in");
+
+            var post = await _db.Posts.FirstOrDefaultAsync(p=>p.PostId == postId);
+            if (post == null) return NotFound("Post not found");
+            if (post.UserId != current_user_id.Value) return Forbid();
+
+            var member = await _db.Members.FirstOrDefaultAsync(m=>m.PostId == postId && m.UserId == userId);
+            if (member == null) return NotFound("User is not a member of this post");
+            if (member.UserId == current_user_id.Value) return BadRequest("Owner cannot kick themselves");
+
+            _db.Members.Remove(member);
+            await _db.SaveChangesAsync();
+            return Ok(new { message = "Member kicked successfully" });
+        }
+
         [HttpDelete("leave/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
