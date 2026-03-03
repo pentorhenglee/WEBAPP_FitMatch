@@ -151,11 +151,20 @@
             return;
         }
 
-        const sortedPosts = [...posts].sort((a, b) => {
-            if (a.status === 'open' && b.status === 'close') return -1;
-            if (a.status === 'close' && b.status === 'open') return 1;
-            return 0;
-        });
+        function getSportPlaceholder(sportType) {
+            const map = {
+                'Running':    '/images/running_placeholder.jpg',
+                'Soccer':     '/images/soccer_placeholder.jpg',
+                'Basketball': '/images/basketball_placeholder.jpg',
+                'Volleyball': '/images/volleyball_placeholder.jpg',
+                'Cycling':    '/images/biking_placeholder.jpg',
+            };
+            return map[sportType] || '/images/placeholder-default.jpg';
+        }
+
+        posts.forEach(post => {
+            const card = document.createElement('div');
+            card.className = 'post-card';
 
         sortedPosts.forEach(post => {
             const card = document.createElement('div');
@@ -163,10 +172,7 @@
         
             card.innerHTML = `
                 <div class="card-image">
-                    <img src="${post.imageUrl || '/images/default-post.jpg'}" alt="${post.title || 'Post Image'}" />
-                    <div class="sport-icon-badge">
-                        <i class="fas ${getSportIcon(post.sportType)}"></i>
-                    </div>
+                    <img src="${post.imageUrl || getSportPlaceholder(post.sportType)}" alt="${post.title || 'Post Image'}" />
                 </div>
                 
                 <div class="card-content">

@@ -52,7 +52,7 @@
 
                 <div class="form-group full-width">
                     <label>Cover Image URL (Optional)</label>
-                    <input type="url" id="postImageUrl" placeholder="https://example.com/image.jpg" />
+                    <input type="url" id="postImageUrl" placeholder="" />
                 </div>
 
                 <div class="form-group full-width">
@@ -87,7 +87,7 @@
                 MaxPeople: parseInt(document.getElementById('postMaxPeople').value),
                 Location: document.getElementById('postLocation').value,
                 EventDateTime: `${dateVal}T${timeVal}:00`,
-                ImageUrl: document.getElementById('postImageUrl').value,
+                ImageUrl: document.getElementById('postImageUrl').value || null,
                 Description: document.getElementById('postDescription').value
             };
 
@@ -111,9 +111,9 @@
                     const contentType = res.headers.get("content-type");
                     if (contentType && contentType.includes("application/json")) {
                         const error = await res.json();
-                        alert("Error: " + (error.message || "เกิดข้อผิดพลาดจากเซิร์ฟเวอร์"));
+                        alert("Error: " + (error.message || "Failed from server"));
                     } else {
-                        alert(`Error ${res.status}: เชื่อมต่อ API ไม่สำเร็จ (เซิร์ฟเวอร์อาจจะพัง หรือ URL ผิด)`);
+                        alert(`Error ${res.status}: Connect to API maybe wrong`);
                     }
                     btnSubmit.disabled = false;
                     btnSubmit.innerText = "CREATE POST";

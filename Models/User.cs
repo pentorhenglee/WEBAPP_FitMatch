@@ -14,5 +14,6 @@ public class User
     [Column("Email")]
     public required string Email { get; set;}
     public string? ProfileUrl { get; set;}
+    public string? Info { get; set;}
 
 }
