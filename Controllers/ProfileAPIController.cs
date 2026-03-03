@@ -54,7 +54,9 @@ public class ProfileAPIController : ControllerBase
         try 
         {
             await _db.SaveChangesAsync();
+            HttpContext.Session.SetString("user_profile", user.ProfileUrl ?? "");
             return Ok(new { message = "อัปเดตสำเร็จ" });
+            
         }
         catch (DbUpdateException)
         {

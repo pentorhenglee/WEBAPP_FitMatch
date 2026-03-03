@@ -144,7 +144,9 @@
 
     // Handle broken image URLs
     previewImg.onerror = () => {
-        previewImg.src = "https://via.placeholder.com/100?text=Invalid+URL";
+        if (!previewImg.src.includes('/images/default-avatar.png')) {
+            previewImg.src = "/images/default-avatar.png"; 
+        }
     };
 
     // Modal Control

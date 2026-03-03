@@ -32,6 +32,7 @@ public class AuthController : ControllerBase
 
         HttpContext.Session.SetString("user", user.Username);
         HttpContext.Session.SetString("user_email", user.Email);
+        HttpContext.Session.SetString("user_profile", user.ProfileUrl ?? "");
         HttpContext.Session.SetInt32("user_id", user.Id);
         return Ok(new { message = "Login success" });
     }
