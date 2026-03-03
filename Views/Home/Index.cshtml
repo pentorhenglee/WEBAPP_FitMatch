@@ -151,10 +151,16 @@
             return;
         }
 
-        posts.forEach(post => {
-            const card = document.createElement('div');
-            card.className = 'post-card';
+        const sortedPosts = [...posts].sort((a, b) => {
+            if (a.status === 'open' && b.status === 'close') return -1;
+            if (a.status === 'close' && b.status === 'open') return 1;
+            return 0;
+        });
 
+        sortedPosts.forEach(post => {
+            const card = document.createElement('div');
+            card.className = `post-card ${post.status === 'close' ? 'post-closed' : ''}`;
+        
             card.innerHTML = `
                 <div class="card-image">
                     <img src="${post.imageUrl || '/images/default-post.jpg'}" alt="${post.title || 'Post Image'}" />
@@ -179,8 +185,12 @@
                 `;
 
             card.addEventListener("click", function () {
-                if (post.postId) {
-                    window.location.href = `/Post/Detail?id=${post.postId}`;
+                if (post.status !== 'close') {
+                    if (post.postId) {
+                        window.location.href = `/Post/Detail?id=${post.postId}`;
+                    }
+                } else {
+                    alert("This post is closed.");
                 }
             });
             
@@ -211,7 +221,6 @@
         }
     }
 
-    // เมื่อโหลดหน้าเว็บ: เรียกโดยไม่ส่งค่า (ดึงทั้งหมด)
     document.addEventListener('DOMContentLoaded', () => {
         fetchSearchResults(null); 
         fetchMissions();
@@ -219,10 +228,8 @@
 
     document.getElementById('searchButton').addEventListener('click', () => {
         const query = document.getElementById('searchInput').value;
-        // หาหมวดหมู่ที่ถูกเลือกอยู่ในขณะนั้น (ตัวที่มีคลาส active)
         const activeCat = document.querySelector('.category-item.active')?.getAttribute('data-category') || "";
         
-        // เรียกฟังก์ชันโดยส่งทั้งคำค้นหาและหมวดหมู่ (แม้ query จะว่างก็ตาม)
         fetchSearchResults(query, activeCat);
     });
 

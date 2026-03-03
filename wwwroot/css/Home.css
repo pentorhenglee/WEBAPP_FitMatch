@@ -270,6 +270,20 @@ body {
     overflow: hidden;
 }
 
+.post-card.post-closed {
+    filter: grayscale(100%);
+    opacity: 0.7;
+    cursor: not-allowed;
+    pointer-events: auto;
+}
+
+/* ป้องกันไม่ให้มี Effect การขยายตัวเมื่อเอาเมาส์ไปวางบนการ์ดที่ปิดแล้ว */
+.post-card.post-closed:hover {
+    transform: none !important;
+    box-shadow: none !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
 /* ส่วนท้ายของการ์ด (จำนวนคนและปุ่ม View More) */
 .card-footer {
     display: flex;
