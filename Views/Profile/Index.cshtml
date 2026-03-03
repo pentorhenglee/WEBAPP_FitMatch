@@ -129,15 +129,14 @@
     const openModal = () => {
         const currentName = document.getElementById('ProfileDisplayUserName').innerText;
         const currentBio = document.getElementById('ProfileDisplayUserBio').innerText;
-        const currentRawAvatar = document.getElementById('ProfileDisplayUserAvatar').getAttribute('src');
+        const currentAvatar = document.getElementById('ProfileDisplayUserAvatar').getAttribute('src');
         modal.style.display = 'flex';
 
         document.getElementById('editUsername').value = currentName === "Loading..." ? "" : currentName;
         document.getElementById('editBio').value = currentBio.includes("No bio written yet") ? "" : currentBio;
         
-        // Use the raw URL so we don't paste "http://localhost.../default-avatar.png" into the input
-        urlInput.value = currentRawAvatar;
-        previewImg.src = currentRawAvatar || "https://via.placeholder.com/100?text=No+Image";
+        urlInput.value = currentAvatar;
+        previewImg.src = currentAvatar || "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
     };
 

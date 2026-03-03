@@ -3,11 +3,6 @@
     Layout = null;
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/Account.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-}  
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,9 +14,11 @@
     <link rel="stylesheet" href="~/css/Account.css" asp-append-version="true" />
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
 </head>
 <body>
+<a href="/Home/Index" class="back-link">
+    <i class="fas fa-angle-left"></i>
+</a>
 <div class="container">
         <div class="hero-section">
             <p class="tagline">IT'S TIME TO</p>
@@ -64,7 +61,7 @@
             errorDiv.innerText = "";
 
             btnSubmit.disabled = true;
-            btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> LOADING...';
+            btnSubmit.innerHTML = 'LOADING...';
 
             const email = document.getElementById("email").value.trim();
             const password = document.getElementById("password").value;
