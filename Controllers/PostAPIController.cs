@@ -247,6 +247,10 @@ namespace WEBAPP_FitMatch.Controllers
                         (p.Location != null && p.Location.Contains(query)) || 
                         (p.Description != null && p.Description.Contains(query)));
                 }
+                
+                var now = DateTime.UtcNow.AddHours(7);
+                post_filter = post_filter.Where(p => p.EventDateTime > now);
+                
 
                 var posts = await post_filter
                     .OrderByDescending(p => p.EventDateTime)
@@ -358,6 +362,43 @@ namespace WEBAPP_FitMatch.Controllers
                 return NotFound("Post not found");
 
             return Ok(post);
+        }
+
+        [HttpPut("edit/{postid}")]
+        public async Task<ActionResult> EditPost(int postid, [FromBody] CreatePostDto dto)
+        {
+            var user_id = HttpContext.Session.GetInt32("user_id");
+            if (user_id == null) return Unauthorized("User not logged in");
+
+            var post = await _db.Posts.FirstOrDefaultAsync(p => p.PostId == postid);
+            if (post == null) return NotFound("Post not found");
+            if (post.UserId != user_id.Value) return Forbid("You are not the owner of this post");
+
+            post.Title = dto.Title;
+            post.Location = dto.Location;
+            post.EventDateTime = DateTime.SpecifyKind(dto.EventDateTime, DateTimeKind.Utc);
+            post.Description = dto.Description ?? "";
+            post.SportType = dto.SportType ?? "";
+            post.MaxPeople = dto.MaxPeople;
+            post.ImageUrl = dto.ImageUrl;
+
+            try
+            {
+                await _db.SaveChangesAsync();
+                var histories = new History
+                {
+                    UserId = user_id.Value,
+                    PostId = post.PostId,
+                    ActionType = $"Edit Post {post.Title}"
+                };
+                _db.Histories.Add(histories);
+                await _db.SaveChangesAsync();
+                return Ok(new { message = "Post updated successfully", post = post });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Edit Post failed: {ex.Message}");
+            }
         }
 
         [HttpDelete("delete/{id}")]

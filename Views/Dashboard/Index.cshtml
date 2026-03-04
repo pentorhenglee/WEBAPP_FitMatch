@@ -45,8 +45,11 @@
 
             <div class="stat-card">
                 <h3>Activity Stats</h3>
-                <div style="height: 150px; width: 80%; margin: 0 auto;">
-                    <canvas id="activityChart"></canvas>
+                <div style="display: flex; align-items: center; justify-content: space-around; gap: 15px; padding: 10px;">
+                    <canvas id="activityChart" width="140" height="140"></canvas>
+                    
+                    <div id="chartLegend" style="display: flex; flex-direction: column; gap: 8px; font-size: 0.8rem; color: #fff; text-align: left; min-width: 100px;">
+                        </div>
                 </div>
             </div>
 
@@ -60,7 +63,7 @@
             <div class="stat-card">
                 <div class="stat-header-flex">
                     <h3>Mission Succeeded</h3>
-                    <button style="background:none; border:none; color:white; cursor:pointer;"><i class="fa-solid fa-plus"></i></button>
+                    <button style="background:none; border:none; color:white; cursor:pointer;" onclick="window.location.href='/Profile/Missions'" title="Manage Missions"><i class="fa-solid fa-plus"></i></button>
                 </div>
                 <div class="stat-main-val" id="missionCount" style="text-align: left;">0 <span style="font-size:1rem; color:#aaa;" id="missionTotal">/ 0</span></div>
                 <div class="progress-bg" style="margin-bottom: 15px;">
@@ -77,7 +80,6 @@
 </div>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         // ==========================================
@@ -191,7 +193,7 @@
                 let totalMissions = data.missions.length;
 
                 if(totalMissions === 0) {
-                    missionsDiv.innerHTML = '<div class="loading-text">No missions added</div>';
+                    missionsDiv.innerHTML = '<div class="loading-text">No missions yet — <a href="/Profile/Missions" style="color:var(--accent,#28a745);">add one</a></div>';
                 } else {
                     data.missions.forEach(m => {
                         if(m.isCompleted) completedMissions++;
@@ -199,17 +201,16 @@
                         const textStyle = m.isCompleted ? 'text-decoration: line-through; color: #888;' : 'color: #fff;';
                         
                         missionsDiv.innerHTML += `
-                            <div class="mission-item">
-                                <input type="checkbox" ${isChecked} disabled>
+                            <div class="mission-item" id="dash-m-${m.missionId}">
+                                <input type="checkbox" ${isChecked} onchange="tickMissionDashboard(${m.missionId}, this)">
                                 <span style="${textStyle}">${m.description}</span>
                             </div>
                         `;
                     });
                 }
                 
-                const maxMissionTarget = Math.max(totalMissions, 12); // Defualt target is 12 if less
-                document.getElementById('missionCount').innerHTML = `${completedMissions} <span class="stat-sub-inline" style="font-size:1rem; color:#aaa;" id="missionTotal">/ ${maxMissionTarget}</span>`;
-                let missionPercent = (completedMissions / maxMissionTarget) * 100;
+                document.getElementById('missionCount').innerHTML = `${completedMissions} <span class="stat-sub-inline" style="font-size:1rem; color:#aaa;" id="missionTotal">/ ${totalMissions}</span>`;
+                let missionPercent = totalMissions > 0 ? (completedMissions / totalMissions) * 100 : 0;
                 document.getElementById('missionProgress').style.width = `${Math.min(missionPercent, 100)}%`;
 
             } catch (error) {
@@ -219,48 +220,89 @@
         }
 
         function renderChart(statsData) {
-            const ctx = document.getElementById('activityChart').getContext('2d');
+            const canvas = document.getElementById('activityChart');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const legendContainer = document.getElementById('chartLegend');
             
-            const labels = statsData.map(s => s.sport);
+            // ชุดสีที่ดูทันสมัยสไตล์ Dashboard (แตกต่างกันชัดเจนและดูพรีเมียม)
+            const colors = ['#28a745', '#007bff', '#ffc107', '#dc3545', '#20c997', '#fd7e14'];
+            
             const dataValues = statsData.map(s => s.count);
-            
-            if(dataValues.length === 0) {
-                labels.push("No Data");
-                dataValues.push(1);
+            const labels = statsData.map(s => s.sport);
+            const total = dataValues.reduce((a, b) => a + b, 0);
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            legendContainer.innerHTML = '';
+
+            if (total === 0) {
+                ctx.beginPath();
+                ctx.arc(canvas.width / 2, canvas.height / 2, 60, 0, 2 * Math.PI);
+                ctx.fillStyle = '#333';
+                ctx.fill();
+                legendContainer.innerHTML = '<span style="color:#aaa;">No Data</span>';
+                return;
             }
 
-            new Chart(ctx, {
-                type: 'doughnut', 
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: dataValues,
-                        backgroundColor: ['#2ecc71', '#3498db', '#e74c3c', '#f1c40f', '#9b59b6', '#95a5a6'],
-                        borderWidth: 0 
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '55%',
-                    plugins: {
-                        legend: { 
-                            position: 'right', 
-                            align: 'center', // 🌟 บังคับให้อยู่กึ่งกลางแนวตั้งพอดีกราฟ
-                            labels: { 
-                                color: '#ffffff', 
-                                usePointStyle: true, // ใช้จุดกลมๆ
-                                padding: 15
-                            } 
-                        }
-                    }
-                }
+            let startAngle = -Math.PI / 2;
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 65;
+
+            dataValues.forEach((value, i) => {
+                const sliceAngle = (value / total) * 2 * Math.PI;
+                const color = colors[i % colors.length];
+
+                // วาดชิ้นเค้ก (Pie Slice)
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY); // เริ่มจากจุดศูนย์กลางเพื่อให้เป็นรูปพัด
+                ctx.arc(centerX, centerY, radius, startAngle, startAngle + sliceAngle);
+                ctx.closePath();
+                
+                ctx.fillStyle = color;
+                ctx.fill();
+
+                // เพิ่มคำอธิบายด้านข้าง
+                const legendItem = `
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 10px; height: 10px; background: ${color}; border-radius: 2px;"></div>
+                        <span style="white-space: nowrap;">${labels[i]}</span>
+                    </div>`;
+                legendContainer.innerHTML += legendItem;
+
+                startAngle += sliceAngle;
             });
+        }
+
+        // ฟังก์ชันช่วยวาดวงกลมพื้นฐาน
+        function drawCircle(ctx, x, y, radius, start, end, color) {
+            ctx.beginPath();
+            ctx.arc(x, y, radius, start, end);
+            ctx.fillStyle = color;
+            ctx.fill();
         }
 
         // ==========================================
         // 4. Initialization
         // ==========================================
+        async function tickMissionDashboard(id, checkbox) {
+            const row = document.getElementById(`dash-m-${id}`);
+            if (row) row.style.opacity = '0.5';
+            try {
+                const res = await fetch('/api/MissionAPI/tick', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ missionId: id })
+                });
+                if (!res.ok) throw new Error();
+                // Refresh stats section to update count/progress
+                await fetchDashboardStats();
+            } catch {
+                checkbox.checked = !checkbox.checked;
+                if (row) row.style.opacity = '1';
+            }
+        }
+
         function switchTab(tabId, btnElement) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');

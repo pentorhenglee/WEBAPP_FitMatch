@@ -13,6 +13,7 @@ public class ProfileController : Controller
         return View();
     }
 
+    [SessionCheck]
     public IActionResult Missions()
     {
         return View();

@@ -260,3 +260,219 @@
         max-width: 200px;
     }
 }
+
+/* ============================================================
+   MISSIONS PAGE
+   ============================================================ */
+.missions-page-container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 20px 60px;
+}
+
+.missions-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.missions-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 6px;
+}
+
+.missions-subtitle {
+    font-size: 0.85rem;
+    color: #888;
+    margin: 0;
+}
+
+.missions-summary {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent, #28a745);
+    white-space: nowrap;
+    padding-top: 4px;
+}
+
+/* ─── Add bar ─────────────────────────────────────────── */
+.mission-add-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 22px;
+}
+
+.mission-input {
+    flex: 1;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: #fff;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+.mission-input::placeholder { color: #666; }
+.mission-input:focus { border-color: var(--accent, #28a745); }
+
+.mission-add-btn {
+    background: var(--accent, #28a745);
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    white-space: nowrap;
+}
+.mission-add-btn:hover { opacity: 0.85; }
+.mission-add-btn:active { transform: scale(0.97); }
+.mission-add-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+/* ─── Filter tabs ─────────────────────────────────────── */
+.mission-filter-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.mf-tab {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 6px 18px;
+    color: #aaa;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.mf-tab:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+.mf-tab.active {
+    background: var(--accent, #28a745);
+    border-color: var(--accent, #28a745);
+    color: #fff;
+    font-weight: 600;
+}
+
+/* ─── Mission note card ──────────────────────────────── */
+.mission-list-main {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mission-note {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 14px 16px;
+    transition: background 0.2s, opacity 0.25s;
+}
+.mission-note:hover { background: rgba(255,255,255,0.07); }
+
+.mission-note.mission-done {
+    background: rgba(40, 167, 69, 0.06);
+    border-color: rgba(40, 167, 69, 0.2);
+}
+
+/* custom checkbox */
+.mission-check-wrap {
+    position: relative;
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+}
+.mission-check-wrap input[type="checkbox"] {
+    opacity: 0;
+    position: absolute;
+    width: 0; height: 0;
+}
+.mission-checkmark {
+    position: absolute;
+    top: 0; left: 0;
+    width: 22px; height: 22px;
+    border: 2px solid rgba(255,255,255,0.25);
+    border-radius: 6px;
+    background: rgba(255,255,255,0.04);
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+}
+.mission-check-wrap input:checked ~ .mission-checkmark {
+    background: var(--accent, #28a745);
+    border-color: var(--accent, #28a745);
+}
+.mission-check-wrap input:checked ~ .mission-checkmark::after {
+    content: '';
+    display: block;
+    width: 5px; height: 9px;
+    border: 2px solid #fff;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg) translate(-1px, -1px);
+}
+
+.mission-desc {
+    flex: 1;
+    color: #ddd;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    word-break: break-word;
+    transition: color 0.2s;
+}
+.mission-done .mission-desc {
+    color: #666;
+    text-decoration: line-through;
+}
+
+.mission-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.mission-date {
+    font-size: 0.72rem;
+    color: #555;
+    white-space: nowrap;
+}
+
+.mission-del-btn {
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 2px 4px;
+    transition: color 0.2s;
+}
+.mission-del-btn:hover { color: #ff4d4d; }
+
+.missions-empty {
+    text-align: center;
+    color: #666;
+    padding: 60px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.mission-loading {
+    text-align: center;
+    color: #666;
+    padding: 40px;
+}

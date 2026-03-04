@@ -32,21 +32,21 @@
                         <a onclick="logout()" class="text-danger">LOGOUT</a>
                 </nav>
 
-                <div class="user-section" id="userSection" style=" position: relative;">   
+                <div class="user-section" id="userSection" style="position: relative;">
                     <div class="user-text">
                         <div class="user-name" id="displayUserName">@userName</div>
                         <div class="user-email" id="displayUserEmail">@userEmail</div>
                     </div>
                     
-                    <button id="notificationBtn" class="notification-btn">
-                        <img src="@(string.IsNullOrEmpty(userAvatar) ? "/images/default-avatar.png" : userAvatar)" 
-                            id="displayUserAvatars" class="user-avatar" alt="Avatar"/>
-                    </button>
+                    <img src="@(string.IsNullOrEmpty(userAvatar) ? "/images/default-avatar.png" : userAvatar)" 
+                        id="displayUserAvatars" class="user-avatar" alt="Avatar"/>
                     
-                    <div id="notificationDropdown" class="notification-dropdown-menu">
-                        <div id="notificationDisplay" class="notification-display"></div>
+                    <div id="userDropdown" class="user-dropdown-menu">
+                        <a asp-controller="Profile" asp-action="Index" class="dropdown-item">My Profile</a>
+                        <a asp-controller="Dashboard" asp-action="Index" class="dropdown-item">Dashboard</a>
+                        <div class="dropdown-divider"></div>
+                        <button onclick="logout()" class="dropdown-item text-danger" style="width: 100%; text-align: left; background: none; border: none; font-family: inherit;">Logout</button>
                     </div>
-
                 </div>
             }
             else
@@ -66,129 +66,39 @@
     </div>
 
     <script>
+        // ── Profile fetch ──────────────────────────────────────────────────
         async function fetchUserProfile() {
             const userSection = document.getElementById('userSection');
-            const authLinks = document.getElementById('authLinks');
-
+            const authLinks   = document.getElementById('authLinks');
             try {
                 const res = await fetch("/api/profileapi", { credentials: 'same-origin' });
-
                 if (res.ok) {
                     const user = await res.json();
-                    
-                    document.getElementById('displayUserName').innerText = user.username;
+                    document.getElementById('displayUserName').innerText  = user.username;
                     document.getElementById('displayUserEmail').innerText = user.email;
-                    
                     if (user.profileUrl && user.profileUrl !== "") {
                         document.getElementById('displayUserAvatars').src = user.profileUrl;
                     }
-
-                    userSection.style.display = 'flex';
-                    authLinks.style.display = 'none';
+                    if (userSection) userSection.style.display = 'flex';
+                    if (authLinks)   authLinks.style.display   = 'none';
                 } else {
-                    userSection.style.display = 'none';
-                    authLinks.style.display = 'flex';
+                    if (userSection) userSection.style.display = 'none';
+                    if (authLinks)   authLinks.style.display   = 'flex';
                 }
-
-            } catch (error) {
-                console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
-            }
+            } catch (err) { console.error(err); }
         }
         fetchUserProfile();
 
-        async function logout(){
-            const res = await fetch('/api/auth/logout', {
-                method: "POST",
-                credentials: 'same-origin',
-                headers: {'Content-Type': 'application/json'}
-            });
-            
+        // ── Logout ────────────────────────────────────────────────────────
+        async function logout() {
+            const res  = await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' } });
             const data = await res.json();
-            if (data.success){
-                window.location.href = "/Home/index";
-            }
+            if (data.success) window.location.href = '/Home/index';
         }
 
-// Toggle dropdown when clicking the avatar or button
-document.getElementById('notificationBtn').addEventListener('click', function(event) {
-    event.stopPropagation(); // Prevents the event from bubbling up to the document
-    const dropdown = document.getElementById('notificationDropdown');
-    dropdown.classList.toggle('show');
-});
-
-// Close dropdown when clicking anywhere else on the page
-document.addEventListener('click', function(event) {
-    const dropdown = document.getElementById('notificationDropdown');
-    const notificationBtn = document.getElementById('notificationBtn');
-
-    // If the click is NOT on the dropdown or the button, hide it
-    if (!dropdown.contains(event.target) && !notificationBtn.contains(event.target)) {
-        dropdown.classList.remove('show');
-    }
-});
-        async function renderNotifications(notifications) {
-            const notificationDisplay = document.getElementById('notificationDisplay');
-            notificationDisplay.innerHTML = '';
-
-            if (!notifications || (Array.isArray(notifications) && notifications.length === 0)) {
-                notificationDisplay.innerHTML = '<p class="no-notifications">No notifications found.</p>';
-                return;
-            }
-
-            const notificationArray = Array.isArray(notifications) ? notifications : [notifications];
-
-            notificationArray.forEach(notification => {
-                const card = document.createElement('div');
-                card.className = 'notification-card';
-
-                card.innerHTML = `
-                    <button class="view-more-btn" data-post-id="${notification.postId}">
-                        <div class="notification-card">
-                            <h3 class="notification-title">${notification.title || 'Untitled'}</h3>
-                            <p class="notification-description">${notification.description || ''}</p>
-                        </div>
-                    </button>
-                    `;
-
-                const viewMoreBtn = card.querySelector(".view-more-btn");
-                viewMoreBtn.addEventListener("click", function (e) {
-                    e.stopPropagation();
-                    const id = this.getAttribute("data-post-id"); 
-                    if (id) {
-                        window.location.href = `/Post/Detail?id=${id}`;
-                    }
-                });
-
-                notificationDisplay.appendChild(card);
-            });
-        }
-
-        async function fetchNotifications() {
-            try {
-                const mockNotifications = [
-                    {
-                        postId: 1,
-                        title: "New Workout Challenge",
-                        description: "Join our 30-day fitness challenge"
-                    },
-                    {
-                        postId: 2,
-                        title: "Gym Opening Announcement",
-                        description: "New gym location is now open"
-                    },
-                    {
-                        postId: 3,
-                        title: "Fitness Tips Update",
-                        description: "Check out our latest fitness tips and tricks"
-                    }
-                ];
-                renderNotifications(mockNotifications);
-            } catch (error) {
-                console.error("Error fetching notifications:", error);
-            }
-        }
-
-        fetchNotifications();
+        document.querySelectorAll('.links a').forEach(a => {
+            if (a.href === window.location.href) a.classList.add('active');
+        });
     </script>
 
     <script src="~/js/site.js" asp-append-version="true"></script>

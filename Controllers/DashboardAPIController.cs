@@ -38,7 +38,8 @@ namespace WEBAPP_FitMatch.Controllers
                 })
                 .ToListAsync();
 
-            var now = DateTime.UtcNow;
+            // DB เก็บเวลาไทย (ค่าจริงเป็น +7 แต่ Kind=Unspecified) → ต้องเทียบกับเวลาไทยเช่นกัน
+            var now = DateTime.UtcNow.AddHours(7);
 
             // 3. คัดแยก Upcoming (เวลายังไม่ถึง และ สถานะยังไม่ปิด)
             var upcoming = myPosts
@@ -98,9 +99,19 @@ namespace WEBAPP_FitMatch.Controllers
                 })
                 .ToListAsync();
 
+            var nowThai = DateTime.UtcNow.AddHours(7);
+            
+            var eligiblePostIds = await _db.Posts
+                .Where(p => myJoinedPostIds.Contains(p.PostId) &&
+                            (p.EventDateTime <= nowThai ||
+                            p.Status.ToLower() == "closed" ||
+                            p.Status.ToLower() == "close"))
+                .Select(p => p.PostId)
+                .ToListAsync();
+
             // 🤝 4. Favorite Partners (เพื่อนที่เล่นด้วยบ่อยสุด 3 อันดับ)
             var topPartners = await _db.Members
-                .Where(m => myJoinedPostIds.Contains(m.PostId) && m.UserId != userId.Value) // ไม่เอาตัวเอง
+                .Where(m => eligiblePostIds.Contains(m.PostId) && m.UserId != userId.Value)
                 .GroupBy(m => m.UserId)
                 .OrderByDescending(g => g.Count())
                 .Take(3)
@@ -126,9 +137,10 @@ namespace WEBAPP_FitMatch.Controllers
             }
 
             // 🚀 ส่งข้อมูลทั้ง 4 กล่องกลับไปให้หน้าเว็บรวดเดียวจบ!
+            var daysInMonth = DateTime.DaysInMonth(now.Year, now.Month);
             return Ok(new {
                 participated = participatedCount,
-                targetParticipated = 30, // เป้าหมายรายเดือน
+                targetParticipated = daysInMonth, // จำนวนวันในเดือนปัจจุบัน
                 activityStats = activityStats,
                 missions = missions,
                 favoritePartners = partnerDetails

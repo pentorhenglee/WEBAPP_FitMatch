@@ -28,7 +28,8 @@ public class MissionAPIController : ControllerBase
         {
             UserId = user_id.Value,
             Description = req.Description,
-            IsCompleted = false
+            IsCompleted = false,
+            CreatedAt = DateTime.UtcNow.AddHours(7) // เวลาไทย UTC+7
         };
         _db.Missions.Add(mission);
         await _db.SaveChangesAsync();
@@ -64,6 +65,22 @@ public class MissionAPIController : ControllerBase
         mission.IsCompleted = !mission.IsCompleted;
         await _db.SaveChangesAsync();
         return Ok(new { message = "อัปเดตสถานะสำเร็จ", isCompleted = mission.IsCompleted });
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteMission(int id)
+    {
+        var user_id = HttpContext.Session.GetInt32("user_id");
+        if (user_id == null)
+            return Unauthorized("กรุณาเข้าสู่ระบบ");
+
+        var mission = await _db.Missions.FirstOrDefaultAsync(p => p.MissionId == id && p.UserId == user_id.Value);
+        if (mission == null)
+            return NotFound("ไม่พบ Mission หรือคุณไม่มีสิทธิ์ลบ");
+
+        _db.Missions.Remove(mission);
+        await _db.SaveChangesAsync();
+        return Ok(new { message = "ลบ Mission สำเร็จ" });
     }
 
 }

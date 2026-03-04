@@ -17,9 +17,9 @@ body {
 }
 
 .main-content {
-    margin-left: 100px;
+    margin-left: 80px;
     max-width: 100%;
-    margin-right: 60px;
+    margin-right: 80px;
     transition: margin-left 0.4s ease, margin-right 0.4s ease;
 }
 
@@ -82,46 +82,61 @@ body {
     cursor: pointer;
 }
 
+/* ปรับแต่ง Sidebar ฝั่งซ้ายให้เหมือนฝั่งขวา */
 .category-sidebar {
     position: fixed;
     top: 50%;
     left: 0;
     width: 60px;
     height: auto;
+    max-height: 80vh;
     transform: translateY(-50%);
-    background: rgba(26, 26, 26, 0.9);
-    z-index: 1000;
-    transition: width 0.4s ease;
-    overflow-x: hidden;
-    overflow-y: auto;
+    background: rgba(26, 26, 26, 0.95);
+    z-index: 100;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    border-radius: 0 20px 20px 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    backdrop-filter: blur(10px);
 }
 
+/* เมื่อ Hover ให้ขยายออก */
 .category-sidebar:hover {
     width: 200px;
+    padding: 10px 0;
+    background: rgba(20, 20, 20, 0.98);
+}
+
+.category-items-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
 
 .category-item {
     display: flex;
     align-items: center;
-    padding: 35px 20px;
+    padding: 20px 0;
     cursor: pointer;
     color: rgba(255, 255, 255, 0.6);
     transition: all 0.2s;
     white-space: nowrap;
-    position: relative;
+    border-left: 4px solid transparent;
 }
 
 .category-item i {
-    min-width: 25px;
+    width: 60px;
+    margin-left: -4px; /* ชดเชย border-left 4px เพื่อให้ไอคอนอยู่กึ่งกลาง Sidebar แบบ 100% */
     font-size: 20px;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
 .category-label {
-    margin-left: 15px;
     opacity: 0;
     transition: opacity 0.2s;
 }
@@ -142,7 +157,7 @@ body {
 }
 
 .category-sidebar:hover~.main-content {
-    margin-left: 240px;
+    margin-left: 220px;
 }
 
 /* จัดกลุ่ม Card ให้เรียงเป็นแถวละ 3 ตัว (Responsive) */
@@ -172,11 +187,11 @@ body {
     border-color: rgba(46, 204, 113, 0.3);
 }
 
-/* ส่วนรูปภาพและไอคอนมุมขวา */
 .card-image {
     position: relative;
     height: 180px;
     opacity: 0.9;
+    overflow: hidden;
 }
 
 .card-image img {
@@ -187,17 +202,21 @@ body {
 
 .sport-icon-badge {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    background: white;
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: black;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    top: 12px;
+    right: 15px;
+    font-size: 30px;
+    z-index: 10;
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
+    transition: all 0.3s ease;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.post-card:hover .sport-icon-badge {
+    transform: scale(1.15);
+    color: #2ecc71;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.8);
 }
 
 .post-title {
@@ -209,7 +228,7 @@ body {
 
 /* เนื้อหาภายในการ์ด */
 .card-content {
-    padding: 15px;
+    padding: 10px 20px 20px 20px;
     color: white;
 }
 
@@ -251,6 +270,20 @@ body {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+.post-card.post-closed {
+    filter: grayscale(100%);
+    opacity: 0.7;
+    cursor: not-allowed;
+    pointer-events: auto;
+}
+
+/* ป้องกันไม่ให้มี Effect การขยายตัวเมื่อเอาเมาส์ไปวางบนการ์ดที่ปิดแล้ว */
+.post-card.post-closed:hover {
+    transform: none !important;
+    box-shadow: none !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 /* ส่วนท้ายของการ์ด (จำนวนคนและปุ่ม View More) */
@@ -304,7 +337,7 @@ body {
     max-height: 80vh;
     transform: translateY(-50%);
     background: rgba(26, 26, 26, 0.95);
-    z-index: 1000;
+    z-index: 100;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     border-radius: 20px 0 0 20px;
@@ -312,89 +345,143 @@ body {
     backdrop-filter: blur(15px);
     overflow: hidden;
     display: flex;
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.5);
 }
 
 /* เมื่อ Hover ให้กางออกกว้างพอสำหรับอ่าน Mission */
 .mission-sidebar:hover {
-    width: 350px;
-    padding: 20px;
+    width: 380px;
     background: rgba(20, 20, 20, 0.98);
+    box-shadow: -10px 0 35px rgba(46, 204, 113, 0.15); /* แสงสีเขียวอ่อนๆ สะท้อน */
 }
 
-/* จัดการส่วนตัวอักษรแนวตั้ง */
+/* จัดการส่วนตัวอักษรแนวตั้งแบบพรีเมียม */
 .mission-text-container {
     min-width: 60px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 20px;
+    gap: 15px; /* ล็อกช่องว่างให้ดูแน่นและสม่ำเสมอ */
+    padding: 20px 0;
+    background: rgba(0, 0, 0, 0.2); /* ทำแถบฝั่งตัวอักษรให้เข้มขึ้นเพื่อแบ่งโซนเด่นชัด */
+    border-right: 1px solid rgba(255, 255, 255, 0.05); /* เส้นคั่นบางๆ สบายตา */
+}
+
+.mission-text-container span {
+    color: rgba(255, 255, 255, 0.4);
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+/* เมื่อขยาย Sidebar ตัวอักษรจะสว่างเป็นสีเขียว */
+.mission-sidebar:hover .mission-text-container span {
+    color: #2ecc71;
+    text-shadow: 0 0 8px rgba(46, 204, 113, 0.4);
 }
 
 /* ส่วนเนื้อหาภารกิจที่ซ่อนไว้ */
 .mission-content-hover {
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.4s ease;
+    transition: all 0.4s ease;
     width: 100%;
-    padding-left: 20px;
+    padding: 25px 20px 20px 15px;
+    transform: translateX(20px); /* อนิเมชั่นสไลด์เข้า */
+    overflow-y: auto;
 }
 
 .mission-sidebar:hover .mission-content-hover {
     opacity: 1;
     visibility: visible;
+    transform: translateX(0);
 }
 
-/* ปรับ Mission Item ให้เล็กลงพอดีกับ Sidebar */
+/* เพิ่มหัวข้อด้านบนด้วย CSS สวยๆ */
+.mission-content-hover::before {
+    content: "YOUR MISSIONS";
+    display: block;
+    color: #2ecc71;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(46, 204, 113, 0.3);
+}
+
+/* ปรับ Mission Item เป็นการ์ดที่ดูโมเดิร์น */
 .mission-item {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 10px 15px;
-    margin-bottom: 10px;
-    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 12px 15px;
+    margin-bottom: 12px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    transition: all 0.3s ease;
 }
 
+.mission-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(46, 204, 113, 0.4); /* ขอบสีเขียวอ่อนตอนชี้ */
+    transform: translateX(-4px); /* เมื่อ Hover ให้กล่องมันเด้งมาทางซ้ายนิดหน่อย */
+}
+
+/* เลือกใช้วงกลมแทนสี่เหลี่ยมเพื่อความสวยงาม */
 .mission-item input[type="checkbox"] {
     appearance: none;
     -webkit-appearance: none;
-    width: 28px;
-    height: 28px;
-    background: #fff;
-    /* สีขาวเริ่มต้น */
-    border-radius: 6px;
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%; /* วงกลม */
     cursor: pointer;
     position: relative;
-    transition: background 0.3s;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
 }
 
-/* เมื่อติ๊กถูกให้เป็นสีเขียว */
+/* เมื่อติ๊กถูก เปลี่ยนเป็นพื้นเขียวและขอบเขียว + เรืองแสง */
 .mission-item input[type="checkbox"]:checked {
     background: #2ecc71;
+    border-color: #2ecc71;
+    box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
 }
 
-/* ใส่เครื่องหมายถูกสีดำ */
+/* ใส่เครื่องหมายถูกแบบพอดีตัว */
 .mission-item input[type="checkbox"]:checked::after {
     content: '\f00c';
-    /* FontAwesome Check Icon */
     font-family: 'Font Awesome 6 Free';
     font-weight: 900;
     position: absolute;
-    color: black;
-    font-size: 16px;
+    color: white;
+    font-size: 13px;
     left: 4px;
-    top: 1px;
+    top: 3.5px;
 }
 
-/* ปรับฟอนต์ข้อความใน Mission */
+/* ปรับฟอนต์ข้อความใน Mission ให้อ่านง่าย */
 .mission-item label {
-    color: white;
-    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 500;
     cursor: pointer;
-    font-size: 15px;
+    font-size: 14px;
+    line-height: 1.4;
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+/* เมื่อทำภารกิจสำเร็จตัวหนังสือจะขีดฆ่าและจางลงแบบเท่ๆ */
+.mission-item input[type="checkbox"]:checked + label {
+    color: rgba(255, 255, 255, 0.3);
+    text-decoration: line-through;
 }
 
 .mission-sidebar:hover~.main-content {
-    margin-right: 320px;
+    margin-right: 400px;
 }

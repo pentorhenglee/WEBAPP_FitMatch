@@ -10,6 +10,7 @@
 <div class="page-container">
     <div id="categorySidebar" class="category-sidebar">
         <div class="category-items-wrapper">
+        
             <div class="category-item active" data-category="">
                 <i class="fas fa-infinity"></i> <span class="category-label">ALL SPORTS</span>
             </div>
@@ -75,7 +76,7 @@
     async function fetchMissions() {
         const container = document.getElementById('missionListContainer'); 
         try {
-            const response = await fetch('/api/missions');
+            const response = await fetch('/api/MissionAPI/mission');
             if (!response.ok) throw new Error('Network response was not ok');
             
             const missions = await response.json();
@@ -91,14 +92,13 @@
 
     async function updateMissionStatus(missionId, isCompleted) {
         try {
-            const response = await fetch(`/api/missions/${missionId}/status`, {
+            const response = await fetch('/api/MissionAPI/tick', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ isCompleted: isCompleted }) 
+                body: JSON.stringify({ missionId: missionId })
             });
 
             if (!response.ok) throw new Error('Update failed');
-            console.log(`Mission ${missionId} updated to ${isCompleted}`);
 
         } catch (error) {
             console.error('Update error:', error);
@@ -120,13 +120,25 @@
             item.className = 'mission-item';
             
             item.innerHTML = `
-                <input type="checkbox" id="m-${mission.id}" 
+                <input type="checkbox" id="m-${mission.missionId}" 
                     ${mission.isCompleted ? 'checked' : ''} 
-                    onchange="updateMissionStatus(${mission.id}, this.checked)">
-                <label for="m-${mission.id}">${mission.title}</label>
+                    onchange="updateMissionStatus(${mission.missionId}, this.checked)">
+                <label for="m-${mission.missionId}">${mission.description}</label>
             `;
             container.appendChild(item);
         });
+    }
+
+    function getSportIcon(sportType) {
+        const icons = {
+            'Running': 'fa-running',
+            'Cycling': 'fa-bicycle',
+            'Basketball': 'fa-basketball-ball',
+            'Soccer': 'fa-futbol',
+            'Volleyball': 'fa-volleyball-ball'
+        };
+        // คืนค่า icon ตามประเภท ถ้าไม่ตรงกับเงื่อนไขให้ใช้ icon infinity (All Sports)
+        return icons[sportType] || 'fa-infinity';
     }
 
     async function renderPosts(posts) {
@@ -138,14 +150,30 @@
             return;
         }
 
+        function getSportPlaceholder(sportType) {
+            const map = {
+                'Running':    '/images/running_placeholder.jpg',
+                'Soccer':     '/images/soccer_placeholder.jpg',
+                'Basketball': '/images/basketball_placeholder.jpg',
+                'Volleyball': '/images/volleyball_placeholder.jpg',
+                'Cycling':    '/images/biking_placeholder.jpg',
+            };
+            return map[sportType] || '/images/placeholder-default.jpg';
+        }
+
         posts.forEach(post => {
             const card = document.createElement('div');
-            card.className = 'post-card';
-
+            card.className = `post-card ${post.status === 'close' ? 'post-closed' : ''}`;
+            const sportIconClass = getSportIcon(post.sportType);
+        
             card.innerHTML = `
                 <div class="card-image">
-                    <img src="${post.imageUrl || '/images/default-post.jpg'}" alt="${post.title || 'Post Image'}" />
+                    <div class="sport-icon-badge">
+                        <i class="fas ${sportIconClass}"></i>
+                    </div>
+                    <img src="${post.imageUrl || getSportPlaceholder(post.sportType)}" alt="${post.title || 'Post Image'}" />
                 </div>
+                
                 <div class="card-content">
                     <h3 class="post-title">${post.title || 'Untitled'}</h3>
                     
@@ -159,20 +187,18 @@
                     </div>
                     <p class="post-description">${post.description || ''}</p>
                 </div>
-
-                <div class="card-footer">
-                    <button class="view-more-btn" data-post-id="${post.postId}">View More</button>
-                </div>
                 `;
 
-            const viewMoreBtn = card.querySelector(".view-more-btn");
-            viewMoreBtn.addEventListener("click", function (e) {
-                e.stopPropagation();
-                const id = this.getAttribute("data-post-id"); 
-                if (id) {
-                    window.location.href = `/Post/Detail?id=${id}`;
+            card.addEventListener("click", function () {
+                if (post.status !== 'close') {
+                    if (post.postId) {
+                        window.location.href = `/Post/Detail?id=${post.postId}`;
+                    }
+                } else {
+                    alert("This post is closed.");
                 }
             });
+            
 
             postsDisplay.appendChild(card);
         });
@@ -200,7 +226,6 @@
         }
     }
 
-    // เมื่อโหลดหน้าเว็บ: เรียกโดยไม่ส่งค่า (ดึงทั้งหมด)
     document.addEventListener('DOMContentLoaded', () => {
         fetchSearchResults(null); 
         fetchMissions();
@@ -208,10 +233,8 @@
 
     document.getElementById('searchButton').addEventListener('click', () => {
         const query = document.getElementById('searchInput').value;
-        // หาหมวดหมู่ที่ถูกเลือกอยู่ในขณะนั้น (ตัวที่มีคลาส active)
         const activeCat = document.querySelector('.category-item.active')?.getAttribute('data-category') || "";
         
-        // เรียกฟังก์ชันโดยส่งทั้งคำค้นหาและหมวดหมู่ (แม้ query จะว่างก็ตาม)
         fetchSearchResults(query, activeCat);
     });
 
