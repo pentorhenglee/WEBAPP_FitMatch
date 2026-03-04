@@ -1,18 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using WEBAPP_FitMatch.Data;
 using WEBAPP_FitMatch.Models;
+using WEBAPP_FitMatch.Services;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
-using System.Security.AccessControl;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-using System.Formats.Asn1;
-using System.Runtime.InteropServices;
-using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
-using System.Xml;
-using System.Security.Cryptography.X509Certificates;
-using System.ComponentModel;
-using Microsoft.Extensions.FileProviders;
 
 namespace WEBAPP_FitMatch.Controllers
 {
@@ -21,15 +11,12 @@ namespace WEBAPP_FitMatch.Controllers
     public class PostAPIController : ControllerBase
     {
         private readonly AppDbContext _db;
-        public PostAPIController(AppDbContext db)
+        private readonly NotificationService _notificationService;
+
+        public PostAPIController(AppDbContext db, NotificationService notificationService)
         {
             _db = db;
-        }
-
-        private NpgsqlConnection GetConnection()
-        {
-            var connectionString = _db.Database.GetConnectionString();
-            return new NpgsqlConnection(connectionString);
+            _notificationService = notificationService;
         }
 
         [HttpGet]
@@ -163,6 +150,8 @@ namespace WEBAPP_FitMatch.Controllers
             try
             {
                 await _db.SaveChangesAsync();
+                await _notificationService.NotifyClosed(postid, user_id.Value, post.Title ?? "");
+
                 var histories = new History
                 {
                     UserId = user_id.Value,
@@ -385,6 +374,8 @@ namespace WEBAPP_FitMatch.Controllers
             try
             {
                 await _db.SaveChangesAsync();
+                await _notificationService.NotifyEdited(postid, user_id.Value, post.Title ?? "");
+
                 var histories = new History
                 {
                     UserId = user_id.Value,

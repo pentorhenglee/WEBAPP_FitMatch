@@ -230,11 +230,33 @@ a { text-decoration: none; }
     cursor: pointer;
     transition: background 0.15s;
     border-bottom: 1px solid #2a2a2a;
+    position: relative;
 }
 
 .notification-card:last-child { border-bottom: none; }
 
 .notification-card:hover { background: rgba(255,255,255,0.04); }
+
+.notification-card.unread {
+    background: rgba(46, 204, 113, 0.05);
+    border-left: 3px solid var(--accent);
+}
+
+.notification-card.read {
+    opacity: 0.7;
+}
+
+.unread-indicator {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(46, 204, 113, 0.6);
+}
 
 .notif-icon-wrap {
     width: 36px;

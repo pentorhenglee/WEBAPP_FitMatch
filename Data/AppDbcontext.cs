@@ -13,7 +13,6 @@ namespace WEBAPP_FitMatch.Data
     public DbSet<Comment> Comments {get;set;}
     public DbSet<Notification> Notifications{get;set;}
 
-    public DbSet<Notification> Notifications{get;set;}
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
 
     public DbSet<Mission> Missions { get; set; } 

@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using WEBAPP_FitMatch.Data;
 using WEBAPP_FitMatch.Models;
+using WEBAPP_FitMatch.Services;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
-
 
 namespace WEBAPP_FitMatch.Controllers
 {
@@ -12,9 +11,12 @@ namespace WEBAPP_FitMatch.Controllers
     public class MemberAPIController : ControllerBase
     {
         private readonly AppDbContext _db;
-        public MemberAPIController(AppDbContext db)
+        private readonly NotificationService _notificationService;
+
+        public MemberAPIController(AppDbContext db, NotificationService notificationService)
         {
             _db = db;
+            _notificationService = notificationService;
         }
         
         [HttpPost]
@@ -53,6 +55,8 @@ namespace WEBAPP_FitMatch.Controllers
             };
             _db.Histories.Add(histories);
             await _db.SaveChangesAsync();
+            
+            await _notificationService.NotifyJoined(postid, user_id.Value, post.Title ?? "", post.UserId);
             return Ok(member);
         }
 
@@ -72,6 +76,8 @@ namespace WEBAPP_FitMatch.Controllers
 
             _db.Members.Remove(member);
             await _db.SaveChangesAsync();
+            
+            await _notificationService.NotifyKicked(postId, userId, current_user_id.Value, post.Title ?? "");
             return Ok(new { message = "Member kicked successfully" });
         }
 
