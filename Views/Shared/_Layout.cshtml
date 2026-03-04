@@ -48,7 +48,10 @@
                     <div id="notificationDropdown" class="notification-dropdown-menu">
                         <div class="notif-header">
                             <span>Notifications</span>
-                            <span class="notif-count" id="notifCount">0</span>
+                            <div class="notif-header-actions">
+                                <span class="notif-count" id="notifCount">0</span>
+                                <button class="notif-clear-btn" id="clearReadBtn" onclick="clearReadNotifications()" title="Clear read notifications">Clear read</button>
+                            </div>
                         </div>
                         <div id="notificationDisplay" class="notification-display"></div>
                     </div>
@@ -172,7 +175,21 @@
                         <div class="notif-desc">${n.date || ''} · ${n.triggerName || 'Unknown'}</div>
                     </div>
                     ${!n.isRead ? '<div class="unread-indicator"></div>' : ''}
+                    <button class="notif-delete-btn" title="Delete notification">×</button>
                 `;
+                // Delete button
+                card.querySelector('.notif-delete-btn').addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    try {
+                        await fetch(`/api/NotificationAPI/${n.notificationId}`, {
+                            method: 'DELETE',
+                            credentials: 'same-origin'
+                        });
+                        fetchNotifications();
+                    } catch (err) {
+                        console.error('Error deleting notification:', err);
+                    }
+                });
                 card.addEventListener('click', async () => {
                     // Mark as read
                     if (!n.isRead) {
@@ -220,6 +237,19 @@
         fetchNotifications();
         // Refresh notifications every 30 seconds
         setInterval(fetchNotifications, 30000);
+
+        // ── Clear all read notifications ──────────────────────────────────
+        async function clearReadNotifications() {
+            try {
+                await fetch('/api/NotificationAPI/clear-read', {
+                    method: 'DELETE',
+                    credentials: 'same-origin'
+                });
+                fetchNotifications();
+            } catch (err) {
+                console.error('Error clearing read notifications:', err);
+            }
+        }
     </script>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
