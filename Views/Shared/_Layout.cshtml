@@ -85,6 +85,8 @@
                     document.getElementById('displayUserEmail').innerText = user.email;
                     if (user.profileUrl && user.profileUrl !== "") {
                         document.getElementById('displayUserAvatars').src = user.profileUrl;
+                    } else {
+                        document.getElementById('displayUserAvatars').src = "/images/profile_placeholder.png";
                     }
                     if (userSection) userSection.style.display = 'flex';
                     if (authLinks)   authLinks.style.display   = 'none';
