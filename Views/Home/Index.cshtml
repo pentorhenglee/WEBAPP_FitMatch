@@ -8,6 +8,19 @@
 }
 
 <div class="page-container">
+    <div class="mobile-menu-container">
+        <button class="mobile-menu-trigger" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="mobile-menu-items" id="mobileMenuItems">
+            <div class="m-item active" data-category=""><i class="fas fa-infinity"></i></div>
+            <div class="m-item" data-category="Running"><i class="fas fa-running"></i></div>
+            <div class="m-item" data-category="Cycling"><i class="fas fa-bicycle"></i></div>
+            <div class="m-item" data-category="Basketball"><i class="fas fa-basketball-ball"></i></div>
+            <div class="m-item" data-category="Soccer"><i class="fas fa-futbol"></i></div>
+        </div>
+    </div>
+
     <div id="categorySidebar" class="category-sidebar">
         <div class="category-items-wrapper">
         
@@ -32,6 +45,15 @@
         </div>
     </div>
 
+    <div class="mission-menu-container">
+        <button class="mission-menu-trigger" id="mobileMissionBtn">
+            <i class="fas fa-tasks"></i>
+        </button>
+        <div class="mission-menu-items" id="mobileMissionItems">
+            <div id="missionListContainerMobile" class="mission-list-mobile"></div>
+        </div>
+    </div>
+
     <div class="mission-sidebar" id="missionSidebar">
         <div class="mission-text-container">
             <span>M</span>
@@ -51,13 +73,24 @@
 
     <div class="fixes-top-section">
         <div class="welcome-message">
-            <h1>Find Your Fitness Community</h1>
+            <h1>Find Your Fitness <span>Community</span></h1>
         </div>
         
         <div class="search-container">
             <div class="search-bar">
                 <input type="text" id="searchInput" placeholder="SEARCH THE PLACE" />
                 <button type="button" id="searchButton">SEARCH</button>
+            </div>
+
+            <div class="status-toggle-container">
+                <label class="switch">
+                    <input type="checkbox" id="statusToggle">
+                    <span class="slider round">
+                        <i class="fas fa-lock-open open-icon"></i>
+                        <i class="fas fa-lock closed-icon"></i>
+                    </span>
+                </label>
+                <span class="status-text" id="statusText">OPEN</span>
             </div>
 
             <button class="post-button" id="addpostButton">
@@ -109,26 +142,6 @@
         }
     }
 
-    function renderMissionList(missions) {
-        const container = document.getElementById('missionListContainer');
-        if (!container) return;
-        
-        container.innerHTML = ''; 
-
-        missions.forEach(mission => {
-            const item = document.createElement('div');
-            item.className = 'mission-item';
-            
-            item.innerHTML = `
-                <input type="checkbox" id="m-${mission.missionId}" 
-                    ${mission.isCompleted ? 'checked' : ''} 
-                    onchange="updateMissionStatus(${mission.missionId}, this.checked)">
-                <label for="m-${mission.missionId}">${mission.description}</label>
-            `;
-            container.appendChild(item);
-        });
-    }
-
     function getSportIcon(sportType) {
         const icons = {
             'Running': 'fa-running',
@@ -163,8 +176,16 @@
 
         posts.forEach(post => {
             const card = document.createElement('div');
+            card.setAttribute('data-status', post.status || 'open');
             card.className = `post-card ${post.status === 'close' ? 'post-closed' : ''}`;
+
             const sportIconClass = getSportIcon(post.sportType);
+
+            const eventDateTime = post.eventDateTime || 'TBA';
+            const [date, time] = eventDateTime.includes('T') ? eventDateTime.split('T') : [eventDateTime, ''];
+
+            const currentPeople = post.members ? post.members.length : 0; 
+            const maxPeople = post.maxPeople || 0;
         
             card.innerHTML = `
                 <div class="card-image">
@@ -181,11 +202,20 @@
                         <p class="post-location">
                             <i class="fas fa-map-marker-alt"></i> ${post.location || 'Unknown Location'}
                         </p>
-                        <p class="post-date">
-                            <i class="fas fa-calendar-alt"></i> ${post.eventDateTime || 'TBA'}
-                        </p>
+                        <div class="post-datetime-container">
+                            <p class="post-date">
+                                <i class="fas fa-calendar-alt"></i> ${date}
+                            </p>
+                            ${time ? `<p class="post-time"><i class="fas fa-clock"></i> ${time.substring(0, 5)}</p>` : ''}
+                        </div>
                     </div>
                     <p class="post-description">${post.description || ''}</p>
+
+                    <div class="card-footer-info">
+                        <span class="people-count">
+                            <i class="fas fa-users"></i> ${currentPeople} / ${maxPeople}
+                        </span>
+                    </div>
                 </div>
                 `;
 
@@ -198,10 +228,10 @@
                     alert("This post is closed.");
                 }
             });
-            
 
             postsDisplay.appendChild(card);
         });
+        document.getElementById('statusToggle').dispatchEvent(new Event('change'));
     }
 
     async function fetchSearchResults(query = null, category = null) {
@@ -252,7 +282,6 @@
     // จัดการการคลิกเลือกหมวดหมู่
         document.querySelectorAll('.category-item').forEach(item => {
             item.addEventListener('click', function() {
-                // 1. ย้ายไฮไลท์สีเขียว
                 document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
                 this.classList.add('active');
 
@@ -264,10 +293,79 @@
         });
     });
 
+    document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+    document.getElementById('mobileMenuItems').classList.toggle('show');
+});
+
+    // จัดการการคลิกเลือกหมวดหมู่ในเมนูใหม่
+    document.querySelectorAll('.m-item').forEach(item => {
+        item.addEventListener('click', function() {
+            document.querySelectorAll('.m-item').forEach(el => el.classList.remove('active'));
+            this.classList.add('active');
+            
+            const category = this.getAttribute('data-category');
+            const searchTerms = document.getElementById('searchInput').value;
+            fetchSearchResults(searchTerms, category);
+            document.getElementById('mobileMenuItems').classList.remove('show');
+        });
+    });
+
     document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("addpostButton")
             .addEventListener("click", function () {
                 window.location.href = "/Post/Create";
             });
+    });
+
+    // ส่วนสำหรับเปิด-ปิดเมนู
+    document.getElementById('mobileMissionBtn').addEventListener('click', function() {
+        document.getElementById('mobileMissionItems').classList.toggle('show');
+    });
+
+    // ปรับปรุงฟังก์ชันเดิมของคุณ (ประมาณ source 17)
+    function renderMissionList(missions) {
+        const container = document.getElementById('missionListContainer');
+        const containerMobile = document.getElementById('missionListContainerMobile');
+        
+        if (!container && !containerMobile) return;
+        
+        const html = missions.map(mission => `
+            <div class="mission-item">
+                <input type="checkbox" id="m-${mission.missionId}" 
+                    ${mission.isCompleted ? 'checked' : ''} 
+                    onchange="updateMissionStatus(${mission.missionId}, this.checked)">
+                <label for="m-${mission.missionId}">${mission.description}</label>
+            </div>
+        `).join('');
+
+        if (container) container.innerHTML = html;
+        if (containerMobile) containerMobile.innerHTML = html;
+    }
+
+    document.getElementById('statusToggle').addEventListener('change', function() {
+        const isChecked = this.checked; // true = ดู CLOSED, false = ดู OPEN
+        const targetStatus = isChecked ? 'close' : 'open';
+        const label = document.getElementById('statusText');
+
+        // 1. เปลี่ยน Text และ สีของ Label
+        if (isChecked) {
+            label.innerText = "CLOSED";
+            label.style.color = "#e74c3c";
+        } else {
+            label.innerText = "OPEN";
+            label.style.color = "#2ecc71";
+        }
+
+        // 2. วนลูปเช็คการ์ดทุกใบในหน้าจอ
+        const allCards = document.querySelectorAll('.post-card');
+        allCards.forEach(card => {
+            const cardStatus = card.getAttribute('data-status');
+            
+            if (cardStatus === targetStatus) {
+                card.style.display = "block"; // แสดงตัวที่ตรงสถานะ
+            } else {
+                card.style.display = "none";  // ซ่อนตัวที่ไม่ตรง
+            }
+        });
     });
 </script>
