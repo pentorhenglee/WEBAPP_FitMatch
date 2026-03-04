@@ -12,7 +12,11 @@ public class ProfileController : Controller
     {
         return View();
     }
-
+    [SessionCheck]
+    public IActionResult UserProfile(int id)
+    {
+        return View(model: id);
+    }
     [SessionCheck]
     public IActionResult Missions()
     {

@@ -129,6 +129,7 @@ namespace WEBAPP_FitMatch.Controllers
                 if(user != null)
                 {
                     partnerDetails.Add(new {
+                        userId = user.Id,
                         username = user.Username,
                         profileUrl = user.ProfileUrl ?? "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?_=20150327203541",
                         meetCount = tp.meetCount
@@ -143,6 +144,81 @@ namespace WEBAPP_FitMatch.Controllers
                 targetParticipated = daysInMonth, // จำนวนวันในเดือนปัจจุบัน
                 activityStats = activityStats,
                 missions = missions,
+                favoritePartners = partnerDetails
+            });
+        }
+
+        [HttpGet("stats/{targetUserId:int}")]
+        public async Task<IActionResult> GetUserStats(int targetUserId)
+        {
+            var sessionUserId = HttpContext.Session.GetInt32("user_id");
+            if (sessionUserId == null) return Unauthorized(new { message = "Login Please" });
+
+            var userExists = await _db.Users.AnyAsync(u => u.Id == targetUserId);
+            if (!userExists) return NotFound(new { message = "User not found" });
+
+            var now = DateTime.UtcNow;
+            var nowThai = now.AddHours(7);
+
+            var joinedPostIds = await _db.Members
+                .Where(m => m.UserId == targetUserId)
+                .Select(m => m.PostId)
+                .ToListAsync();
+
+            // 📊 Participated Rate (เดือนนี้)
+            var participatedCount = await _db.Posts
+                .Where(p => joinedPostIds.Contains(p.PostId) &&
+                            p.EventDateTime.Month == now.Month &&
+                            p.EventDateTime.Year == now.Year)
+                .CountAsync();
+
+            // 🥧 Activity Stats
+            var activityStats = await _db.Posts
+                .Where(p => joinedPostIds.Contains(p.PostId))
+                .GroupBy(p => p.SportType)
+                .Select(g => new {
+                    sport = string.IsNullOrEmpty(g.Key) ? "Other" : g.Key,
+                    count = g.Count()
+                })
+                .ToListAsync();
+
+            // 🤝 Favorite Partners
+            var eligiblePostIds = await _db.Posts
+                .Where(p => joinedPostIds.Contains(p.PostId) &&
+                            (p.EventDateTime <= nowThai ||
+                             p.Status.ToLower() == "closed" ||
+                             p.Status.ToLower() == "close"))
+                .Select(p => p.PostId)
+                .ToListAsync();
+
+            var topPartners = await _db.Members
+                .Where(m => eligiblePostIds.Contains(m.PostId) && m.UserId != targetUserId)
+                .GroupBy(m => m.UserId)
+                .OrderByDescending(g => g.Count())
+                .Take(3)
+                .Select(g => new { partnerId = g.Key, meetCount = g.Count() })
+                .ToListAsync();
+
+            var partnerDetails = new List<object>();
+            foreach (var tp in topPartners)
+            {
+                var user = await _db.Users.FindAsync(tp.partnerId);
+                if (user != null)
+                {
+                    partnerDetails.Add(new {
+                        userId = user.Id,
+                        username = user.Username,
+                        profileUrl = user.ProfileUrl ?? "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?_=20150327203541",
+                        meetCount = tp.meetCount
+                    });
+                }
+            }
+
+            var daysInMonth = DateTime.DaysInMonth(now.Year, now.Month);
+            return Ok(new {
+                participated = participatedCount,
+                targetParticipated = daysInMonth,
+                activityStats,
                 favoritePartners = partnerDetails
             });
         }

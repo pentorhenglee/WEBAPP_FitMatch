@@ -24,10 +24,16 @@ body {
 }
 
 .welcome-message {
-    color: #2ecc71;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
     font-size: 20px;
     text-align: center;
     font-weight: bold;
+}
+
+.welcome-message span {
+    color: #2ecc71;
+    text-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
 }
 
 .search-container {

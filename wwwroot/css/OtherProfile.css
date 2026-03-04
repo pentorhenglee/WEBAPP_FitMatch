@@ -1,0 +1,230 @@
+/* ============================================================
+   1. VARIABLES & BASE
+   ============================================================ */
+:root {
+    --accent: #2ecc71; /* สีเขียว Neon หลักของ FitMatch */
+    --text: #ffffff;
+    --text-muted: #aaaaaa;
+    --border: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================================
+   2. LAYOUT & CONTAINER
+   ============================================================ */
+.profile-page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1000px;
+    margin: 100px auto 50px; /* เว้นระยะด้านบนให้ Navbar */
+    padding: 0 20px;
+    min-height: calc(100vh - 70px);
+}
+
+/* ปุ่ม Back ย้อนกลับ (ปรับตามสไตล์มินิมอลที่คุณส่งมา) */
+.back-link {
+    position: fixed;
+    top: 100px;
+    left: 50px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 2.2rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.2s ease, transform 0.2s ease;
+    z-index: 100;
+}
+
+.back-link:hover { 
+    color: var(--accent); 
+    transform: translateX(-5px); /* เลื่อนซ้ายนิดนึงตอน Hover */
+}
+
+/* ============================================================
+   3. PROFILE CARD (Glassmorphism)
+   ============================================================ */
+.profile-card {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    background: rgba(92, 76, 76, 0.03); /* สีโทนที่คุณต้องการ */
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* ฝั่งซ้าย (รูปโปรไฟล์) */
+.profile-sidebar {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 50px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.avatar-wrapper {
+    position: relative;
+    padding: 5px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+}
+
+.profile-image-large {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    background-color: #1a1a1a;
+}
+
+/* ฝั่งขวา (ข้อมูล) */
+.profile-main-info {
+    flex: 1;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    justify-content: center;
+}
+
+.info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.info-group .label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+    font-weight: 700;
+}
+
+.info-group h1 {
+    font-size: 2.2rem;
+    margin: 0;
+    color: var(--text);
+    font-weight: bold;
+}
+
+.user-email-text {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.user-bio-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    max-width: 500px;
+    margin: 0;
+}
+
+/* ============================================================
+   4. STATS SECTION (สถิติด้านล่าง)
+   ============================================================ */
+.user-stats-section {
+    width: 100%;
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); /* Grid ยืดหยุ่นตามที่คุณส่งมา */
+    gap: 20px;
+}
+
+/* ใช้พื้นหลังแบบเดียวกับ Profile Card ให้เข้าเซ็ตกัน */
+.stat-card {
+    background: rgba(92, 76, 76, 0.03); 
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 25px;
+    color: var(--text);
+    box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-card h3 {
+    margin-top: 0;
+    font-size: 1.1rem;
+    color: var(--text);
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+/* ตกแต่ง List ของ Favorite Partners */
+#partnersContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+    max-height: 180px;
+    padding-right: 5px;
+}
+
+#partnersContainer::-webkit-scrollbar { width: 4px; }
+#partnersContainer::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+.partner-item {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 12px;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.partner-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(46, 204, 113, 0.4);
+}
+
+.partner-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+    object-fit: cover;
+}
+
+/* ============================================================
+   5. MOBILE RESPONSIVENESS
+   ============================================================ */
+@media (max-width: 768px) {
+    .profile-card {
+        flex-direction: column;
+    }
+    
+    .profile-sidebar {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 30px;
+    }
+
+    .profile-main-info {
+        padding: 30px;
+        align-items: center;
+        text-align: center;
+    }
+
+    .info-group {
+        align-items: center;
+    }
+
+    .back-link {
+        top: 80px;
+        left: 20px;
+        font-size: 1.8rem;
+    }
+}

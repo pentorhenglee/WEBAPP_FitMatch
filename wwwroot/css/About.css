@@ -9,6 +9,13 @@
     min-height: calc(100vh - var(--navbar-h));
     padding: 20px 0px;
     gap: 10px;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
+}
+
+.profile-page-container h1 span{
+    color: #2ecc71;
+    text-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
 }
 
 .row {
