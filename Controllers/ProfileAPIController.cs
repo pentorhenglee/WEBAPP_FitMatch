@@ -9,8 +9,6 @@ using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using WEBAPP_FitMatch.Models;
 using WEBAPP_FitMatch.Data;
 
-using System.Text.Encodings.Web;
-
 [ApiController]
 [Route("api/profileapi")]
 public class ProfileAPIController : ControllerBase
@@ -62,9 +60,7 @@ public class ProfileAPIController : ControllerBase
 
         user.Username = req.username ?? user.Username;
         user.ProfileUrl = req.profileUrl;
-        user.Info = !string.IsNullOrEmpty(req.info) 
-                ? HtmlEncoder.Default.Encode(req.info) 
-                : "";
+        user.Info = req.info ?? "";
         try 
         {
             await _db.SaveChangesAsync();
