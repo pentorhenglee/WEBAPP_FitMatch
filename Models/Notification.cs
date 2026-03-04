@@ -14,5 +14,5 @@ public class Notification
     public required string Type {get;set;}
     public string Message {get;set;}
     public bool IsRead {get;set;}
-    public DateTime EventDateTime { get; set;}
+    public DateTime CreatedAt { get; set;}
 }
