@@ -322,6 +322,10 @@ a { text-decoration: none; }
 
 .notif-body { flex: 1; min-width: 0; }
 
+.notification-card.unread .notif-body {
+    padding-right: 40px;
+}
+
 .notif-type-badge {
     font-size: 0.65rem;
     font-weight: 700;
@@ -334,18 +338,14 @@ a { text-decoration: none; }
     font-size: 0.85rem;
     font-weight: 600;
     color: #fff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    word-break: break-word;
 }
 
 .notif-desc {
     font-size: 0.75rem;
     color: #888;
     margin-top: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    word-break: break-word;
 }
 
 .no-notifications {
