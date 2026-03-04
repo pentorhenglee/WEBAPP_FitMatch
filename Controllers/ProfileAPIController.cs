@@ -20,6 +20,20 @@ public class ProfileAPIController : ControllerBase
     {
         _db = db;
     }
+    [HttpGet("user/{id:int}")]
+    public async Task<IActionResult> GetUserById(int id)
+    {
+        var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == id);
+        if (user == null) return NotFound(new { message = "User not found" });
+        return Ok(new {
+            id = user.Id,
+            username = user.Username,
+            profileUrl = user.ProfileUrl,
+            info = user.Info,
+            email = user.Email
+        });
+    }
+
     [HttpGet]
     public async Task<IActionResult> GetUser()
     {

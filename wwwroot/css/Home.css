@@ -2,7 +2,6 @@ body {
     font-family: 'Segoe UI';
     background: radial-gradient(circle at top left, #0f2027, #000000 60%);
     margin: 0;
-    padding: 0;
 }
 
 .fixed-top-section {
@@ -24,10 +23,16 @@ body {
 }
 
 .welcome-message {
-    color: #2ecc71;
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
     font-size: 20px;
     text-align: center;
     font-weight: bold;
+}
+
+.welcome-message span {
+    color: #2ecc71;
+    text-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
 }
 
 .search-container {
