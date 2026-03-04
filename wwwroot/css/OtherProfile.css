@@ -16,9 +16,9 @@
     flex-direction: column;
     align-items: center;
     max-width: 1000px;
-    margin: 100px auto 50px; /* เว้นระยะด้านบนให้ Navbar */
+    margin: 0 auto;
     padding: 0 20px;
-    min-height: calc(100vh - 70px);
+    min-height: var(--page-content-min-h, calc(100vh - 70px));
 }
 
 /* ปุ่ม Back ย้อนกลับ (ปรับตามสไตล์มินิมอลที่คุณส่งมา) */

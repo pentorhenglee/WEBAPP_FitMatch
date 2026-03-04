@@ -291,7 +291,7 @@
     .post-detail-container {
         flex-direction: column; /* เรียงจากบนลงล่าง */
         height: auto; 
-        min-height: calc(100vh - 80px);
+        min-height: var(--page-content-min-h, calc(100vh - 80px));
     }
 
     /* 🌟 ใช้ order เพื่อสลับให้ โพสต์อยู่ด้านบน แชทอยู่ด้านล่าง */

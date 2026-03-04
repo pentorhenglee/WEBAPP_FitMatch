@@ -91,7 +91,6 @@ namespace WEBAPP_FitMatch.Controllers
             var missions = await _db.Missions
                 .Where(m => m.UserId == userId.Value)
                 .OrderByDescending(m => m.CreatedAt)
-                .Take(5) // ดึงมาโชว์ 5 อันล่าสุด
                 .Select(m => new {
                     m.MissionId,
                     m.Description,

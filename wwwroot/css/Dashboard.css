@@ -321,7 +321,7 @@
     .dashboard-container {
         flex-direction: column; /* จับซ้ายขวา มาเรียงซ้อนบนล่าง */
         height: auto; /* ปลดล็อกความสูงที่เคยล็อกไว้ เพื่อให้หน้าเว็บ Scroll ลงไปได้ */
-        min-height: calc(100vh - 80px);
+        min-height: var(--page-content-min-h, calc(100vh - 80px));
     }
 
     .dash-left-panel {

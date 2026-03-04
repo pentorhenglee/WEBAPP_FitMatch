@@ -9,6 +9,9 @@
   --text:        #ffffff;
   --text-muted:  #b3b3b3;
   --navbar-h:    70px;
+    --page-pad-y:  30px;
+    --page-pad-x:  40px;
+    --page-content-min-h: calc(100vh - var(--navbar-h) - var(--page-pad-y) - var(--page-pad-y));
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -18,6 +21,7 @@ body {
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
+  padding-top: var(--navbar-h);
 }
 
 a { text-decoration: none; }
@@ -133,8 +137,7 @@ a { text-decoration: none; }
    พื้นที่ตรงกลาง (Dashboard)
    ============================================================ */
 .page-wrapper {
-  padding: 30px 40px;
-  margin-top: var(--navbar-h);
+    padding: var(--page-pad-y) var(--page-pad-x);
 }
 
 /* ================= Notification Button ================= */

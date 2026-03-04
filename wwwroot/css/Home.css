@@ -2,7 +2,6 @@ body {
     font-family: 'Segoe UI';
     background: radial-gradient(circle at top left, #0f2027, #000000 60%);
     margin: 0;
-    padding: 0;
 }
 
 .fixed-top-section {
