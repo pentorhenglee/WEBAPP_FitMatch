@@ -1,5 +1,6 @@
 using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using WEBAPP_FitMatch.Models;
 
 namespace WEBAPP_FitMatch.Data
@@ -10,6 +11,7 @@ namespace WEBAPP_FitMatch.Data
     public DbSet<Post> Posts { get; set; }
     public DbSet<Member> Members {get;set;}
     public DbSet<Comment> Comments {get;set;}
+    public DbSet<Notification> Notifications{get;set;}
 
     public DbSet<Notification> Notifications{get;set;}
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
