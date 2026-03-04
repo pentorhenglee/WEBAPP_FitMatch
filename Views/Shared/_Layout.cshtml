@@ -33,22 +33,25 @@
                         <a onclick="logout()" class="text-danger">LOGOUT</a>
                 </nav>
 
-                <div class="user-section" id="userSection" style=" position: relative;">   
+                <div class="user-section" id="userSection" style="position: relative;">
                     <div class="user-text">
                         <div class="user-name" id="displayUserName">@userName</div>
                         <div class="user-email" id="displayUserEmail">@userEmail</div>
                     </div>
-                    
-                    <img src="@(string.IsNullOrEmpty(userAvatar) ? "/images/default-avatar.png" : userAvatar)" 
-                        id="displayUserAvatars" class="user-avatar" alt="Avatar"/>
-                    
-                    <div id="userDropdown" class="user-dropdown-menu">
-                        <a asp-controller="Profile" asp-action="Index" class="dropdown-item">My Profile</a>
-                        <a asp-controller="Dashboard" asp-action="Index" class="dropdown-item">Dashboard</a>
-                        <div class="dropdown-divider"></div>
-                        <button onclick="logout()" class="dropdown-item text-danger" style="width: 100%; text-align: left; background: none; border: none; font-family: inherit;">Logout</button>
-                    </div>
 
+                    <button id="notificationBtn" class="notification-btn" title="Notifications">
+                        <img src="@(string.IsNullOrEmpty(userAvatar) ? "/images/default-avatar.png" : userAvatar)"
+                            id="displayUserAvatars" class="user-avatar" alt="Avatar" />
+                        <span class="notif-badge" id="notifBadge" style="display:none;"></span>
+                    </button>
+
+                    <div id="notificationDropdown" class="notification-dropdown-menu">
+                        <div class="notif-header">
+                            <span>Notifications</span>
+                            <span class="notif-count" id="notifCount">0</span>
+                        </div>
+                        <div id="notificationDisplay" class="notification-display"></div>
+                    </div>
                 </div>
             }
             else
@@ -70,52 +73,122 @@
     </div>
 
     <script>
+        // ── Profile fetch ──────────────────────────────────────────────────
         async function fetchUserProfile() {
             const userSection = document.getElementById('userSection');
-            const authLinks = document.getElementById('authLinks');
-
+            const authLinks   = document.getElementById('authLinks');
             try {
                 const res = await fetch("/api/profileapi", { credentials: 'same-origin' });
-
                 if (res.ok) {
                     const user = await res.json();
-                    
-                    document.getElementById('displayUserName').innerText = user.username;
+                    document.getElementById('displayUserName').innerText  = user.username;
                     document.getElementById('displayUserEmail').innerText = user.email;
-                    
                     if (user.profileUrl && user.profileUrl !== "") {
-                        document.getElementById('displayUserAvatar').src = user.profileUrl;
+                        document.getElementById('displayUserAvatars').src = user.profileUrl;
                     }
-
-                    userSection.style.display = 'flex';
-                    authLinks.style.display = 'none';
+                    if (userSection) userSection.style.display = 'flex';
+                    if (authLinks)   authLinks.style.display   = 'none';
                 } else {
-                    userSection.style.display = 'none';
-                    authLinks.style.display = 'flex';
+                    if (userSection) userSection.style.display = 'none';
+                    if (authLinks)   authLinks.style.display   = 'flex';
                 }
-
-            } catch (error) {
-                console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
-            }
+            } catch (err) { console.error(err); }
         }
         fetchUserProfile();
 
-        async function logout(){
-            const res = await fetch('/api/auth/logout', {
-                method: "POST",
-                credentials: 'same-origin',
-                headers: {'Content-Type': 'application/json'}
-            });
-            
+        // ── Logout ────────────────────────────────────────────────────────
+        async function logout() {
+            const res  = await fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' } });
             const data = await res.json();
-            if (data.success){
-                window.location.href = "/Home/index";
-            }
+            if (data.success) window.location.href = '/Home/index';
         }
 
+        // ── Active nav link ───────────────────────────────────────────────
         document.querySelectorAll('.links a').forEach(a => {
             if (a.href === window.location.href) a.classList.add('active');
         });
+
+        // ── Notification dropdown toggle ──────────────────────────────────
+        const _notifBtn  = document.getElementById('notificationBtn');
+        const _notifMenu = document.getElementById('notificationDropdown');
+        if (_notifBtn && _notifMenu) {
+            _notifBtn.addEventListener('click', e => {
+                e.stopPropagation();
+                _notifMenu.classList.toggle('show');
+            });
+            document.addEventListener('click', e => {
+                if (!_notifMenu.contains(e.target) && !_notifBtn.contains(e.target))
+                    _notifMenu.classList.remove('show');
+            });
+        }
+
+        // ── Notification types config ─────────────────────────────────────
+        const NOTIF_TYPES = {
+            joined:  { icon: 'fa-user-check',  color: '#2ecc71', label: 'Joined'  },
+            edited:  { icon: 'fa-pen-to-square', color: '#3498db', label: 'Updated' },
+            kicked:  { icon: 'fa-user-xmark',  color: '#e74c3c', label: 'Removed' },
+            closed:  { icon: 'fa-lock',        color: '#f39c12', label: 'Closed'  },
+        };
+
+        // ── Render notifications ───────────────────────────────────────────
+        function renderNotifications(notifications) {
+            const display = document.getElementById('notificationDisplay');
+            const badge   = document.getElementById('notifBadge');
+            const count   = document.getElementById('notifCount');
+            display.innerHTML = '';
+
+            if (!notifications || notifications.length === 0) {
+                display.innerHTML = '<p class="no-notifications">You\'re all caught up!</p>';
+                if (badge) badge.style.display = 'none';
+                if (count) count.textContent = '0';
+                return;
+            }
+
+            if (badge) { badge.style.display = 'flex'; badge.textContent = notifications.length > 9 ? '9+' : notifications.length; }
+            if (count) count.textContent = notifications.length;
+
+            notifications.forEach(n => {
+                const cfg  = NOTIF_TYPES[n.type] || { icon: 'fa-bell', color: '#aaa', label: n.type };
+                const card = document.createElement('div');
+                card.className = 'notification-card';
+                card.style.setProperty('--notif-color', cfg.color);
+                card.innerHTML = `
+                    <div class="notif-icon-wrap" style="background:${cfg.color}22; color:${cfg.color};">
+                        <i class="fa-solid ${cfg.icon}"></i>
+                    </div>
+                    <div class="notif-body">
+                        <div class="notif-type-badge" style="color:${cfg.color};">${cfg.label}</div>
+                        <div class="notif-title">${n.title || 'Untitled'}</div>
+                        <div class="notif-desc">${n.description || ''}</div>
+                    </div>
+                `;
+                card.addEventListener('click', () => {
+                    if (n.postId) window.location.href = `/Post/Detail?id=${n.postId}`;
+                });
+                display.appendChild(card);
+            });
+        }
+
+        // ── Mock data (replace with real API later) ───────────────────────
+        async function fetchNotifications() {
+            try {
+                // TODO: replace with real API call
+                // const res = await fetch('/api/NotificationAPI', { credentials: 'same-origin' });
+                // const data = await res.json();
+                // renderNotifications(data);
+
+                const mockNotifications = [
+                    { postId: 1, type: 'joined',  title: 'Morning Run 5K',         description: 'You have successfully joined this event.' },
+                    { postId: 2, type: 'edited',  title: 'Basketball at Central',  description: 'The host updated the event details.' },
+                    { postId: 3, type: 'kicked',  title: 'Cycling Group Ride',     description: 'You have been removed from this event.' },
+                    { postId: 4, type: 'closed',  title: 'Yoga Sunday Morning',    description: 'This event has been closed by the host.' },
+                ];
+                renderNotifications(mockNotifications);
+            } catch (err) {
+                console.error('Error fetching notifications:', err);
+            }
+        }
+        fetchNotifications();
     </script>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
