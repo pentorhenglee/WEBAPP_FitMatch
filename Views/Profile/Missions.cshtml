@@ -81,7 +81,7 @@
                 <div class="missions-empty">
                     <i class="fa-regular fa-note-sticky" style="font-size:2.5rem; margin-bottom:12px; color:#555;"></i>
                     <p>${currentFilter === 'all' ? 'No missions yet. Add one above!' :
-                        currentFilter === 'todo' ? 'Nothing left to do 🎉' : 'No completed missions yet.'}</p>
+                        currentFilter === 'todo' ? 'Nothing left to do!' : 'No completed missions yet.'}</p>
                 </div>`;
             return;
         }
@@ -181,7 +181,7 @@
     function formatDate(iso) {
         if (!iso) return '';
         const d = new Date(iso);
-        return d.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+        return d.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric', timeZone: 'Asia/Bangkok' });
     }
 
     document.addEventListener('DOMContentLoaded', loadMissions);

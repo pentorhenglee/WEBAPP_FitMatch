@@ -28,7 +28,8 @@ public class MissionAPIController : ControllerBase
         {
             UserId = user_id.Value,
             Description = req.Description,
-            IsCompleted = false
+            IsCompleted = false,
+            CreatedAt = DateTime.UtcNow.AddHours(7) // เวลาไทย UTC+7
         };
         _db.Missions.Add(mission);
         await _db.SaveChangesAsync();
