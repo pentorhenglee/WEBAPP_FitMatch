@@ -25,10 +25,10 @@ public class AuthController : ControllerBase
         var user = _db.Users.FirstOrDefault(u => u.Email == req.Email);
         
          if (user == null)
-            return Unauthorized("User not found");
+            return Unauthorized(new { message = "User not found" });
 
         if (!BCrypt.Net.BCrypt.Verify(req.Password, user.PasswordHash))
-            return Unauthorized("Wrong password");
+            return Unauthorized(new { message = "Wrong password" });
 
         HttpContext.Session.SetString("user", user.Username);
         HttpContext.Session.SetString("user_email", user.Email);

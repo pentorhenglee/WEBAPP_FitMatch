@@ -105,7 +105,7 @@
         });
 
         if (res.ok) {
-            window.location.href = "/Account/Login";
+            /Login";window.location.href = "/Account
         } else {
             const errorData = await res.json(); 
             errorDiv.innerText = errorData.message || "Registration failed.";

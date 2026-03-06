@@ -71,25 +71,23 @@
                 const res = await fetch("/api/auth/login", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ Email: email, Password: password }) // Key ต้องตรงกับ DTO ใน Backend
+                    body: JSON.stringify({ Email: email, Password: password })
                 });
 
                 if (res.ok) {
                     window.location.href = "/Home/Index";
                 } else {
                     btnSubmit.disabled = false;
-                    btnSubmit.innerHTML = originalContent;
+                    btnSubmit.innerHTML = originalContent; 
+
                     const contentType = res.headers.get("content-type");
-                    if (contentType && contentType.indexOf("application/json") !== -1) {
+                    if (contentType && contentType.includes("application/json")) {
                         const errorData = await res.json();
                         errorDiv.innerText = errorData.message || "Login failed.";
                     } else {
-                        errorDiv.innerText = "Error 500: Server error.";
+                        errorDiv.innerText = "Error " + res.status + ": Server error.";
                     }
                     errorDiv.classList.remove("d-none");
-
-                    btnSubmit.disabled = false;
-                    btnSubmit.innerHTML = originalBtnText;  
                 }
             } catch (err) {
                 btnSubmit.disabled = false;
