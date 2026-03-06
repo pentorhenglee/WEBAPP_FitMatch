@@ -176,11 +176,11 @@ a { text-decoration: none; }
     right: 20px;
     width: 400px;
     max-height: 450px;
-    background: #1e1e1e;
-    border: 1px solid #3a3a3a;
+    background: var(--surface);
+    border: 1px solid var(--border);
     border-radius: 14px;
     box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-    z-index: 99999;
+    z-index: 999999;
     isolation: isolate;
     overflow: hidden;
     flex-direction: column;
@@ -427,19 +427,22 @@ a { text-decoration: none; }
         position: absolute;
         top: var(--navbar-h);
         left: 0;
-        background: var(--surface);
+        right: 0;
         flex-direction: column;
         width: 100%;
         padding: 10px;
         border-radius: 8px;
         display: none;
         z-index: 9999;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.6);
     }
 
     .links a {
         padding: 10px 20px;
         width: 100%;
-        font-size: 20px;
     }
 
     .auth-links {
@@ -453,5 +456,11 @@ a { text-decoration: none; }
     .auth-links .btn-register {
         padding: 6px 18px;
         font-size: 0.9rem;
+    }
+
+    .notification-dropdown-menu {
+        right: 0;
+        left: 0;
+        width: 100%;
     }
 }
