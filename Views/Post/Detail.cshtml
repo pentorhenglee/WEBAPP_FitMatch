@@ -307,7 +307,10 @@
             document.getElementById('editDateTime').value = globalPostData.eventDateTime.slice(0, 16);
             
             document.getElementById('editSportType').value = globalPostData.sportType;
-            document.getElementById('editMaxPeople').value = globalPostData.maxPeople;
+            const currentCount = globalPostData.members ? globalPostData.members.length : 0;
+            const maxPeopleInput = document.getElementById('editMaxPeople');
+            maxPeopleInput.min = currentCount;
+            maxPeopleInput.value = globalPostData.maxPeople;
             document.getElementById('editImageUrl').value = globalPostData.imageUrl || "";
             document.getElementById('editDescription').value = globalPostData.description || "";
             
@@ -319,12 +322,18 @@
         }
 
         async function submitEditPost() {
+            const currentCount = globalPostData.members ? globalPostData.members.length : 0;
+            const maxPeople = parseInt(document.getElementById('editMaxPeople').value);
+            if (maxPeople < currentCount) {
+                alert(`Cannot set max people below current participant count (${currentCount}).`);
+                return;
+            }
             const dto = {
                 title: document.getElementById('editTitle').value,
                 location: document.getElementById('editLocation').value,
                 eventDateTime: document.getElementById('editDateTime').value + ':00',
                 sportType: document.getElementById('editSportType').value,
-                maxPeople: parseInt(document.getElementById('editMaxPeople').value),
+                maxPeople: maxPeople,
                 imageUrl: document.getElementById('editImageUrl').value,
                 description: document.getElementById('editDescription').value
             };
@@ -378,7 +387,12 @@
                 const avatarUrl = chat.profileUrl || 'https://via.placeholder.com/40';
                 
                 const dateObj = new Date(chat.comment_date);
-                const timeStr = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+                const now = new Date();
+                const isToday = dateObj.toDateString() === now.toDateString();
+                const timeOnly = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+                const timeStr = isToday
+                    ? timeOnly
+                    : dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) + ' ' + timeOnly;
 
                 chatContainer.innerHTML += `
                     <div class="chat-message-wrapper ${wrapperClass}">
