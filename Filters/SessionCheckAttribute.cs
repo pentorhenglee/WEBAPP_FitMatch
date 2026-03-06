@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace WEBAPP_FitMatch.Filters // เช็ค namespace ให้ตรงกับของคุณด้วยนะครับ
+namespace WEBAPP_FitMatch.Filters
 {
     public class SessionCheckAttribute : ActionFilterAttribute
     {

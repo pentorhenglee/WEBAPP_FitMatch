@@ -1,20 +1,13 @@
-/* ============================================================
-   Create Post Layout (ล้อตามสไตล์ Home.css)
-   ============================================================ */
 
-/* ห่อหุ้มหน้าให้อยู่ตรงกลาง และใช้พื้นหลังล้อกับ Home */
 .create-post-wrapper {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: var(--page-content-min-h, calc(100vh - 70px)); /* หักความสูง Navbar */
+    min-height: var(--page-content-min-h, calc(100vh - 70px)); 
     padding: 60px 20px;
-    /* หาก Layout หลักไม่ได้ใส่พื้นหลังไว้ ให้เปิดใช้บรรทัดล่างนี้ครับ */
-    /* background: radial-gradient(circle at top left, #0f2027, #000000 60%); */
 }
 
-/* Card สไตล์ Glassmorphism แบบเดียวกับ post-card ใน Home */
 .create-post-container {
     background: rgba(26, 26, 26, 0.6);
     backdrop-filter: blur(15px);
@@ -42,7 +35,6 @@
     text-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
 }
 
-/* การจัดวาง Grid สำหรับฟอร์ม */
 .form-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -54,7 +46,6 @@
     flex-direction: column;
 }
 
-/* ให้บางช่องกินพื้นที่เต็ม 2 คอลัมน์ */
 .full-width {
     grid-column: 1 / -1;
 }
@@ -67,7 +58,6 @@
     letter-spacing: 0.5px;
 }
 
-/* สไตล์ช่อง Input ให้เข้ากับ Search Bar หน้า Home */
 .form-group input,
 .form-group select,
 .form-group textarea {
@@ -89,7 +79,6 @@
     color: rgba(255, 255, 255, 0.3);
 }
 
-/* เมื่อ Focus ให้เรืองแสงสีเขียว */
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
@@ -98,17 +87,11 @@
     box-shadow: 0 0 10px rgba(46, 204, 113, 0.2);
 }
 
-/* ============================================================
-   ปรับแต่ง Select / Date / Time
-   ============================================================ */
-
-/* บังคับสีข้อความใน Select Option เพื่อไม่ให้กลืนกับพื้นหลังขาวของเบราว์เซอร์ */
 .form-group select option {
     background-color: #1a1a1a;
     color: white;
 }
 
-/* ปิดลูกศร Default ของเบราว์เซอร์ และใส่ลูกศรใหม่ */
 .form-group select {
     appearance: none; 
     -webkit-appearance: none;
@@ -121,7 +104,6 @@
     cursor: pointer;
 }
 
-/* เปลี่ยนสีไอคอนปฏิทินและนาฬิกาให้เป็นสีขาว */
 ::-webkit-calendar-picker-indicator {
     filter: invert(1);
     cursor: pointer;
@@ -133,9 +115,7 @@
     opacity: 1;
 }
 
-/* ============================================================
-   ปุ่มกด Submit (สไตล์ Glow ล้อกับปุ่ม View More)
-   ============================================================ */
+/* ปุ่มกด Submit*/
 .btn-submit-post {
     width: 100%;
     background-color: #2ecc71;
@@ -145,7 +125,7 @@
     letter-spacing: 1px;
     padding: 16px;
     border: none;
-    border-radius: 30px; /* มนเหมือนปุ่มหน้า Home */
+    border-radius: 30px; 
     margin-top: 35px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -178,32 +158,24 @@
     }
 }
 
-/* ============================================================
-   แก้ไขสีข้อความของ Select, Date, Time ให้เหมือน Placeholder
-   ============================================================ */
-
-/* 1. เมื่อยังไม่ได้เลือกค่า (ว่างเปล่า = invalid) ให้ตัวหนังสือเป็นสีเทาจาง */
 .form-group select:invalid,
 .form-group input[type="date"]:invalid,
 .form-group input[type="time"]:invalid {
     color: rgba(255, 255, 255, 0.3); 
 }
 
-/* 2. แต่พอผู้ใช้กดพิมพ์หรือเลือกค่าแล้ว (valid) ให้เปลี่ยนกลับมาเป็นสีขาวชัดๆ */
 .form-group select:valid,
 .form-group input[type="date"]:valid,
 .form-group input[type="time"]:valid {
     color: white;
 }
 
-/* 3. บังคับให้ตัวเลือกใน Dropdown (Option) เป็นสีขาวเสมอ ไม่งั้นจะโดนดึงให้เป็นสีเทาตามข้อ 1 */
 .form-group select option {
     color: white;
-    background-color: #1a1a1a; /* สีพื้นหลังของ dropdown ให้กลืนกับเว็บ */
+    background-color: #1a1a1a;
 }
 
-/* 4. (แถม) ปรับแต่งช่อง Date/Time เพิ่มเติมสำหรับบางเบราว์เซอร์ (WebKit/Chrome) */
 .form-group input[type="date"]::-webkit-datetime-edit,
 .form-group input[type="time"]::-webkit-datetime-edit {
-    color: inherit; /* ให้รับสีตามที่เราตั้งไว้ด้านบน */
+    color: inherit; 
 }

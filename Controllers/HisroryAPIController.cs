@@ -16,7 +16,7 @@ namespace WEBAPP_FitMatch.Controllers
         {
             _db = db;
         }
-
+        // ไม่ได้ใช้
         [HttpGet]
         public async Task<ActionResult> GetHistory()
         {

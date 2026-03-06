@@ -176,11 +176,11 @@
                         partnersDiv.innerHTML += `
                             <div class="partner-item" onclick="window.location.href='/Profile/UserProfile?id=${p.userId}'" style="cursor:pointer;" title="View ${p.username}'s profile">
                                 <img src="${p.profileUrl}" alt="${p.username}">
-                                <div style="flex-grow: 1;">
-                                    <div style="font-weight: bold; font-size: 0.9rem; color: #fff;">${p.username}</div>
+                                <div class="partner-info">
+                                    <div class="partner-name">${p.username}</div>
                                     <div style="font-size: 0.75rem; color: #aaa;">Met ${p.meetCount} times</div>
                                 </div>
-                                <i class="fa-solid fa-chevron-right" style="color:#888; font-size:0.75rem;"></i>
+                                <i class="fa-solid fa-chevron-right partner-chevron"></i>
                             </div>
                         `;
                     });

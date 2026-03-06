@@ -69,6 +69,10 @@
 
 @section Scripts {
     <script>
+        // Set minimum date to today
+        const todayStr = new Date().toISOString().split('T')[0];
+        document.getElementById('postDate').min = todayStr;
+
         document.getElementById('createPostForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -79,6 +83,15 @@
             // pull date and time from form submited
             const dateVal = document.getElementById('postDate').value;
             const timeVal = document.getElementById('postTime').value;
+
+            // Validate: prevent past datetime
+            const selectedDateTime = new Date(`${dateVal}T${timeVal}:00`);
+            if (selectedDateTime <= new Date()) {
+                alert('Please select a date and time in the future.');
+                btnSubmit.disabled = false;
+                btnSubmit.innerText = 'CREATE POST';
+                return;
+            }
 
             // pull data
             const postData = {
