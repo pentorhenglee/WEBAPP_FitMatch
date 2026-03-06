@@ -38,7 +38,6 @@ a { text-decoration: none; }
   align-items: center;
   justify-content: space-between;
   gap: 40px;       
-  
   display: flex;
   flex-direction: row;
   background: rgba(255, 255, 255, 0.03); /* Subtle white tint */
@@ -100,8 +99,6 @@ a { text-decoration: none; }
 .text-fit { color: var(--text); }
 .text-match { color: var(--accent); }
 
-
-
 /* ฝั่งขวา: ข้อมูล User */
 .user-section {
   display: flex;
@@ -131,6 +128,8 @@ a { text-decoration: none; }
   background-color: #ffffff;
   object-fit: cover;
 }
+
+
 
 /* ============================================================
    พื้นที่ตรงกลาง (Dashboard)

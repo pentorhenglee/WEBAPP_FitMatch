@@ -213,3 +213,11 @@ input:-webkit-autofill:active {
 .back-link:hover {
     color: var(--accent);
 }
+
+@media (max-width: 750px) {
+
+    .hero-section {
+        display: none;
+    }
+    
+}
