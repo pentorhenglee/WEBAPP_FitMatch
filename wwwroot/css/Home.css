@@ -2,7 +2,6 @@ body {
     font-family: 'Segoe UI';
     background: radial-gradient(circle at top left, #0f2027, #000000 60%);
     margin: 0;
-    padding: 0;
 }
 
 .mobile-menu-container,
@@ -62,6 +61,11 @@ body {
         font-size: 24px;
         margin-bottom: 10px;
     }
+}
+
+.welcome-message span {
+    color: #2ecc71;
+    text-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
 }
 
 .search-container {
@@ -373,7 +377,7 @@ input:checked+.slider:before {
     left: 0;
     width: 60px;
     height: auto;
-    max-height: 80vh;
+    max-height: 60vh;
     transform: translateY(-50%);
     background: rgba(26, 26, 26, 0.95);
     z-index: 100;
@@ -691,7 +695,7 @@ input:checked+.slider:before {
     right: 0;
     width: 60px;
     height: auto;
-    max-height: 80vh;
+    max-height: 55vh;
     transform: translateY(-50%);
     background: rgba(26, 26, 26, 0.95);
     z-index: 100;

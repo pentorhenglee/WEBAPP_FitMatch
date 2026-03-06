@@ -12,7 +12,6 @@
         <nav class="navbar">
             @using Microsoft.AspNetCore.Http
             @{
-                // ดึงค่าจาก Session มาเช็คตรงๆ
                 var userName = Context.Session.GetString("user");
                 var userEmail = Context.Session.GetString("user_email");
                 var userAvatar = Context.Session.GetString("user_profile");
@@ -25,6 +24,9 @@
             </a>
             @if (!string.IsNullOrEmpty(userName))
             {
+                <button class="hamberger" id="hamburgerMenu" onclick="toggleMenu()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
                 <nav class="links">
                         <a href="/Profile">PROFILE</a>
                         <a href="/Dashboard">DASHBOARD</a>
@@ -50,7 +52,10 @@
                             <span>Notifications</span>
                             <div class="notif-header-actions">
                                 <span class="notif-count" id="notifCount">0</span>
-                                <button class="notif-clear-btn" id="clearReadBtn" onclick="clearReadNotifications()" title="Clear read notifications">Clear read</button>
+                                <button class="notif-clear-btn" id="clearReadBtn" onclick="clearReadNotifications()" title="Clear read notifications">
+                                    <span class="loading-spinner"></span>
+                                    <span class="btn-text">Clear read</span>
+                                </button>
                             </div>
                         </div>
                         <div id="notificationDisplay" class="notification-display"></div>
@@ -63,9 +68,7 @@
                 <a asp-controller="Account" asp-action="Login" class="nav-link">Login</a>
                 <a asp-controller="Account" asp-action="Register" class="nav-link btn-register">Register</a>
             </div>
-
             }
-
         </nav>
     </header>
 
@@ -108,7 +111,6 @@
             if (data.success) window.location.href = '/Home/index';
         }
 
-        // ── Active nav link ───────────────────────────────────────────────
         document.querySelectorAll('.links a').forEach(a => {
             if (a.href === window.location.href) a.classList.add('active');
         });
@@ -240,16 +242,65 @@
 
         // ── Clear all read notifications ──────────────────────────────────
         async function clearReadNotifications() {
+            const clearBtn = document.getElementById('clearReadBtn');
+            
+            // Prevent multiple clicks
+            if (clearBtn.classList.contains('loading')) return;
+            
+            // Show loading state
+            clearBtn.classList.add('loading');
+            
             try {
-                await fetch('/api/NotificationAPI/clear-read', {
+                // 1. (Optimistic Update) ลบออกจากหน้าจอทันที
+                const readNotifications = document.querySelectorAll('.notification-card.read');
+                readNotifications.forEach(el => el.remove());
+
+                // อัปเดตตัวเลข Count (ถ้ามี)
+                const countEl = document.getElementById('notifCount');
+                if (countEl) {
+                    const currentCount = parseInt(countEl.textContent);
+                    countEl.textContent = Math.max(0, currentCount - readNotifications.length);
+                }
+
+                // ตรวจสอบว่าถ้าลบหมดแล้วให้โชว์ "Caught up"
+                const display = document.getElementById('notificationDisplay');
+                if (display.children.length === 0) {
+                    display.innerHTML = '<p class="no-notifications">You\'re all caught up!</p>';
+                }
+
+                // 2. ส่งคำสั่งไปที่ Server จริงๆ เบื้องหลัง
+                const res = await fetch('/api/NotificationAPI/clear-read', {
                     method: 'DELETE',
                     credentials: 'same-origin'
                 });
-                fetchNotifications();
+
+                if (!res.ok) throw new Error("Delete failed");
+                
             } catch (err) {
                 console.error('Error clearing read notifications:', err);
+                // 3. ถ้า Error ค่อยเรียก fetchNotifications() เพื่อเอาข้อมูลจริงกลับมา (Rollback)
+                fetchNotifications();
+            } finally {
+                // Hide loading state
+                clearBtn.classList.remove('loading');
             }
         }
+
+    // ── Hamburger Menu Toggle ──────────────────────────────────────────
+    const hamburgerBtn = document.getElementById('hamburgerMenu');
+    // Use querySelector because 'links' is a class, not an ID
+    const navLinks = document.querySelector('.links'); 
+
+    if (hamburgerBtn && navLinks) {
+        hamburgerBtn.addEventListener('click', () => {
+            // Toggle a class instead of manipulating inline styles for cleaner code
+            if (navLinks.style.display === 'flex') {
+                navLinks.style.display = 'none';
+            } else {
+                navLinks.style.display = 'flex';
+            }
+        });
+    }
     </script>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
