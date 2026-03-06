@@ -77,8 +77,6 @@
         </div>
     </div>
 
-    <!-- <div id="missionOverlay" class="mission-overlay"></div> -->
-
     <div class="fixes-top-section">
         <div class="welcome-message">
             <h1>Find Your Fitness <span>Community</span></h1>
@@ -98,7 +96,6 @@
                         <i class="fas fa-lock closed-icon"></i>
                     </span>
                 </label>
-                <!-- <span class="status-text" id="statusText">OPEN</span> -->
             </div>
 
             <button class="post-button" id="addpostButton">
@@ -136,8 +133,6 @@
     function renderMissionList(missions) {
         const container = document.getElementById('missionListContainer');
         const containerMobile = document.getElementById('missionListContainerMobile');
-        
-        // if (!container && !containerMobile) return;
         
         const html = missions.map(mission => `
             <div class="mission-item">
@@ -369,11 +364,6 @@
             container.classList.remove('show-overlay');
         }
     });
-
-    // document.getElementById("missionOverlay").onclick = function(){
-    //     document.querySelector(".mission-menu-items").classList.remove("show");
-    //     this.classList.remove("show");
-    // }
 
     document.getElementById('statusToggle').addEventListener('change', function() { //toggle close or open
         const isChecked = this.checked;
