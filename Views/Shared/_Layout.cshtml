@@ -24,6 +24,9 @@
             </a>
             @if (!string.IsNullOrEmpty(userName))
             {
+                <button class="hamberger" id="hamburgerMenu" onclick="toggleMenu()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
                 <nav class="links">
                         <a href="/Profile">PROFILE</a>
                         <a href="/Dashboard">DASHBOARD</a>
@@ -58,10 +61,10 @@
             }
             else
             {
-                <div id="authLinks"  class="auth-links">   
-                    <a asp-controller="Account" asp-action="Login" class="nav-link">Login</a>
-                    <a asp-controller="Account" asp-action="Register" class="nav-link btn-register">Register</a>
-                </div>
+            <div id="authLinks"  class="auth-links">   
+                <a asp-controller="Account" asp-action="Login" class="nav-link">Login</a>
+                <a asp-controller="Account" asp-action="Register" class="nav-link btn-register">Register</a>
+            </div>
             }
         </nav>
     </header>
@@ -246,6 +249,22 @@
                 console.error('Error clearing read notifications:', err);
             }
         }
+
+    // ── Hamburger Menu Toggle ──────────────────────────────────────────
+    const hamburgerBtn = document.getElementById('hamburgerMenu');
+    // Use querySelector because 'links' is a class, not an ID
+    const navLinks = document.querySelector('.links'); 
+
+    if (hamburgerBtn && navLinks) {
+        hamburgerBtn.addEventListener('click', () => {
+            // Toggle a class instead of manipulating inline styles for cleaner code
+            if (navLinks.style.display === 'flex') {
+                navLinks.style.display = 'none';
+            } else {
+                navLinks.style.display = 'flex';
+            }
+        });
+    }
     </script>
 
     <script src="~/js/site.js" asp-append-version="true"></script>

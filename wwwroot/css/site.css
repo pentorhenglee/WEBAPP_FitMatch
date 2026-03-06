@@ -121,12 +121,11 @@ a { text-decoration: none; }
   text-transform: uppercase;
 }
 
-/* วงกลมรูปโปรไฟล์ (ตั้งค่าให้พื้นหลังสีขาวรอไว้ก่อน) */
 .user-avatar {
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  background-color: #ffffff; /* สีขาวว่างๆ */
+  background-color: #ffffff;
   object-fit: cover;
 }
 
@@ -396,13 +395,51 @@ a { text-decoration: none; }
     box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
+.hamberger {
+    display: none;
+}
+
 @media (max-width: 768px) {
     .navbar {
         padding: 0 20px;
     }
-    
-    .links {
-        display: none; /* ซ่อนลิงก์หลักบนมือถือ */
+
+    .user-text {
+        display: none;
+    }
+
+    .hamberger {
+        display: block;
+        cursor: pointer;
+        order: -1;
+        font-size: 30px;
+        position: relative;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        color: var(--accent);
+    }
+
+    .links{
+        position: absolute;
+        top: var(--navbar-h);
+        left: 0;
+        background: var(--surface);
+        flex-direction: column;
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        display: none;
+        z-index: 9999;
+    }
+
+    .links a {
+        padding: 10px 20px;
+        width: 100%;
+        font-size: 20px;
     }
 
     .auth-links {
