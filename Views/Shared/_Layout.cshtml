@@ -12,7 +12,6 @@
         <nav class="navbar">
             @using Microsoft.AspNetCore.Http
             @{
-                // ดึงค่าจาก Session มาเช็คตรงๆ
                 var userName = Context.Session.GetString("user");
                 var userEmail = Context.Session.GetString("user_email");
                 var userAvatar = Context.Session.GetString("user_profile");
@@ -25,6 +24,9 @@
             </a>
             @if (!string.IsNullOrEmpty(userName))
             {
+                <button class="hamberger" id="hamburgerMenu" onclick="toggleMenu()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
                 <nav class="links">
                         <a href="/Profile">PROFILE</a>
                         <a href="/Dashboard">DASHBOARD</a>
@@ -66,9 +68,7 @@
                 <a asp-controller="Account" asp-action="Login" class="nav-link">Login</a>
                 <a asp-controller="Account" asp-action="Register" class="nav-link btn-register">Register</a>
             </div>
-
             }
-
         </nav>
     </header>
 
@@ -111,7 +111,6 @@
             if (data.success) window.location.href = '/Home/index';
         }
 
-        // ── Active nav link ───────────────────────────────────────────────
         document.querySelectorAll('.links a').forEach(a => {
             if (a.href === window.location.href) a.classList.add('active');
         });
@@ -286,6 +285,22 @@
                 clearBtn.classList.remove('loading');
             }
         }
+
+    // ── Hamburger Menu Toggle ──────────────────────────────────────────
+    const hamburgerBtn = document.getElementById('hamburgerMenu');
+    // Use querySelector because 'links' is a class, not an ID
+    const navLinks = document.querySelector('.links'); 
+
+    if (hamburgerBtn && navLinks) {
+        hamburgerBtn.addEventListener('click', () => {
+            // Toggle a class instead of manipulating inline styles for cleaner code
+            if (navLinks.style.display === 'flex') {
+                navLinks.style.display = 'none';
+            } else {
+                navLinks.style.display = 'flex';
+            }
+        });
+    }
     </script>
 
     <script src="~/js/site.js" asp-append-version="true"></script>

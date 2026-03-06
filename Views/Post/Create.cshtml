@@ -70,17 +70,17 @@
 @section Scripts {
     <script>
         document.getElementById('createPostForm').addEventListener('submit', async function(e) {
-            e.preventDefault(); // ป้องกันไม่ให้หน้าเว็บรีเฟรช
+            e.preventDefault();
 
             const btnSubmit = document.getElementById('btnSubmitPost');
             btnSubmit.disabled = true;
             btnSubmit.innerText = "CREATING...";
 
-            // ดึงค่าวันที่และเวลามาเตรียมไว้ก่อน
+            // pull date and time from form submited
             const dateVal = document.getElementById('postDate').value;
             const timeVal = document.getElementById('postTime').value;
 
-            // 1. ดึงข้อมูลจากฟอร์ม
+            // pull data
             const postData = {
                 Title: document.getElementById('postTitle').value,
                 SportType: document.getElementById('postSportType').value,
@@ -94,9 +94,7 @@
             console.log("prepare sending to Backend:", postData);
 
             try {
-                // 2. ยิงข้อมูลไปหา C# Backend (API)
-                // TODO: เดี๋ยวเราต้องไปสร้าง PostController เพื่อรับข้อมูลตรงนี้
-                
+                // fetch to backend       
                 const res = await fetch('/api/postapi/create', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
