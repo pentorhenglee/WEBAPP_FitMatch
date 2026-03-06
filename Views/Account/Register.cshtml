@@ -77,7 +77,7 @@
     const btnSubmit = document.getElementById("btnSubmit");
     const spinner = document.getElementById("spinner");
 
-    // 1. Password Confirmation Logic
+    //Password Confirmation Logic
     if (password !== confirmPassword) {
         errorDiv.innerText = "Passwords do not match!";
         errorDiv.classList.remove("d-none");
@@ -85,7 +85,7 @@
         return; // Stop the function here
     }
 
-    // 2. Simple Length Check (Optional but recommended)
+    //Simple Length Check (Optional but recommended)
     if (password.length < 6) {
         errorDiv.innerText = "Password must be at least 6 characters long.";
         errorDiv.classList.remove("d-none");
@@ -125,17 +125,14 @@ let wordIndex = 0;
 const logoContainer = document.getElementById('dynamic-logo');
 
 async function smoothChangeWord() {
-    // 1. Fade out current letters
     const currentCols = logoContainer.querySelectorAll('.column');
     currentCols.forEach(col => {
         col.style.opacity = '0';
         col.style.transform = 'translateY(-10px)';
     });
 
-    // 2. Short pause for fade out to complete
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    // 3. Clear and Build new word
     logoContainer.innerHTML = '';
     const currentWord = words[wordIndex];
 
@@ -150,19 +147,16 @@ async function smoothChangeWord() {
         }
         logoContainer.appendChild(column);
 
-        // 4. Staggered Entrance (the "Smooth" part)
         setTimeout(() => {
             column.classList.add('active');
-        }, index * 100); // 100ms delay between each letter
+        }, index * 100);
     });
 
     wordIndex = (wordIndex + 1) % words.length;
 }
 
-// Initial Run
 smoothChangeWord();
 
-// Interval (set slightly longer to account for animation time)
 setInterval(smoothChangeWord, 3000);
 
 </script>

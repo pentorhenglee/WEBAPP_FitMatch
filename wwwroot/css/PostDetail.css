@@ -1,7 +1,5 @@
 
-/* ============================================================
-    Theme หลัก ดึงมาจาก Dashboard
-    ============================================================ */
+
 .post-detail-container {
     display: flex;
     gap: 20px;
@@ -12,9 +10,6 @@
     height: calc(90vh - 80px); 
 }
 
-/* ============================================================
-    ฝั่งซ้าย: กล่อง Chat
-    ============================================================ */
 .post-chat-section {
     width: 400px;
     background: rgba(255, 255, 255, 0.04);
@@ -47,11 +42,10 @@
     gap: 15px;
 }
 
-/* สไตล์ Scrollbar ให้กลืนกับ Theme */
 .chat-messages::-webkit-scrollbar { width: 6px; }
 .chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
 
-/* การจัดวางข้อความ Chat */
+
 .chat-message-wrapper {
     display: flex;
     gap: 12px;
@@ -91,13 +85,12 @@
     border: 1px solid rgba(255,255,255,0.05);
 }
 .chat-message-wrapper.mine .chat-bubble {
-    background: var(--accent); /* สีเขียวหลัก */
+    background: var(--accent);
     color: #000000;
     border-bottom-right-radius: 4px; 
     font-weight: 500;
 }
 
-/* ช่องพิมพ์ข้อความ */
 .chat-input-area {
     padding: 20px 30px;
     background: rgba(0, 0, 0, 0.2);
@@ -121,16 +114,14 @@
     border-color: var(--accent);
     background: rgba(255,255,255,0.1);
 }
-/* ============================================================
-    ช่องพิมพ์ข้อความ และปุ่มส่ง (Chat Input Area)
-    ============================================================ */
+
 .chat-input-area button {
     width: 42px; 
     height: 42px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.08); /* พื้นหลังจางๆ สไตล์ Glass */
+    background: rgba(255, 255, 255, 0.08); 
     border: 1px solid rgba(255, 255, 255, 0.2);
-    color: var(--accent); /* 🌟 เปลี่ยนสีลูกศรเป็นสีเขียวหลักของเว็บ */
+    color: var(--accent); 
     cursor: pointer;
     display: flex; 
     justify-content: center; 
@@ -141,16 +132,13 @@
 }
 
 .chat-input-area button i {
-    font-size: 1.1rem; /* ขนาดลูกศร */
+    font-size: 1.1rem; 
 }
 
 .chat-input-area button:active {
-    transform: scale(0.9); /* ยุบลงนิดนึงตอนกดจริง */
+    transform: scale(0.9);
 }
 
-/* ============================================================
-    ฝั่งขวา: รายละเอียดโพสต์
-    ============================================================ */
 .post-info-section {
     flex-grow: 1;
     background: rgba(255, 255, 255, 0.04);
@@ -166,7 +154,7 @@
 
 .post-cover-img {
     width: 100%;
-    height: 35vh; /* ความสูงแบบยืดหยุ่น */
+    height: 35vh; 
     min-height: 200px;
     object-fit: cover;
     border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -178,7 +166,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow-y: auto; /* เนื้อหายาวก็ Scroll ได้ ไม่ทับปุ่ม */
+    overflow-y: auto; 
 }
 
 .post-details::-webkit-scrollbar { width: 6px; }
@@ -189,18 +177,16 @@
 .post-meta i { color: var(--accent); }
 .post-desc { font-size: 1.05rem; line-height: 1.6; color: #dddddd; margin-bottom: 30px; }
 
-/* ============================================================
-    ส่วน Footer ของการ์ดโพสต์ (จัดเรียงจำนวนคน & ปุ่ม)
-    ============================================================ */
+
 .post-info-footer {
     padding: 20px 40px;
-    background: rgba(0, 0, 0, 0.2); /* ทำสีพื้นหลังให้เข้มขึ้นนิดนึง แบ่งโซนชัดเจน */
+    background: rgba(0, 0, 0, 0.2); 
     border-top: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
-    justify-content: space-between; /* ดันคนไปซ้าย ดันปุ่มไปขวา */
+    justify-content: space-between; 
     align-items: center;
-    flex-shrink: 0; /* ห้ามให้กล่องนี้โดนบีบ */
-    flex-wrap: wrap; /* ถ้าจอแคบให้ปัดตกบรรทัด */
+    flex-shrink: 0; 
+    flex-wrap: wrap;
     gap: 15px;
 }
 
@@ -223,9 +209,6 @@
     align-items: center;
 }
 
-/* ============================================================
-    สไตล์ของปุ่ม (Join / Manage / Edit / Close)
-    ============================================================ */
 .btn-join {
     background: rgba(46, 204, 113, 0.1);
     color: var(--accent);
@@ -246,7 +229,6 @@
     transform: translateY(-2px);
 }
 
-/* กลุ่มปุ่มฝั่ง Owner */
 .owner-actions-container {
     display: flex;
     gap: 12px;
@@ -257,7 +239,7 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
     color: #fff;
     padding: 12px 25px;
-    border-radius: 30px; /* ขอบมนสวยงาม */
+    border-radius: 30px; 
     font-size: 0.95rem;
     font-weight: bold;
     cursor: pointer;
@@ -284,17 +266,14 @@
     box-shadow: 0 0 15px rgba(255, 77, 77, 0.4);
 }
 
-/* ============================================================
-   Responsive Design (Portrait Viewport) - Post Detail
-   ============================================================ */
+/* Responsive Design */
 @media screen and (max-width: 1024px) {
     .post-detail-container {
-        flex-direction: column; /* เรียงจากบนลงล่าง */
+        flex-direction: column;
         height: auto; 
         min-height: var(--page-content-min-h, calc(100vh - 80px));
     }
 
-    /* 🌟 ใช้ order เพื่อสลับให้ โพสต์อยู่ด้านบน แชทอยู่ด้านล่าง */
     .post-info-section { order: 1; min-height: 400px; width: 100%; }
     .post-chat-section { order: 2; height: 500px; width: 100%; }
 
@@ -343,9 +322,7 @@
     }
 }
 
-/* ============================================================
-   Modal Overlay & Content
-   ============================================================ */
+/* Modal Overlay & Content*/
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -408,9 +385,7 @@
 .modal-body::-webkit-scrollbar { width: 5px; }
 .modal-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; }
 
-/* ============================================================
-   Edit Modal Form Inputs (Dark Theme)
-   ============================================================ */
+/* Edit Modal Form Inputs */
 .modal-body label {
     display: block;
     font-size: 0.8rem;
@@ -475,9 +450,7 @@
 .modal-body .btn-save:hover { opacity: 0.88; transform: translateY(-1px); }
 .modal-body .btn-save:active { transform: scale(0.98); }
 
-/* ============================================================
-   Participant item inside modal
-   ============================================================ */
+/* Participant item inside modal */
 .participant-item {
     display: flex;
     justify-content: space-between;

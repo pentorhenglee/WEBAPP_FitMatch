@@ -20,7 +20,7 @@
         </div>
     </div>
 
-    <!-- Add Mission Input -->
+    @* add mission *@
     <div class="mission-add-bar">
         <input type="text" id="missionInput" class="mission-input" 
                placeholder="Write your goal, e.g. Run 5km three times a week..." 
@@ -31,14 +31,14 @@
         </button>
     </div>
 
-    <!-- Filter Tabs -->
+    @* filter tabs *@
     <div class="mission-filter-tabs">
         <button class="mf-tab active" onclick="filterMissions('all', this)">All</button>
         <button class="mf-tab" onclick="filterMissions('todo', this)">Todo</button>
         <button class="mf-tab" onclick="filterMissions('done', this)">Done</button>
     </div>
 
-    <!-- Mission List -->
+    
     <div id="missionListMain" class="mission-list-main">
         <div class="mission-loading"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</div>
     </div>
@@ -50,7 +50,6 @@
     let allMissions = [];
     let currentFilter = 'all';
 
-    // ─── Fetch all missions ─────────────────────────────────────────
     async function loadMissions() {
         try {
             const res = await fetch('/api/MissionAPI/mission');
@@ -63,14 +62,12 @@
         }
     }
 
-    // ─── Render filtered list ────────────────────────────────────────
     function renderMissions() {
         const container = document.getElementById('missionListMain');
         let filtered = allMissions;
         if (currentFilter === 'todo')  filtered = allMissions.filter(m => !m.isCompleted);
         if (currentFilter === 'done')  filtered = allMissions.filter(m => m.isCompleted);
 
-        // summary
         const done  = allMissions.filter(m => m.isCompleted).length;
         const total = allMissions.length;
         document.getElementById('summaryDone').textContent  = done;
@@ -129,7 +126,7 @@
         }
     }
 
-    // ─── Tick / untick ───────────────────────────────────────────────
+    //tick/un
     async function tickMission(id, checkbox) {
         const note = document.getElementById(`note-${id}`);
         note.style.opacity = '0.5';
@@ -149,7 +146,7 @@
         }
     }
 
-    // ─── Delete mission ──────────────────────────────────────────────
+    //del
     async function deleteMission(id) {
         if (!confirm('Delete this mission?')) return;
         const note = document.getElementById(`note-${id}`);
@@ -166,7 +163,6 @@
         }
     }
 
-    // ─── Filter tabs ─────────────────────────────────────────────────
     function filterMissions(filter, btn) {
         currentFilter = filter;
         document.querySelectorAll('.mf-tab').forEach(b => b.classList.remove('active'));
@@ -174,7 +170,6 @@
         renderMissions();
     }
 
-    // ─── Helpers ─────────────────────────────────────────────────────
     function escapeHtml(str) {
         return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
