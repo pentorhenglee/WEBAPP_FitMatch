@@ -9,6 +9,7 @@
 
 <div class="post-detail-container">
     
+    @* chat zone *@
     <div class="post-chat-section">
         <div class="chat-header">Chat</div>
         
@@ -108,7 +109,7 @@
                     <textarea id="editDescription" rows="3"></textarea>
                 </div>
                 <button onclick="submitEditPost()" class="btn-save">Save Changes</button>
-                <button onclick="deletePost()" class="btn-delete-post" style="margin-top:8px; width:100%; background:#c0392b; color:#fff; border:none; padding:10px; border-radius:6px; cursor:pointer; font-weight:bold;">Delete Post</button>
+                <button onclick="deletePost()" class="btn-delete-post" style="margin-top:8px; width:100%; background:#c0392b; color:#fff; border:none; padding:10px; border-radius:10px; cursor:pointer; font-weight:bold;">Delete Post</button>
             </div>
         </div>
     </div>
@@ -142,9 +143,7 @@
             return icons[sportType] || 'fa-infinity';
         }
 
-        // ==========================================
-        // 1. ดึงข้อมูลโพสต์หลัก
-        // ==========================================
+        // fetch pull post detail
         async function fetchPostDetail() {
             try {
                 const response = await fetch(`/api/postapi/detail/${currentPostId}`);
@@ -162,7 +161,7 @@
                 const dateStr = dateObj.toLocaleDateString('en-GB').replace(/\//g, ' - ');
                 const timeStr = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
 
-                // จัดการรูปภาพ (ถ้าไม่มีให้โชว์ Placeholder เท่ๆ)
+                //img post, if none show placeholder
                 const coverImg = document.getElementById('displayCoverImg');
                 if (data.imageUrl && data.imageUrl.trim() !== "") {
                     coverImg.src = data.imageUrl;
@@ -173,7 +172,7 @@
 
                 document.getElementById('displayTitle').innerText = data.title;
                 
-                // ตกแต่ง Meta data (สถานที่ วันเวลา และประเภทกีฬา)
+                // meta data post
                 const sportIconClass = getSportIcon(data.sportType);
                 document.getElementById('displayMeta').innerHTML = `
                     <span style="color: #2ecc71; font-weight: bold;"><i class="fas ${sportIconClass}"></i> ${(data.sportType || 'Unknown Sport').toUpperCase()}</span>
