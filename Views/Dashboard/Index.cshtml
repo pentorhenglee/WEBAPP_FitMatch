@@ -8,11 +8,11 @@
 }
 
 <div class="dashboard-container">
-
     <div class="dash-left-panel">
         <div class="dash-header">
         <h2>Dash<span>board</span></h2>
-        
+
+        @* mockup *@
         <div class="custom-sort-wrapper">
             Sort:
             <div class="custom-select-static">
@@ -54,8 +54,7 @@
                 <div style="display: flex; align-items: center; justify-content: space-around; gap: 15px; padding: 10px;">
                     <canvas id="activityChart" width="140" height="140"></canvas>
                     
-                    <div id="chartLegend" style="display: flex; flex-direction: column; gap: 8px; font-size: 0.8rem; color: #fff; text-align: left; min-width: 100px;">
-                        </div>
+                    <div id="chartLegend" style="display: flex; flex-direction: column; gap: 8px; font-size: 0.8rem; color: #fff; text-align: left; min-width: 100px;"></div>
                 </div>
             </div>
 
@@ -82,15 +81,12 @@
 
         </div>
     </div>
-
 </div>
 
 @section Scripts {
 
     <script>
-        // ==========================================
-        // 1. Utilities
-        // ==========================================
+        // return Icon
         function getSportIcon(sportType) {
             const type = (sportType || "").toLowerCase();
             if (type.includes("run")) return "fa-person-running";
@@ -101,9 +97,7 @@
             return "fa-infinity"; 
         }
 
-        // ==========================================
-        // 2. Render Left Panel (Activities)
-        // ==========================================
+        //render 
         function renderCards(containerId, events, emptyMessage) {
             const container = document.getElementById(containerId);
             container.innerHTML = ''; 
