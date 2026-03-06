@@ -35,19 +35,21 @@
             </div>
 
             <div class="post-desc" id="displayDesc">Please wait, fetching data from database...</div>
-            
+        </div>
+
+        <div class="post-info-footer">
             <div class="participants-count" id="displayParticipants">
                 Participants: - / -
             </div>
-        </div>
 
-        <div id="actionButtonsArea">
-            <button class="btn-join" id="btnJoin" onclick="joinPost()" style="display: none;">JOIN</button>
+            <div id="actionButtonsArea">
+                <button class="btn-join" id="btnJoin" onclick="joinPost()" style="display: none;">JOIN</button>
 
-            <div class="owner-actions-container" id="ownerActions">
-                <button class="btn-manage" onclick="openParticipantsModal()">MANAGE</button>
-                <button class="btn-edit" onclick="openEditModal()">EDIT</button>
-                <button class="btn-close" id="btnCloseToggle" onclick="toggleClosePost()">CLOSE</button>
+                <div class="owner-actions-container" id="ownerActions">
+                    <button class="btn-manage" onclick="openParticipantsModal()">MANAGE</button>
+                    <button class="btn-edit" onclick="openEditModal()">EDIT</button>
+                    <button class="btn-close" id="btnCloseToggle" onclick="toggleClosePost()">CLOSE</button>
+                </div>
             </div>
         </div>
     </div>
@@ -71,21 +73,21 @@
                 <span class="close-modal" onclick="closeEditModal()">&times;</span>
             </div>
             <div class="modal-body" style="text-align:left;">
-                <div style="margin-bottom:10px;">
-                    <label>Title</label><br/>
-                    <input type="text" id="editTitle" style="width:100%; padding:5px; border:1px solid #ccc; border-radius:4px;"/>
+                <div class="form-field">
+                    <label>Title</label>
+                    <input type="text" id="editTitle"/>
                 </div>
-                <div style="margin-bottom:10px;">
-                    <label>Location</label><br/>
-                    <input type="text" id="editLocation" style="width:100%; padding:5px; border:1px solid #ccc; border-radius:4px;"/>
+                <div class="form-field">
+                    <label>Location</label>
+                    <input type="text" id="editLocation"/>
                 </div>
-                <div style="margin-bottom:10px;">
-                    <label>Event Date/Time</label><br/>
-                    <input type="datetime-local" id="editDateTime" style="width:100%; padding:5px; border:1px solid #ccc; border-radius:4px;"/>
+                <div class="form-field">
+                    <label>Event Date/Time</label>
+                    <input type="datetime-local" id="editDateTime"/>
                 </div>
-                <div style="margin-bottom:10px;">
-                    <label>Sport Type</label><br/>
-                    <select id="editSportType" style="width:100%; padding:5px; border:1px solid #ccc; border-radius:4px;">
+                <div class="form-field">
+                    <label>Sport Type</label>
+                    <select id="editSportType">
                         <option value="Running">Running</option>
                         <option value="Cycling">Cycling</option>
                         <option value="Basketball">Basketball</option>
@@ -93,19 +95,19 @@
                         <option value="Volleyball">Volleyball</option>
                     </select>
                 </div>
-                <div style="margin-bottom:10px;">
-                    <label>Max People</label><br/>
-                    <input type="number" id="editMaxPeople" style="width:100%; padding:5px; border:1px solid #ccc; border-radius:4px;" min="2"/>
+                <div class="form-field">
+                    <label>Max People</label>
+                    <input type="number" id="editMaxPeople" min="2"/>
                 </div>
-                <div style="margin-bottom:10px;">
-                    <label>Image URL</label><br/>
-                    <input type="text" id="editImageUrl" style="width:100%; padding:5px; border:1px solid #ccc; border-radius:4px;"/>
+                <div class="form-field">
+                    <label>Image URL</label>
+                    <input type="text" id="editImageUrl"/>
                 </div>
-                <div style="margin-bottom:10px;">
-                    <label>Description</label><br/>
-                    <textarea id="editDescription" style="width:100%; padding:5px; border:1px solid #ccc; border-radius:4px;" rows="3"></textarea>
+                <div class="form-field">
+                    <label>Description</label>
+                    <textarea id="editDescription" rows="3"></textarea>
                 </div>
-                <button onclick="submitEditPost()" style="width:100%; padding:10px; background-color:#2ecc71; color:white; font-weight:bold; border:none; border-radius:4px; margin-top:10px; cursor:pointer;">Save Changes</button>
+                <button onclick="submitEditPost()" class="btn-save">Save Changes</button>
             </div>
         </div>
     </div>
@@ -301,9 +303,8 @@
             document.getElementById('editLocation').value = globalPostData.location;
             
             // Format datetime to local datetime format YYYY-MM-DDThh:mm
-            const dt = new Date(globalPostData.eventDateTime);
-            const localDt = new Date(dt.getTime() - (dt.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
-            document.getElementById('editDateTime').value = localDt;
+            // eventDateTime จาก DB ไม่มี timezone suffix → slice ตรงๆ ได้เลย
+            document.getElementById('editDateTime').value = globalPostData.eventDateTime.slice(0, 16);
             
             document.getElementById('editSportType').value = globalPostData.sportType;
             document.getElementById('editMaxPeople').value = globalPostData.maxPeople;
@@ -321,7 +322,7 @@
             const dto = {
                 title: document.getElementById('editTitle').value,
                 location: document.getElementById('editLocation').value,
-                eventDateTime: new Date(document.getElementById('editDateTime').value).toISOString(),
+                eventDateTime: document.getElementById('editDateTime').value + ':00',
                 sportType: document.getElementById('editSportType').value,
                 maxPeople: parseInt(document.getElementById('editMaxPeople').value),
                 imageUrl: document.getElementById('editImageUrl').value,
@@ -381,7 +382,7 @@
 
                 chatContainer.innerHTML += `
                     <div class="chat-message-wrapper ${wrapperClass}">
-                        <img src="${avatarUrl}" class="chat-avatar" alt="${chat.username}">
+                        <img src="${avatarUrl}" class="chat-avatar" alt="${chat.username}" onclick="window.location.href='/Profile/UserProfile?id=${chat.userId}'" style="cursor:pointer;" title="View ${chat.username}'s profile">
                         <div class="chat-message-content">
                             <div class="chat-username">${chat.username} <span class="chat-time">${timeStr}</span></div>
                             <div class="chat-bubble">${chat.text}</div>
@@ -447,15 +448,15 @@
                 
                 let kickBtn = '';
                 if (isCurrentUserOwner && !isOwner) {
-                    kickBtn = `<button onclick="kickMember(${member.userId})" style="background-color:#e74c3c; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer; font-size:0.8rem;">Kick</button>`;
+                    kickBtn = `<button class="btn-kick" onclick="kickMember(${member.userId})">Kick</button>`;
                 }
 
                 container.innerHTML += `
-                    <div class="participant-item" style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:10px;">
-                        <div style="display:flex; align-items:center;">
-                            <img src="${avatarSrc}" class="participant-avatar" alt="${member.name}" style="border-radius:50%; width:40px; height:40px; object-fit:cover;">
-                            <div class="participant-info" style="margin-left:10px;">
-                                <div class="participant-name" style="font-weight:bold;">${member.name} ${ownerBadge}</div>
+                    <div class="participant-item">
+                        <div style="display:flex; align-items:center; cursor:pointer;" onclick="window.location.href='/Profile/UserProfile?id=${member.userId}'" title="View ${member.name}'s profile">
+                            <img src="${avatarSrc}" class="participant-avatar" alt="${member.name}">
+                            <div style="margin-left:10px;">
+                                <div class="participant-name">${member.name} ${ownerBadge}</div>
                             </div>
                         </div>
                         ${kickBtn}

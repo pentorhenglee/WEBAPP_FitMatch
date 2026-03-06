@@ -37,15 +37,22 @@
                         <div class="user-name" id="displayUserName">@userName</div>
                         <div class="user-email" id="displayUserEmail">@userEmail</div>
                     </div>
-                    
-                    <img src="@(string.IsNullOrEmpty(userAvatar) ? "/images/default-avatar.png" : userAvatar)" 
-                        id="displayUserAvatars" class="user-avatar" alt="Avatar"/>
-                    
-                    <div id="userDropdown" class="user-dropdown-menu">
-                        <a asp-controller="Profile" asp-action="Index" class="dropdown-item">My Profile</a>
-                        <a asp-controller="Dashboard" asp-action="Index" class="dropdown-item">Dashboard</a>
-                        <div class="dropdown-divider"></div>
-                        <button onclick="logout()" class="dropdown-item text-danger" style="width: 100%; text-align: left; background: none; border: none; font-family: inherit;">Logout</button>
+
+                    <button id="notificationBtn" class="notification-btn" title="Notifications">
+                        <img src="@(string.IsNullOrEmpty(userAvatar) ? "/images/default-avatar.png" : userAvatar)"
+                            id="displayUserAvatars" class="user-avatar" alt="Avatar" />
+                        <span class="notif-badge" id="notifBadge" style="display:none;"></span>
+                    </button>
+
+                    <div id="notificationDropdown" class="notification-dropdown-menu">
+                        <div class="notif-header">
+                            <span>Notifications</span>
+                            <div class="notif-header-actions">
+                                <span class="notif-count" id="notifCount">0</span>
+                                <button class="notif-clear-btn" id="clearReadBtn" onclick="clearReadNotifications()" title="Clear read notifications">Clear read</button>
+                            </div>
+                        </div>
+                        <div id="notificationDisplay" class="notification-display"></div>
                     </div>
                 </div>
             }
@@ -101,6 +108,144 @@
         document.querySelectorAll('.links a').forEach(a => {
             if (a.href === window.location.href) a.classList.add('active');
         });
+
+        // ── Notification dropdown toggle ──────────────────────────────────
+        const _notifBtn  = document.getElementById('notificationBtn');
+        const _notifMenu = document.getElementById('notificationDropdown');
+        if (_notifBtn && _notifMenu) {
+            _notifBtn.addEventListener('click', e => {
+                e.stopPropagation();
+                _notifMenu.classList.toggle('show');
+            });
+            document.addEventListener('click', e => {
+                if (!_notifMenu.contains(e.target) && !_notifBtn.contains(e.target))
+                    _notifMenu.classList.remove('show');
+            });
+        }
+
+        // ── Notification types config ─────────────────────────────────────
+        const NOTIF_TYPES = {
+            Join:  { icon: 'fa-user-check',  color: '#2ecc71', label: 'Joined'  },
+            Edit:  { icon: 'fa-pen-to-square', color: '#3498db', label: 'Updated' },
+            Kick:  { icon: 'fa-user-xmark',  color: '#e74c3c', label: 'Removed' },
+            Close:  { icon: 'fa-lock',        color: '#f39c12', label: 'Closed'  },
+        };
+
+        // ── Render notifications ───────────────────────────────────────────
+        function renderNotifications(notifications) {
+            const display = document.getElementById('notificationDisplay');
+            const badge   = document.getElementById('notifBadge');
+            const count   = document.getElementById('notifCount');
+            display.innerHTML = '';
+
+            if (!notifications || notifications.length === 0) {
+                display.innerHTML = '<p class="no-notifications">You\'re all caught up!</p>';
+                if (badge) badge.style.display = 'none';
+                if (count) count.textContent = '0';
+                return;
+            }
+
+            const unreadCount = notifications.filter(n => !n.isRead).length;
+            if (badge) { 
+                if (unreadCount > 0) {
+                    badge.style.display = 'flex'; 
+                    badge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+            if (count) count.textContent = notifications.length;
+
+            notifications.forEach(n => {
+                const cfg  = NOTIF_TYPES[n.type] || { icon: 'fa-bell', color: '#aaa', label: n.type };
+                const card = document.createElement('div');
+                card.className = 'notification-card' + (n.isRead ? ' read' : ' unread');
+                card.style.setProperty('--notif-color', cfg.color);
+                card.innerHTML = `
+                    <div class="notif-icon-wrap" style="background:${cfg.color}22; color:${cfg.color};">
+                        <i class="fa-solid ${cfg.icon}"></i>
+                    </div>
+                    <div class="notif-body">
+                        <div class="notif-type-badge" style="color:${cfg.color};">${cfg.label}</div>
+                        <div class="notif-title">${n.message || 'No message'}</div>
+                        <div class="notif-desc">${n.date || ''} · ${n.triggerName || 'Unknown'}</div>
+                    </div>
+                    ${!n.isRead ? '<div class="unread-indicator"></div>' : ''}
+                    <button class="notif-delete-btn" title="Delete notification">×</button>
+                `;
+                // Delete button
+                card.querySelector('.notif-delete-btn').addEventListener('click', async (e) => {
+                    e.stopPropagation();
+                    try {
+                        await fetch(`/api/NotificationAPI/${n.notificationId}`, {
+                            method: 'DELETE',
+                            credentials: 'same-origin'
+                        });
+                        fetchNotifications();
+                    } catch (err) {
+                        console.error('Error deleting notification:', err);
+                    }
+                });
+                card.addEventListener('click', async () => {
+                    // Mark as read
+                    if (!n.isRead) {
+                        try {
+                            await fetch('/api/NotificationAPI/read', {
+                                method: 'POST',
+                                credentials: 'same-origin',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ notificationId: n.notificationId })
+                            });
+                            n.isRead = true;
+                            card.classList.remove('unread');
+                            card.classList.add('read');
+                            fetchNotifications(); // Refresh to update badge
+                        } catch (err) {
+                            console.error('Error marking notification as read:', err);
+                        }
+                    }
+                    // Navigate to post
+                    if (n.postId) window.location.href = `/Post/Detail?id=${n.postId}`;
+                });
+                display.appendChild(card);
+            });
+        }
+
+        // ── Fetch notifications from API ──────────────────────────────────
+        async function fetchNotifications() {
+            try {
+                const res = await fetch('/api/NotificationAPI/render', { 
+                    credentials: 'same-origin' 
+                });
+                
+                if (res.ok) {
+                    const data = await res.json();
+                    renderNotifications(data);
+                } else {
+                    console.warn('Failed to fetch notifications:', res.statusText);
+                    renderNotifications([]);
+                }
+            } catch (err) {
+                console.error('Error fetching notifications:', err);
+                renderNotifications([]);
+            }
+        }
+        fetchNotifications();
+        // Refresh notifications every 30 seconds
+        setInterval(fetchNotifications, 30000);
+
+        // ── Clear all read notifications ──────────────────────────────────
+        async function clearReadNotifications() {
+            try {
+                await fetch('/api/NotificationAPI/clear-read', {
+                    method: 'DELETE',
+                    credentials: 'same-origin'
+                });
+                fetchNotifications();
+            } catch (err) {
+                console.error('Error clearing read notifications:', err);
+            }
+        }
     </script>
 
     <script src="~/js/site.js" asp-append-version="true"></script>

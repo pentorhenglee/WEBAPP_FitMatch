@@ -9,6 +9,9 @@
   --text:        #ffffff;
   --text-muted:  #b3b3b3;
   --navbar-h:    70px;
+    --page-pad-y:  30px;
+    --page-pad-x:  40px;
+    --page-content-min-h: calc(100vh - var(--navbar-h) - var(--page-pad-y) - var(--page-pad-y));
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -18,6 +21,7 @@ body {
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
+  padding-top: var(--navbar-h);
 }
 
 a { text-decoration: none; }
@@ -132,8 +136,7 @@ a { text-decoration: none; }
    พื้นที่ตรงกลาง (Dashboard)
    ============================================================ */
 .page-wrapper {
-  padding: 30px 40px;
-  margin-top: var(--navbar-h);
+    padding: var(--page-pad-y) var(--page-pad-x);
 }
 
 /* ================= Notification Button ================= */
@@ -172,8 +175,8 @@ a { text-decoration: none; }
     position: fixed;
     top: var(--navbar-h, 70px);
     right: 20px;
-    width: 320px;
-    max-height: 420px;
+    width: 400px;
+    max-height: 450px;
     background: #1e1e1e;
     border: 1px solid #3a3a3a;
     border-radius: 14px;
@@ -202,49 +205,10 @@ a { text-decoration: none; }
     flex-shrink: 0;
 }
 
-/* Base card style */
-.notification-card {
-  padding: 15px; /* Increased padding for better hit area */
-  background-color: transparent;
-  transition: background-color 0.2s ease;
-  text-align: left;
-}
-
-.notification-card h3 {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 4px;
-}
-
-.notification-card p {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-}
-
-/* FIX: Hover effect on the entire button area */
-.view-more-btn {
-  background: none;
-  border: none;
-  padding: 0;
-  width: 100%;
-  cursor: pointer;
-  display: block; /* Ensures it fills the width */
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Subtle separator */
-}
-
-.view-more-btn:last-child {
-  border-bottom: none;
-}
-
-/* HIGHLIGHT ALL: This targets the card inside the button when button is hovered */
-.view-more-btn:hover {
-  background-color: rgba(255, 255, 255, 0.15); /* Brighter highlight */
-}
-
-/* Keep the text color white on hover */
-.view-more-btn:hover h3 {
-  color: var(--accent); /* Optional: turn title green on hover */
+.notif-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .notif-count {
@@ -253,6 +217,48 @@ a { text-decoration: none; }
     font-size: 0.7rem;
     padding: 2px 7px;
     border-radius: 10px;
+}
+
+.notif-clear-btn {
+    background: transparent;
+    border: 1px solid #555;
+    color: #aaa;
+    font-size: 0.68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 2px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.notif-clear-btn:hover {
+    background: #e74c3c22;
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
+
+.notif-delete-btn {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    color: #555;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 2px 5px;
+    border-radius: 4px;
+    transition: background 0.15s, color 0.15s;
+    display: none;
+}
+.notification-card:hover .notif-delete-btn {
+    display: block;
+}
+.notif-delete-btn:hover {
+    background: #e74c3c22;
+    color: #e74c3c;
 }
 
 .notification-display {
@@ -274,11 +280,33 @@ a { text-decoration: none; }
     cursor: pointer;
     transition: background 0.15s;
     border-bottom: 1px solid #2a2a2a;
+    position: relative;
 }
 
 .notification-card:last-child { border-bottom: none; }
 
 .notification-card:hover { background: rgba(255,255,255,0.04); }
+
+.notification-card.unread {
+    background: rgba(46, 204, 113, 0.05);
+    border-left: 3px solid var(--accent);
+}
+
+.notification-card.read {
+    opacity: 0.7;
+}
+
+.unread-indicator {
+    position: absolute;
+    top: 50%;
+    right: 32px;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(46, 204, 113, 0.6);
+}
 
 .notif-icon-wrap {
     width: 36px;
@@ -293,6 +321,10 @@ a { text-decoration: none; }
 
 .notif-body { flex: 1; min-width: 0; }
 
+.notification-card.unread .notif-body {
+    padding-right: 40px;
+}
+
 .notif-type-badge {
     font-size: 0.65rem;
     font-weight: 700;
@@ -305,18 +337,14 @@ a { text-decoration: none; }
     font-size: 0.85rem;
     font-weight: 600;
     color: #fff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    word-break: break-word;
 }
 
 .notif-desc {
     font-size: 0.75rem;
     color: #888;
     margin-top: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    word-break: break-word;
 }
 
 .no-notifications {

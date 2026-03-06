@@ -1,6 +1,8 @@
 using WEBAPP_FitMatch;
 using WEBAPP_FitMatch.Data;
+using WEBAPP_FitMatch.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +11,11 @@ builder.Services.AddControllersWithViews();
 
 // ✅ 2) Add neon db
 var connectionString = builder.Configuration.GetConnectionString("PostgresConnection");
-builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options
+        .UseNpgsql(connectionString)
+        .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning)));
+builder.Services.AddScoped<NotificationService>();
 // ✅ 3) Add Session
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();
