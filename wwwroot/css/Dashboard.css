@@ -25,7 +25,7 @@
     padding: 30px;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: clip;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
@@ -43,12 +43,46 @@
     align-items: center;
     margin-bottom: 20px;
     flex-shrink: 0; /* 🌟 ห้ามหด */
+    text-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
+}
+
+.dash-header h2 span {
+    color: #2ecc71;
+    text-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
 }
 
 .dash-header h2 {
     font-size: 1.8rem;
     font-weight: bold;
     color: #ffffff; /* 🌟 ปรับเป็นสีขาวสว่าง */
+}
+
+/* ============================================================
+   Sort Mockup (โชว์แค่ This Month)
+   ============================================================ */
+.custom-sort-wrapper {
+    text-shadow: none;
+}
+
+   .custom-select-static {
+    text-shadow: none;
+}
+   .custom-sort-wrapper {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.custom-select-static {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    user-select: none;
+    cursor: default; /* เปลี่ยนเคอร์เซอร์เป็นลูกศรปกติ เพราะไม่ได้ให้กดแล้ว */
 }
 
 .tabs {
@@ -104,6 +138,7 @@
     margin-bottom: 15px;
     cursor: pointer;
     transition: transform 0.2s, background 0.2s;
+    min-width: 0;
 }
 
 .event-card:hover {
@@ -122,7 +157,9 @@
 .event-info h4 {
     font-size: 0.95rem;
     margin-bottom: 5px;
-    color: #ffffff; /* 🌟 ชื่อโพสต์เป็นสีขาว */
+    color: #ffffff;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 .event-time {
     font-size: 0.75rem;
@@ -266,7 +303,6 @@
     margin-right: 15px;
     transform: scale(1.2);
     accent-color: var(--accent);
-    cursor: not-allowed;
 }
 
 .loading-text {
@@ -275,3 +311,71 @@
     font-size: 0.8rem;
     padding: 20px 0;
 }
+
+/* ============================================================
+   Responsive Design (Portrait Viewport / Mobile & Tablet)
+   ============================================================ */
+
+/* สำหรับหน้าจอขนาดแท็บเล็ตแนวตั้ง (Portrait) และหน้าจอที่เล็กลงไป */
+@media screen and (max-width: 1024px) {
+    .dashboard-container {
+        flex-direction: column; /* จับซ้ายขวา มาเรียงซ้อนบนล่าง */
+        height: auto; /* ปลดล็อกความสูงที่เคยล็อกไว้ เพื่อให้หน้าเว็บ Scroll ลงไปได้ */
+        min-height: var(--page-content-min-h, calc(100vh - 80px));
+    }
+
+    .dash-left-panel {
+        width: 100%; /* ขยายซ้ายมือให้เต็มจอ */
+        height: 50vh; /* ล็อกความสูงไว้ครึ่งจอ เพื่อให้ List กิจกรรมยัง Scroll ในกล่องตัวเองได้ */
+        min-height: 400px;
+        flex-shrink: 0;
+    }
+
+    .dash-right-panel {
+        overflow: visible; /* ปลดล็อกกันเนื้อหาล้น */
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr; /* เปลี่ยนสถิติ 2 คอลัมน์ ให้เหลือ 1 คอลัมน์ */
+        grid-template-rows: auto; /* ปลดล็อกความสูงแถวที่เคยตั้งไว้ 250px */
+        gap: 20px;
+    }
+
+    .stat-card {
+        min-height: 230px; /* กำหนดความสูงขั้นต่ำให้กล่องไม่แบนเกินไป */
+    }
+
+    /* ล็อกความสูงให้กล่อง Mission กับ Partners บนมือถือ เพื่อไม่ให้ยาวทะลุจอและยัง Scroll ในกล่องได้ */
+    #partnersContainer, #missionsContainer {
+        max-height: 280px; 
+    }
+}
+
+/* สำหรับจอมือถือขนาดเล็กมาก (Mobile Portrait) */
+@media screen and (max-width: 480px) {
+    .dashboard-container {
+        padding: 10px; /* ลดขอบหน้าจอลง เพื่อให้มีพื้นที่เนื้อหามากขึ้น */
+    }
+
+    .dash-left-panel, .stat-card {
+        padding: 20px; /* ลด Padding ในกล่องลงให้ประหยัดที่ */
+        border-radius: 16px; /* ปรับขอบมนให้เล็กลงสมส่วนกับจอมือถือ */
+    }
+
+    .dash-header h2 {
+        font-size: 1.5rem; /* ลดขนาดหัวข้อ */
+    }
+
+    .stat-main-val {
+        font-size: 2.5rem; /* ลดขนาดตัวเลขสถิติ */
+    }
+
+    .partner-item {
+        padding: 15px; /* ลดขนาดกล่องรายชื่อเพื่อน */
+    }
+    
+    .tabs {
+        flex-wrap: wrap; /* ถ้าจอเล็กมาให้ปุ่ม Tab ปัดตกบรรทัดใหม่ได้ */
+    }
+}
+

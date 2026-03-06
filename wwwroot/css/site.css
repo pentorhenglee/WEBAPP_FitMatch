@@ -9,6 +9,9 @@
   --text:        #ffffff;
   --text-muted:  #b3b3b3;
   --navbar-h:    70px;
+    --page-pad-y:  30px;
+    --page-pad-x:  40px;
+    --page-content-min-h: calc(100vh - var(--navbar-h) - var(--page-pad-y) - var(--page-pad-y));
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -18,6 +21,7 @@ body {
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
+  padding-top: var(--navbar-h);
 }
 
 a { text-decoration: none; }
@@ -34,7 +38,6 @@ a { text-decoration: none; }
   align-items: center;
   justify-content: space-between;
   gap: 40px;       
-  
   display: flex;
   flex-direction: row;
   background: rgba(255, 255, 255, 0.03); /* Subtle white tint */
@@ -96,8 +99,6 @@ a { text-decoration: none; }
 .text-fit { color: var(--text); }
 .text-match { color: var(--accent); }
 
-
-
 /* ฝั่งขวา: ข้อมูล User */
 .user-section {
   display: flex;
@@ -120,21 +121,21 @@ a { text-decoration: none; }
   text-transform: uppercase;
 }
 
-/* วงกลมรูปโปรไฟล์ (ตั้งค่าให้พื้นหลังสีขาวรอไว้ก่อน) */
 .user-avatar {
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  background-color: #ffffff; /* สีขาวว่างๆ */
+  background-color: #ffffff;
   object-fit: cover;
 }
+
+
 
 /* ============================================================
    พื้นที่ตรงกลาง (Dashboard)
    ============================================================ */
 .page-wrapper {
-  padding: 30px 40px;
-  margin-top: var(--navbar-h);
+    padding: var(--page-pad-y) var(--page-pad-x);
 }
 
 /* ================= Notification Button ================= */
@@ -319,6 +320,10 @@ a { text-decoration: none; }
 
 .notif-body { flex: 1; min-width: 0; }
 
+.notification-card.unread .notif-body {
+    padding-right: 40px;
+}
+
 .notif-type-badge {
     font-size: 0.65rem;
     font-weight: 700;
@@ -331,18 +336,14 @@ a { text-decoration: none; }
     font-size: 0.85rem;
     font-weight: 600;
     color: #fff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    word-break: break-word;
 }
 
 .notif-desc {
     font-size: 0.75rem;
     color: #888;
     margin-top: 2px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    word-break: break-word;
 }
 
 .no-notifications {
@@ -427,9 +428,43 @@ a { text-decoration: none; }
     .navbar {
         padding: 0 20px;
     }
-    
-    .links {
-        display: none; /* ซ่อนลิงก์หลักบนมือถือ */
+
+    .user-text {
+        display: none;
+    }
+
+    .hamberger {
+        display: block;
+        cursor: pointer;
+        order: -1;
+        font-size: 30px;
+        position: relative;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        color: var(--accent);
+    }
+
+    .links{
+        position: absolute;
+        top: var(--navbar-h);
+        left: 0;
+        background: var(--surface);
+        flex-direction: column;
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        display: none;
+        z-index: 9999;
+    }
+
+    .links a {
+        padding: 10px 20px;
+        width: 100%;
+        font-size: 20px;
     }
 
     .auth-links {

@@ -1,0 +1,187 @@
+@model int
+@{
+    ViewData["Title"] = "User Profile";
+    var targetUserId = Model;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/OtherProfile.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/Dashboard.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+}
+
+<a href="javascript:history.back()" class="back-link" title="Go Back">
+    <i class="fas fa-angle-left"></i>
+</a>
+
+<div class="profile-page-container">
+    <div class="profile-card">
+        <div class="profile-sidebar">
+            <div class="avatar-wrapper">
+                <img src="/images/profile_placeholder.png"
+                     id="ProfileDisplayUserAvatar" class="profile-image-large" alt="Avatar"/>
+            </div>
+        </div>
+
+        <div class="profile-main-info">
+            <div class="info-group">
+                <span class="label">Display Name</span>
+                <h1 id="ProfileDisplayUserName">Loading...</h1>
+            </div>
+
+            <div class="info-group">
+                <span class="label">Email Address</span>
+                <p id="ProfileDisplayUserEmail" class="user-email-text">email@example.com</p>
+            </div>
+
+            <div class="info-group">
+                <span class="label">Bio</span>
+                <p id="ProfileDisplayUserBio" class="user-bio-text">Loading bio...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="user-stats-section">
+
+        <!-- Participated Rate -->
+        <div class="stat-card">
+            <h3>Participated Rate</h3>
+            <div class="stat-main-val" id="partCount">0</div>
+            <div class="stat-sub-val" id="partTarget">0 / 30</div>
+            <div class="progress-bg">
+                <div class="progress-fill" id="partProgress" style="width: 0%;"></div>
+            </div>
+        </div>
+
+        <!-- Activity Stats Chart -->
+        <div class="stat-card">
+            <h3>Activity Stats</h3>
+            <div style="display: flex; align-items: center; justify-content: space-around; gap: 15px; padding: 10px;">
+                <canvas id="activityChart" width="140" height="140"></canvas>
+                <div id="chartLegend" style="display: flex; flex-direction: column; gap: 8px; font-size: 0.8rem; color: #fff; text-align: left; min-width: 100px;"></div>
+            </div>
+        </div>
+
+        <!-- Favorite Partners -->
+        <div class="stat-card">
+            <h3>Top Partners</h3>
+            <div id="partnersContainer">
+                <div class="loading-text">Loading partners...</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const targetUserId = @targetUserId;
+
+    async function loadTargetUserProfile() {
+        try {
+            const res = await fetch(`/api/profileapi/user/${targetUserId}`, { credentials: 'same-origin' });
+            if (res.ok) {
+                const user = await res.json();
+                document.getElementById('ProfileDisplayUserName').innerText = user.username || "Unknown User";
+                document.getElementById('ProfileDisplayUserEmail').innerText = user.email || "No email provided";
+                document.getElementById('ProfileDisplayUserBio').innerText = user.info || "No bio written yet.";
+                document.getElementById('ProfileDisplayUserAvatar').src =
+                    (user.profileUrl && user.profileUrl !== "") ? user.profileUrl : "/images/profile_placeholder.png";
+                document.title = (user.username || "User") + "'s Profile";
+            } else {
+                document.getElementById('ProfileDisplayUserName').innerText = "User not found";
+            }
+        } catch (error) {
+            console.error("Error fetching profile:", error);
+        }
+    }
+
+    async function loadTargetUserStats() {
+        try {
+            const res = await fetch(`/api/dashboard/stats/${targetUserId}`, { credentials: 'same-origin' });
+            if (!res.ok) return;
+            const data = await res.json();
+
+            // Participated Rate
+            document.getElementById('partCount').innerText = data.participated;
+            document.getElementById('partTarget').innerText = `${data.participated} / ${data.targetParticipated}`;
+            const partPercent = (data.participated / data.targetParticipated) * 100;
+            document.getElementById('partProgress').style.width = `${Math.min(partPercent, 100)}%`;
+
+            // Activity Chart
+            renderChart(data.activityStats);
+
+            // Favorite Partners
+            const partnersDiv = document.getElementById('partnersContainer');
+            partnersDiv.innerHTML = '';
+            if (!data.favoritePartners || data.favoritePartners.length === 0) {
+                partnersDiv.innerHTML = '<div class="loading-text">No partners yet</div>';
+            } else {
+                data.favoritePartners.forEach(p => {
+                    partnersDiv.innerHTML += `
+                        <div class="partner-item" onclick="window.location.href='/Profile/UserProfile?id=${p.userId}'" style="cursor:pointer;" title="View ${p.username}'s profile">
+                            <img src="${p.profileUrl}" alt="${p.username}">
+                            <div style="flex-grow:1;">
+                                <div style="font-weight:bold; font-size:0.9rem; color:#fff;">${p.username}</div>
+                                <div style="font-size:0.75rem; color:#aaa;">Met ${p.meetCount} times</div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right" style="color:#888; font-size:0.75rem;"></i>
+                        </div>`;
+                });
+            }
+        } catch (error) {
+            console.error("Error fetching stats:", error);
+        }
+    }
+
+    function renderChart(statsData) {
+        const canvas = document.getElementById('activityChart');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const legendContainer = document.getElementById('chartLegend');
+        const colors = ['#28a745', '#007bff', '#ffc107', '#dc3545', '#20c997', '#fd7e14'];
+        const dataValues = statsData.map(s => s.count);
+        const labels = statsData.map(s => s.sport);
+        const total = dataValues.reduce((a, b) => a + b, 0);
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        legendContainer.innerHTML = '';
+
+        if (total === 0) {
+            ctx.beginPath();
+            ctx.arc(canvas.width / 2, canvas.height / 2, 60, 0, 2 * Math.PI);
+            ctx.fillStyle = '#333';
+            ctx.fill();
+            legendContainer.innerHTML = '<span style="color:#aaa;">No Data</span>';
+            return;
+        }
+
+        let startAngle = -Math.PI / 2;
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = 65;
+
+        dataValues.forEach((value, i) => {
+            const sliceAngle = (value / total) * 2 * Math.PI;
+            const color = colors[i % colors.length];
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, radius, startAngle, startAngle + sliceAngle);
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.fill();
+            legendContainer.innerHTML += `
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <div style="width:10px; height:10px; background:${color}; border-radius:2px;"></div>
+                    <span style="white-space:nowrap;">${labels[i]}</span>
+                </div>`;
+            startAngle += sliceAngle;
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadTargetUserProfile();
+        loadTargetUserStats();
+    });
+</script>
