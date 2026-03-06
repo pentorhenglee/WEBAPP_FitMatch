@@ -97,11 +97,11 @@
             return "fa-infinity"; 
         }
 
-        //render 
+        //render event card in tabs
         function renderCards(containerId, events, emptyMessage) {
             const container = document.getElementById(containerId);
             container.innerHTML = ''; 
-
+            //if none event
             if (!events || events.length === 0) {
                 container.innerHTML = `
                     <div style="text-align: center; color: var(--text-muted); padding: 40px 0;">
@@ -112,6 +112,7 @@
             }
 
             let htmlContent = '';
+            //loob event card
             events.forEach(ev => {
                 const dateObj = new Date(ev.eventDateTime);
                 const dateStr = dateObj.toLocaleDateString('en-GB').replace(/\//g, ' - '); 
@@ -149,22 +150,20 @@
             }
         }
 
-        // ==========================================
-        // 3. Render Right Panel (Stats)
-        // ==========================================
+        //right panel
         async function fetchDashboardStats() {
             try {
                 const response = await fetch('/api/dashboard/stats');
                 if (!response.ok) throw new Error("Failed to load stats");
                 const data = await response.json();
 
-                // --- Participated Rate ---
+                //Participated Rate
                 document.getElementById('partCount').innerText = data.participated;
                 document.getElementById('partTarget').innerText = `${data.participated} / ${data.targetParticipated} days`;
                 let partPercent = (data.participated / data.targetParticipated) * 100;
                 document.getElementById('partProgress').style.width = `${Math.min(partPercent, 100)}%`;
 
-                // --- Activity Stats (Chart) ---
+                //Activity Stats (Chart)
                 renderChart(data.activityStats);
 
                 // --- Favorite Partners ---
@@ -187,7 +186,7 @@
                     });
                 }
 
-                // --- Missions Succeeded ---
+                // Missions Succeeded
                 const missionsDiv = document.getElementById('missionsContainer');
                 missionsDiv.innerHTML = '';
                 let completedMissions = 0;
@@ -226,7 +225,6 @@
             const ctx = canvas.getContext('2d');
             const legendContainer = document.getElementById('chartLegend');
             
-            // ชุดสีที่ดูทันสมัยสไตล์ Dashboard (แตกต่างกันชัดเจนและดูพรีเมียม)
             const colors = ['#28a745', '#007bff', '#ffc107', '#dc3545', '#20c997', '#fd7e14'];
             
             const dataValues = statsData.map(s => s.count);
@@ -254,16 +252,16 @@
                 const sliceAngle = (value / total) * 2 * Math.PI;
                 const color = colors[i % colors.length];
 
-                // วาดชิ้นเค้ก (Pie Slice)
+                // Pie Slice draw
                 ctx.beginPath();
-                ctx.moveTo(centerX, centerY); // เริ่มจากจุดศูนย์กลางเพื่อให้เป็นรูปพัด
+                ctx.moveTo(centerX, centerY);
                 ctx.arc(centerX, centerY, radius, startAngle, startAngle + sliceAngle);
                 ctx.closePath();
                 
                 ctx.fillStyle = color;
                 ctx.fill();
 
-                // เพิ่มคำอธิบายด้านข้าง
+                // right legend
                 const legendItem = `
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <div style="width: 10px; height: 10px; background: ${color}; border-radius: 2px;"></div>
@@ -275,17 +273,8 @@
             });
         }
 
-        // ฟังก์ชันช่วยวาดวงกลมพื้นฐาน
-        function drawCircle(ctx, x, y, radius, start, end, color) {
-            ctx.beginPath();
-            ctx.arc(x, y, radius, start, end);
-            ctx.fillStyle = color;
-            ctx.fill();
-        }
 
-        // ==========================================
-        // 4. Initialization
-        // ==========================================
+        // tick mission update to mission
         async function tickMissionDashboard(id, checkbox) {
             const row = document.getElementById(`dash-m-${id}`);
             if (row) row.style.opacity = '0.5';
