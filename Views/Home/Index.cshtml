@@ -277,19 +277,17 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.category-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
-                    this.classList.add('active');
+        document.querySelectorAll('.category-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
+                this.classList.add('active');
 
-                    const category = this.getAttribute('data-category');
-                    const searchTerms = document.getElementById('searchInput').value;
-                    fetchSearchResults(searchTerms, category);
-                });
+                const category = this.getAttribute('data-category');
+                const searchTerms = document.getElementById('searchInput').value;
+                fetchSearchResults(searchTerms, category);
             });
         });
-
+    
         const addPostBtn = document.getElementById("addpostButton");
         if (addPostBtn) {
             addPostBtn.addEventListener("click", function () {
