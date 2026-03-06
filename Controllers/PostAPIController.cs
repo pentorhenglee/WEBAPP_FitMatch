@@ -408,9 +408,6 @@ namespace WEBAPP_FitMatch.Controllers
             if (post.UserId != user_id.Value)
                 return Forbid();
 
-            _db.Posts.Remove(post);
-            await _db.SaveChangesAsync();
-            
             var histories = new History
             {
                 UserId = user_id.Value,
@@ -418,6 +415,9 @@ namespace WEBAPP_FitMatch.Controllers
                 ActionType = $"Delete Post {post.Title}"
             };
             _db.Histories.Add(histories);
+            await _db.SaveChangesAsync();
+
+            _db.Posts.Remove(post);
             await _db.SaveChangesAsync();
 
             return Ok(new { message = "Delete successful" });
