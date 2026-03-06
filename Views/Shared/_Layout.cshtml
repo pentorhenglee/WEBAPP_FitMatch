@@ -52,7 +52,10 @@
                             <span>Notifications</span>
                             <div class="notif-header-actions">
                                 <span class="notif-count" id="notifCount">0</span>
-                                <button class="notif-clear-btn" id="clearReadBtn" onclick="clearReadNotifications()" title="Clear read notifications">Clear read</button>
+                                <button class="notif-clear-btn" id="clearReadBtn" onclick="clearReadNotifications()" title="Clear read notifications">
+                                    <span class="loading-spinner"></span>
+                                    <span class="btn-text">Clear read</span>
+                                </button>
                             </div>
                         </div>
                         <div id="notificationDisplay" class="notification-display"></div>
@@ -239,14 +242,47 @@
 
         // ── Clear all read notifications ──────────────────────────────────
         async function clearReadNotifications() {
+            const clearBtn = document.getElementById('clearReadBtn');
+            
+            // Prevent multiple clicks
+            if (clearBtn.classList.contains('loading')) return;
+            
+            // Show loading state
+            clearBtn.classList.add('loading');
+            
             try {
-                await fetch('/api/NotificationAPI/clear-read', {
+                // 1. (Optimistic Update) ลบออกจากหน้าจอทันที
+                const readNotifications = document.querySelectorAll('.notification-card.read');
+                readNotifications.forEach(el => el.remove());
+
+                // อัปเดตตัวเลข Count (ถ้ามี)
+                const countEl = document.getElementById('notifCount');
+                if (countEl) {
+                    const currentCount = parseInt(countEl.textContent);
+                    countEl.textContent = Math.max(0, currentCount - readNotifications.length);
+                }
+
+                // ตรวจสอบว่าถ้าลบหมดแล้วให้โชว์ "Caught up"
+                const display = document.getElementById('notificationDisplay');
+                if (display.children.length === 0) {
+                    display.innerHTML = '<p class="no-notifications">You\'re all caught up!</p>';
+                }
+
+                // 2. ส่งคำสั่งไปที่ Server จริงๆ เบื้องหลัง
+                const res = await fetch('/api/NotificationAPI/clear-read', {
                     method: 'DELETE',
                     credentials: 'same-origin'
                 });
-                fetchNotifications();
+
+                if (!res.ok) throw new Error("Delete failed");
+                
             } catch (err) {
                 console.error('Error clearing read notifications:', err);
+                // 3. ถ้า Error ค่อยเรียก fetchNotifications() เพื่อเอาข้อมูลจริงกลับมา (Rollback)
+                fetchNotifications();
+            } finally {
+                // Hide loading state
+                clearBtn.classList.remove('loading');
             }
         }
 
