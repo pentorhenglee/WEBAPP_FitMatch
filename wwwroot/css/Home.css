@@ -14,7 +14,7 @@ body {
     top: 70px;
     left: 0;
     width: 100%;
-    z-index: 500;
+    z-index: 999;
     background: #0f0f0f;
     padding-bottom: 20px;
     transition: none;
@@ -255,7 +255,7 @@ input:checked+.slider:before {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 2000;
+    z-index: 999;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     transition: all 0.2s ease;
     /* ปรับให้ Transition ครอบคลุมทุกค่า */
@@ -298,7 +298,7 @@ input:checked+.slider:before {
         left: 0;
         top: 50% !important;
         transform: translateY(-50%) !important;
-        z-index: 9999;
+        z-index: 999;
     }
 
     /* ปุ่มหลัก (Trigger) ให้ดูเป็นส่วนหนึ่งของแถบ */
@@ -878,7 +878,7 @@ input:checked+.slider:before {
         line-height: 1;
         padding: 5px;
         transition: color 0.3s ease;
-        z-index: 10002;
+        z-index: 999;
         /* ให้อยู่เหนือเนื้อหาอื่นในป๊อปอัพ */
     }
 
@@ -892,7 +892,7 @@ input:checked+.slider:before {
         position: fixed;
         right: 0;
         top: 50% !important;
-        z-index: 9999;
+        z-index: 999;
     }
 
     .mission-menu-trigger {
@@ -916,7 +916,7 @@ input:checked+.slider:before {
         /* ชิดขอบซ้ายสุด */
         top: 50% !important;
         transform: translateY(-50%) !important;
-        z-index: 9999;
+        z-index: 999;
     }
 
     .mission-menu-items {
@@ -941,7 +941,7 @@ input:checked+.slider:before {
         opacity: 0;
         visibility: hidden;
         transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        z-index: 10001;
+        z-index: 999;
         display: block !important;
     }
 
@@ -966,7 +966,7 @@ input:checked+.slider:before {
         height: 100vh;
         background: rgba(0, 0, 0, 0.7);
         backdrop-filter: blur(4px);
-        z-index: 10000;
+        z-index: 999;
     }
 
     .mobile-mission-header {

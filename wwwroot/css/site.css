@@ -424,6 +424,10 @@ a { text-decoration: none; }
             display: none;
         }
 
+    .hamberger {
+        display: none;
+    }
+
 @media (max-width: 768px) {
     .navbar {
         padding: 0 20px;
