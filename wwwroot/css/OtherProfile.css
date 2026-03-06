@@ -14,7 +14,6 @@
     max-width: 1000px;
     margin: 100px auto;
     padding: 0 20px;
-    min-height: var(--page-content-min-h, calc(100vh - 70px));
 }
 
 /* ปุ่ม Back ย้อนกลับ */
@@ -135,15 +134,15 @@
 }
 
 /* ใช้พื้นหลังแบบเดียวกับ Profile Card */
-.stat-card {
-    background: rgba(92, 76, 76, 0.03); 
+.profile-page-container .stat-card {
+    background: rgba(92, 76, 76, 0.03);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     border: 1px solid var(--border);
-    border-radius: 20px;
+    border-radius: 24px;
     padding: 25px;
     color: var(--text);
-    box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
 }
@@ -195,6 +194,10 @@
 
 /* MOBILE RESPONSIVENESS*/
 @media (max-width: 768px) {
+    .profile-page-container {
+        margin: 0px auto;
+    }
+
     .profile-card {
         flex-direction: column;
     }
