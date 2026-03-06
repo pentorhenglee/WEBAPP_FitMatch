@@ -108,6 +108,7 @@
                     <textarea id="editDescription" rows="3"></textarea>
                 </div>
                 <button onclick="submitEditPost()" class="btn-save">Save Changes</button>
+                <button onclick="deletePost()" class="btn-delete-post" style="margin-top:8px; width:100%; background:#c0392b; color:#fff; border:none; padding:10px; border-radius:6px; cursor:pointer; font-weight:bold;">Delete Post</button>
             </div>
         </div>
     </div>
@@ -353,6 +354,19 @@
                     alert("Edit failed: " + err);
                 }
             } catch (error) { console.error("Error editing post:", error); }
+        }
+
+        async function deletePost() {
+            if (!confirm("Are you sure you want to permanently delete this post? This cannot be undone.")) return;
+            try {
+                const response = await fetch(`/api/postapi/delete/${currentPostId}`, { method: 'DELETE' });
+                if (response.ok) {
+                    window.location.href = '/Dashboard';
+                } else {
+                    const err = await response.text();
+                    alert("Delete failed: " + err);
+                }
+            } catch (error) { console.error("Error deleting post:", error); }
         }
 
         async function kickMember(userId) {
