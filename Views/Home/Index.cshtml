@@ -32,6 +32,7 @@
         </div>
     </div>
 
+    <!-- แถบ category มือถือ -->
     <div class="mobile-menu-container">
         <button class="mobile-menu-trigger" id="mobileMenuBtn">
             <i class="fas fa-bars"></i>
@@ -56,12 +57,13 @@
             <span>N</span>
         </div>
         
+        <!-- เอาเมาส์ไปชี้ที่ปุ่ม mission จะแสดง -->
         <div class="mission-content-hover">
-            <div id="missionListContainer" class="mission-list">
-            </div>
+            <div id="missionListContainer" class="mission-list"></div>
         </div>
     </div>
 
+    <!-- กล่อง mission เมนูหน้ามือถือ -->
     <div class="mission-menu-container">
         <button class="mission-menu-trigger" id="mobileMissionBtn">
             <i class="fas fa-tasks"></i>
@@ -75,7 +77,7 @@
         </div>
     </div>
 
-    <div id="missionOverlay" class="mission-overlay"></div>
+    <!-- <div id="missionOverlay" class="mission-overlay"></div> -->
 
     <div class="fixes-top-section">
         <div class="welcome-message">
@@ -106,14 +108,15 @@
         </div>
     </div>
 
+    <!-- พื้นที่หลักของหน้าเว็บ -->
     <div class="main-content">
-        <div id="postsDisplay" class="posts-display"></div>
+        <div id="postsDisplay" class="posts-display"></div> 
     </div>
 </div>
 
 
 <script>
-    async function fetchMissions() {
+    async function fetchMissions() { //ดึงข้อมูล mission จาก API
         const container = document.getElementById('missionListContainer'); 
         try {
             const response = await fetch('/api/MissionAPI/mission');
@@ -130,7 +133,26 @@
         }
     }
 
-    async function updateMissionStatus(missionId, isCompleted) {
+    function renderMissionList(missions) {
+        const container = document.getElementById('missionListContainer');
+        const containerMobile = document.getElementById('missionListContainerMobile');
+        
+        // if (!container && !containerMobile) return;
+        
+        const html = missions.map(mission => `
+            <div class="mission-item">
+                <input type="checkbox" id="m-${mission.missionId}" 
+                    ${mission.isCompleted ? 'checked' : ''} 
+                    onchange="updateMissionStatus(${mission.missionId}, this.checked)">
+                <label for="m-${mission.missionId}">${mission.description}</label>
+            </div>
+        `).join('');
+
+        if (container) container.innerHTML = html;
+        if (containerMobile) containerMobile.innerHTML = html;
+    }
+
+    async function updateMissionStatus(missionId, isCompleted) { //อัปเดตสถานะ mission ว่าติ๊กสำเร็จหรือยัง
         try {
             const response = await fetch('/api/MissionAPI/tick', {
                 method: 'POST',
@@ -148,7 +170,7 @@
         }
     }
 
-    function getSportIcon(sportType) {
+    function getSportIcon(sportType) { //กำหนด icon ของกีฬาบน Post
         const icons = {
             'Running': 'fa-running',
             'Cycling': 'fa-bicycle',
@@ -159,16 +181,16 @@
         return icons[sportType] || 'fa-infinity';
     }
 
-    async function renderPosts(posts) {
+    async function renderPosts(posts) { //สร้าง post ในหน้า home
         const postsDisplay = document.getElementById('postsDisplay');
-        postsDisplay.innerHTML = '';
+        postsDisplay.innerHTML = ''; //ล้างข้อมมูลเก่า
 
         if (!posts || posts.length === 0) {
             postsDisplay.innerHTML = '<p class="no-posts">No posts found.</p>';
             return;
         }
 
-        function getSportPlaceholder(sportType) {
+        function getSportPlaceholder(sportType) { //ถ้าไม่มีรูปใช้รูปตามกีฬา
             const map = {
                 'Running':    '/images/running_placeholder.jpg',
                 'Soccer':     '/images/soccer_placeholder.jpg',
@@ -179,7 +201,7 @@
             return map[sportType] || '/images/placeholder-default.jpg';
         }
 
-        posts.forEach(post => { //สร้าง card สำหรับแต่ละโพสต์
+        posts.forEach(post => { //สร้าง card สำหรับแต่ละโพสต์(loop)
             const card = document.createElement('div');
             card.setAttribute('data-status', post.status || 'open');
             card.className = `post-card ${post.status === 'close' ? 'post-closed' : ''}`;
@@ -239,16 +261,16 @@
         document.getElementById('statusToggle').dispatchEvent(new Event('change'));
     }
 
-    async function fetchSearchResults(query = null, category = null) {
+    async function fetchSearchResults(query = null, category = null) { //เสิร์ช
         try {
             const params = new URLSearchParams();
             if (query && query.trim() !== "") params.append('query', query.trim());
             if (category && category.trim() !== "") params.append('category', category.trim());
 
             const queryString = params.toString();
-            const url = `/api/all_post${queryString ? '?' + queryString : ''}`;
+            const url = `/api/all_post${queryString ? '?' + queryString : ''}`; 
 
-            const response = await fetch(url);
+            const response = await fetch(url);  //เช็คว่ามีโพสไหม
             if (!response.ok) throw new Error('Network response was not ok');
             
             const results = await response.json();
@@ -261,11 +283,21 @@
         }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        fetchSearchResults(null); 
-        fetchMissions();
+    document.getElementById('searchInput').addEventListener('keydown', function(event) { //เมื่อกด Enter จะเสอร์ช
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            const query = event.target.value; //ข้อความที่ผู้ใช้พิมพ์ค้นหา
+            const activeCat = document.querySelector('.category-item.active')?.getAttribute('data-category') || ""; //เก็บ category ที่เลือกอยู่
+            
+            fetchSearchResults(query, activeCat);
+        }
+    });
 
-        const closeBtn = document.getElementById('closeMissionBtn');
+    document.addEventListener('DOMContentLoaded', () => { //โหลดทุกอย่างเมื่อเปิดหน้าเว็บ
+        fetchSearchResults(null);  //โหลดโพส
+        fetchMissions(); //โหลด mission
+
+        const closeBtn = document.getElementById('closeMissionBtn'); //โค้ดปิดในหน้า mission มือถือ
         if (closeBtn) {
             closeBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
@@ -277,7 +309,7 @@
             });
         }
 
-        document.querySelectorAll('.category-item').forEach(item => {
+        document.querySelectorAll('.category-item').forEach(item => { //กรอง category
             item.addEventListener('click', function() {
                 document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
                 this.classList.add('active');
@@ -288,7 +320,7 @@
             });
         });
     
-        const addPostBtn = document.getElementById("addpostButton");
+        const addPostBtn = document.getElementById("addpostButton"); //ปุ่ม add post(+)
         if (addPostBtn) {
             addPostBtn.addEventListener("click", function () {
                 window.location.href = "/Post/Create";
@@ -296,28 +328,18 @@
         }
     });
 
-    document.getElementById('searchButton').addEventListener('click', () => {
+    document.getElementById('searchButton').addEventListener('click', () => { //ปุ่ม Search
         const query = document.getElementById('searchInput').value;
         const activeCat = document.querySelector('.category-item.active')?.getAttribute('data-category') || "";
         
         fetchSearchResults(query, activeCat);
     });
 
-    document.getElementById('searchInput').addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            const query = event.target.value;
-            const activeCat = document.querySelector('.category-item.active')?.getAttribute('data-category') || "";
-            
-            fetchSearchResults(query, activeCat);
-        }
+    document.getElementById('mobileMenuBtn').addEventListener('click', function() { //เปิด / ปิด category ในมือถือ
+        document.getElementById('mobileMenuItems').classList.toggle('show');
     });
 
-    document.getElementById('mobileMenuBtn').addEventListener('click', function() {
-    document.getElementById('mobileMenuItems').classList.toggle('show');
-    });
-
-    document.querySelectorAll('.m-item').forEach(item => {
+    document.querySelectorAll('.m-item').forEach(item => { //ย้ายแถบเขียวใน category หน้ามือถือ
         item.addEventListener('click', function() {
             document.querySelectorAll('.m-item').forEach(el => el.classList.remove('active'));
             this.classList.add('active');
@@ -325,11 +347,11 @@
             const category = this.getAttribute('data-category');
             const searchTerms = document.getElementById('searchInput').value;
             fetchSearchResults(searchTerms, category);
-            document.getElementById('mobileMenuItems').classList.remove('show');
+            document.getElementById('mobileMenuItems').classList.remove('show'); //menu จะปิดเอง
         });
     });
 
-    document.getElementById('mobileMissionBtn').addEventListener('click', function(e) {
+    document.getElementById('mobileMissionBtn').addEventListener('click', function(e) { //ปุ่มเปิด mission มือถือ
         e.stopPropagation();
         const items = document.getElementById('mobileMissionItems');
         const container = document.querySelector('.mission-menu-container');
@@ -338,7 +360,7 @@
         container.classList.toggle('show-overlay'); 
     });
 
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', function(e) { //ปุ่มปิดหน้า mission เมื่อกดตรงไหนก้ได้ในหน้าเว็บ
         const items = document.getElementById('mobileMissionItems');
         const container = document.querySelector('.mission-menu-container');
         
@@ -348,43 +370,15 @@
         }
     });
 
-    document.getElementById("missionOverlay").onclick = function(){
-        document.querySelector(".mission-menu-items").classList.remove("show");
-        this.classList.remove("show");
-    }
-    
+    // document.getElementById("missionOverlay").onclick = function(){
+    //     document.querySelector(".mission-menu-items").classList.remove("show");
+    //     this.classList.remove("show");
+    // }
 
-    function renderMissionList(missions) {
-        const container = document.getElementById('missionListContainer');
-        const containerMobile = document.getElementById('missionListContainerMobile');
-        
-        if (!container && !containerMobile) return;
-        
-        const html = missions.map(mission => `
-            <div class="mission-item">
-                <input type="checkbox" id="m-${mission.missionId}" 
-                    ${mission.isCompleted ? 'checked' : ''} 
-                    onchange="updateMissionStatus(${mission.missionId}, this.checked)">
-                <label for="m-${mission.missionId}">${mission.description}</label>
-            </div>
-        `).join('');
-
-        if (container) container.innerHTML = html;
-        if (containerMobile) containerMobile.innerHTML = html;
-    }
-
-    document.getElementById('statusToggle').addEventListener('change', function() {
+    document.getElementById('statusToggle').addEventListener('change', function() { //toggle close or open
         const isChecked = this.checked;
         const targetStatus = isChecked ? 'close' : 'open';
         const label = document.getElementById('statusText');
-
-        // if (isChecked) {
-        //     label.innerText = "CLOSED";
-        //     label.style.color = "#e74c3c";
-        // } else {
-        //     label.innerText = "OPEN";
-        //     label.style.color = "#2ecc71";
-        // }
 
         const allCards = document.querySelectorAll('.post-card');
         allCards.forEach(card => {
