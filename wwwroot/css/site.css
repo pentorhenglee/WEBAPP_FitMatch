@@ -129,7 +129,9 @@ a { text-decoration: none; }
   object-fit: cover;
 }
 
-
+.hamberger {
+    display: none;
+}
 
 /* ============================================================
    พื้นที่ตรงกลาง (Dashboard)
