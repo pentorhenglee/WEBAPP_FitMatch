@@ -27,8 +27,7 @@
 
         <div class="form-section">
             <div class="login-card">
-                <img src="~/images/logo.png" alt="Login Image" class="logo-image" />
-                <h2>Welcome back!</h2>
+                <h2>Welcome <span class="green">back!</span></h2>
                 <label for="loginLabel">Login</label>
                 <div id="errorMessage" role="alert" class="error d-none"></div>
                 <form id="loginForm">
@@ -71,25 +70,23 @@
                 const res = await fetch("/api/auth/login", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ Email: email, Password: password }) // Key ต้องตรงกับ DTO ใน Backend
+                    body: JSON.stringify({ Email: email, Password: password })
                 });
 
                 if (res.ok) {
                     window.location.href = "/Home/Index";
                 } else {
                     btnSubmit.disabled = false;
-                    btnSubmit.innerHTML = originalContent;
+                    btnSubmit.innerHTML = originalContent; 
+
                     const contentType = res.headers.get("content-type");
-                    if (contentType && contentType.indexOf("application/json") !== -1) {
+                    if (contentType && contentType.includes("application/json")) {
                         const errorData = await res.json();
                         errorDiv.innerText = errorData.message || "Login failed.";
                     } else {
-                        errorDiv.innerText = "Error 500: Server error.";
+                        errorDiv.innerText = "Error " + res.status + ": Server error.";
                     }
                     errorDiv.classList.remove("d-none");
-
-                    btnSubmit.disabled = false;
-                    btnSubmit.innerHTML = originalBtnText;  
                 }
             } catch (err) {
                 btnSubmit.disabled = false;

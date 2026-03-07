@@ -58,7 +58,6 @@
                     REGISTER
                 </button>
             </form>
-
             <p class="login-text">Already have an account? <a href="/Account/Login">Login here!</a></p>
         </div>
     </div>
@@ -110,17 +109,53 @@
             const errorData = await res.json(); 
             errorDiv.innerText = errorData.message || "Registration failed.";
             errorDiv.classList.remove("d-none");
+            document.getElementById("email").focus();
+            return;
         }
-    } catch (err) {
-        errorDiv.innerText = "Network error: " + err.message;
-        errorDiv.classList.remove("d-none");
-    } finally {
-        btnSubmit.disabled = false;
-        spinner.classList.add("d-none");
-    }
-});
 
-    const words = ["RUN", "CYCLE", "BASKETBALL", "SOCCER", "VOLLEYBALL"];
+        // 2. Check if pass and confpass match
+        if (password !== confirmPassword) {
+            errorDiv.innerText = "Passwords do not match!";
+            errorDiv.classList.remove("d-none");
+            document.getElementById("confirmPassword").focus();
+            return;
+        }
+
+        if (password.length < 6) {
+            errorDiv.innerText = "Password must be at least 6 characters long.";
+            errorDiv.classList.remove("d-none");
+            return;
+        }
+
+        errorDiv.classList.add("d-none");
+        btnSubmit.disabled = true;
+        spinner.classList.remove("d-none");
+
+        try {
+            const res = await fetch("/api/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ Email: email, Username: username, Password: password })
+            });
+
+            if (res.ok) {
+                // Fixed the redirect path here
+                window.location.href = "/Account/Login"; 
+            } else {
+                const errorData = await res.json(); 
+                errorDiv.innerText = errorData.message || "Registration failed.";
+                errorDiv.classList.remove("d-none");
+            }
+        } catch (err) {
+            errorDiv.innerText = "Network error: " + err.message;
+            errorDiv.classList.remove("d-none");
+        } finally {
+            btnSubmit.disabled = false;
+            spinner.classList.add("d-none");
+        }
+    });
+
+const words = ["RUN", "CYCLE", "BASKETBALL", "SOCCER", "VOLLEYBALL"];
 let wordIndex = 0;
 const logoContainer = document.getElementById('dynamic-logo');
 

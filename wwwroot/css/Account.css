@@ -220,6 +220,10 @@ input:-webkit-autofill:active {
     margin: 0 auto;
 }
 
+.green {
+    color: var(--accent);
+}
+
 @media (max-width: 750px) {
     .hero-section {
         display: none;
