@@ -306,10 +306,18 @@
 
         document.querySelectorAll('.category-item').forEach(item => { //กรอง category
             item.addEventListener('click', function() {
+                const category = this.getAttribute('data-category');
+
                 document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
                 this.classList.add('active');
 
-                const category = this.getAttribute('data-category');
+                document.querySelectorAll('.m-item').forEach(el => {
+                    el.classList.remove('active');
+                    if (el.getAttribute('data-category') === category) {
+                        el.classList.add('active');
+                    }
+                });
+
                 const searchTerms = document.getElementById('searchInput').value;
                 fetchSearchResults(searchTerms, category);
             });
@@ -336,10 +344,18 @@
 
     document.querySelectorAll('.m-item').forEach(item => { //ย้ายแถบเขียวใน category หน้ามือถือ
         item.addEventListener('click', function() {
+            const category = this.getAttribute('data-category');
+
             document.querySelectorAll('.m-item').forEach(el => el.classList.remove('active'));
             this.classList.add('active');
+
+            document.querySelectorAll('.category-item').forEach(el => {
+                el.classList.remove('active');
+                if (el.getAttribute('data-category') === category) {
+                    el.classList.add('active');
+                }
+            });
             
-            const category = this.getAttribute('data-category');
             const searchTerms = document.getElementById('searchInput').value;
             fetchSearchResults(searchTerms, category);
             document.getElementById('mobileMenuItems').classList.remove('show'); //menu จะปิดเอง
