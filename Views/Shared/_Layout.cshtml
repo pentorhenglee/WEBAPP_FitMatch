@@ -25,7 +25,7 @@
             </a>
             @if (!string.IsNullOrEmpty(userName))
             {
-                <button class="hamberger" id="hamburgerMenu" onclick="toggleMenu()">
+                <button class="hamburger" id="hamburgerBtn">
                     <i class="fa-solid fa-bars"></i>
                 </button>
                 <nav class="links">
@@ -129,16 +129,13 @@
                     _notifMenu.classList.remove('show');
             });
         }
-
-        // ── Notification types config ─────────────────────────────────────
+    
         const NOTIF_TYPES = {
             Join:  { icon: 'fa-user-check',  color: '#2ecc71', label: 'Joined'  },
             Edit:  { icon: 'fa-pen-to-square', color: '#3498db', label: 'Updated' },
             Kick:  { icon: 'fa-user-xmark',  color: '#e74c3c', label: 'Removed' },
             Close:  { icon: 'fa-lock',        color: '#f39c12', label: 'Closed'  },
         };
-
-        // ── Render notifications ───────────────────────────────────────────
         function renderNotifications(notifications) {
             const display = document.getElementById('notificationDisplay');
             const badge   = document.getElementById('notifBadge');
@@ -180,7 +177,6 @@
                     ${!n.isRead ? '<div class="unread-indicator"></div>' : ''}
                     <button class="notif-delete-btn" title="Delete notification">×</button>
                 `;
-                // Delete button
                 card.querySelector('.notif-delete-btn').addEventListener('click', async (e) => {
                     e.stopPropagation();
                     try {
@@ -194,7 +190,6 @@
                     }
                 });
                 card.addEventListener('click', async () => {
-                    // Mark as read
                     if (!n.isRead) {
                         try {
                             await fetch('/api/NotificationAPI/read', {
@@ -206,19 +201,16 @@
                             n.isRead = true;
                             card.classList.remove('unread');
                             card.classList.add('read');
-                            fetchNotifications(); // Refresh to update badge
+                            fetchNotifications();
                         } catch (err) {
                             console.error('Error marking notification as read:', err);
                         }
                     }
-                    // Navigate to post
                     if (n.postId) window.location.href = `/Post/Detail?id=${n.postId}`;
                 });
                 display.appendChild(card);
             });
         }
-
-        // ── Fetch notifications from API ──────────────────────────────────
         async function fetchNotifications() {
             try {
                 const res = await fetch('/api/NotificationAPI/render', { 
@@ -238,70 +230,49 @@
             }
         }
         fetchNotifications();
-        // Refresh notifications every 30 seconds
         setInterval(fetchNotifications, 30000);
-
-        // ── Clear all read notifications ──────────────────────────────────
         async function clearReadNotifications() {
             const clearBtn = document.getElementById('clearReadBtn');
-            
-            // Prevent multiple clicks
-            if (clearBtn.classList.contains('loading')) return;
-            
-            // Show loading state
+           if (clearBtn.classList.contains('loading')) return;
             clearBtn.classList.add('loading');
-            
             try {
-                // 1. (Optimistic Update) ลบออกจากหน้าจอทันที
                 const readNotifications = document.querySelectorAll('.notification-card.read');
                 readNotifications.forEach(el => el.remove());
-
-                // อัปเดตตัวเลข Count (ถ้ามี)
                 const countEl = document.getElementById('notifCount');
                 if (countEl) {
                     const currentCount = parseInt(countEl.textContent);
                     countEl.textContent = Math.max(0, currentCount - readNotifications.length);
                 }
 
-                // ตรวจสอบว่าถ้าลบหมดแล้วให้โชว์ "Caught up"
                 const display = document.getElementById('notificationDisplay');
                 if (display.children.length === 0) {
                     display.innerHTML = '<p class="no-notifications">You\'re all caught up!</p>';
                 }
-
-                // 2. ส่งคำสั่งไปที่ Server จริงๆ เบื้องหลัง
                 const res = await fetch('/api/NotificationAPI/clear-read', {
                     method: 'DELETE',
                     credentials: 'same-origin'
                 });
-
                 if (!res.ok) throw new Error("Delete failed");
                 
             } catch (err) {
                 console.error('Error clearing read notifications:', err);
-                // 3. ถ้า Error ค่อยเรียก fetchNotifications() เพื่อเอาข้อมูลจริงกลับมา (Rollback)
                 fetchNotifications();
             } finally {
-                // Hide loading state
                 clearBtn.classList.remove('loading');
             }
         }
-
-    // ── Hamburger Menu Toggle ──────────────────────────────────────────
-    const hamburgerBtn = document.getElementById('hamburgerMenu');
-    // Use querySelector because 'links' is a class, not an ID
-    const navLinks = document.querySelector('.links'); 
-
-    if (hamburgerBtn && navLinks) {
-        hamburgerBtn.addEventListener('click', () => {
-            // Toggle a class instead of manipulating inline styles for cleaner code
-            if (navLinks.style.display === 'flex') {
-                navLinks.style.display = 'none';
-            } else {
-                navLinks.style.display = 'flex';
-            }
-        });
-    }
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const navLinks = document.querySelector('.links'); 
+        if (hamburgerBtn && navLinks) {
+            hamburgerBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('show');
+            });
+            document.addEventListener('click', (e) => {
+                if (!navLinks.contains(e.target) && !hamburgerBtn.contains(e.target)) {
+                    navLinks.classList.remove('show');
+                }
+            });
+        }
     </script>
 
     <script src="~/js/site.js" asp-append-version="true"></script>
