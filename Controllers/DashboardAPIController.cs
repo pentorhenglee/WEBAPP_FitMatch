@@ -33,7 +33,8 @@ namespace WEBAPP_FitMatch.Controllers
                     p.Location,
                     p.EventDateTime,
                     p.Status,
-                    p.SportType
+                    p.SportType,
+                    IsOwner = p.UserId == userId
                 })
                 .ToListAsync();
 

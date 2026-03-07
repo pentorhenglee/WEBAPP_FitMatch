@@ -118,10 +118,11 @@
                 const dateStr = dateObj.toLocaleDateString('en-GB').replace(/\//g, ' - '); 
                 const timeStr = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
                 const iconClass = getSportIcon(ev.sportType);
+                const iconStyle = ev.isOwner ? ' style="color: white;"' : '';
 
                 htmlContent += `
                     <div class="event-card" onclick="window.location.href='/Post/Detail?id=${ev.postId}'" style="cursor: pointer;">
-                        <div class="event-icon"><i class="fa-solid ${iconClass}"></i></div>
+                        <div class="event-icon"><i class="fa-solid ${iconClass}"${iconStyle}></i></div>
                         <div class="event-info">
                             <h4>${(ev.location || "UNKNOWN").toUpperCase()}</h4>
                             <div class="event-time">${dateStr} • ${timeStr}</div>
