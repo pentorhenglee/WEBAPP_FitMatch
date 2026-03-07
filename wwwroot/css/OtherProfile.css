@@ -1,27 +1,22 @@
-/* ============================================================
-   1. VARIABLES & BASE
-   ============================================================ */
+/* BASE */
 :root {
-    --accent: #2ecc71; /* สีเขียว Neon หลักของ FitMatch */
+    --accent: #2ecc71;
     --text: #ffffff;
     --text-muted: #aaaaaa;
     --border: rgba(255, 255, 255, 0.1);
 }
 
-/* ============================================================
-   2. LAYOUT & CONTAINER
-   ============================================================ */
+/*LAYOUT & CONTAINER*/
 .profile-page-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     max-width: 1000px;
-    margin: 0 auto;
+    margin: 100px auto;
     padding: 0 20px;
-    min-height: var(--page-content-min-h, calc(100vh - 70px));
 }
 
-/* ปุ่ม Back ย้อนกลับ (ปรับตามสไตล์มินิมอลที่คุณส่งมา) */
+/* ปุ่ม Back ย้อนกลับ */
 .back-link {
     position: fixed;
     top: 100px;
@@ -38,17 +33,15 @@
 
 .back-link:hover { 
     color: var(--accent); 
-    transform: translateX(-5px); /* เลื่อนซ้ายนิดนึงตอน Hover */
+    transform: translateX(-5px); 
 }
 
-/* ============================================================
-   3. PROFILE CARD (Glassmorphism)
-   ============================================================ */
+/* PROFILE CARD*/
 .profile-card {
     display: flex;
     flex-direction: row;
     width: 100%;
-    background: rgba(92, 76, 76, 0.03); /* สีโทนที่คุณต้องการ */
+    background: rgba(92, 76, 76, 0.03);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     border: 1px solid var(--border);
@@ -57,7 +50,6 @@
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
-/* ฝั่งซ้าย (รูปโปรไฟล์) */
 .profile-sidebar {
     background: rgba(0, 0, 0, 0.2);
     padding: 50px 40px;
@@ -84,14 +76,15 @@
     background-color: #1a1a1a;
 }
 
-/* ฝั่งขวา (ข้อมูล) */
 .profile-main-info {
     flex: 1;
+    min-width: 0;
     padding: 50px;
     display: flex;
     flex-direction: column;
     gap: 30px;
     justify-content: center;
+    overflow: hidden;
 }
 
 .info-group {
@@ -113,6 +106,8 @@
     margin: 0;
     color: var(--text);
     font-weight: bold;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .user-email-text {
@@ -129,27 +124,25 @@
     margin: 0;
 }
 
-/* ============================================================
-   4. STATS SECTION (สถิติด้านล่าง)
-   ============================================================ */
+/* STATS SECTION */
 .user-stats-section {
     width: 100%;
     margin-top: 30px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); /* Grid ยืดหยุ่นตามที่คุณส่งมา */
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); 
     gap: 20px;
 }
 
-/* ใช้พื้นหลังแบบเดียวกับ Profile Card ให้เข้าเซ็ตกัน */
-.stat-card {
-    background: rgba(92, 76, 76, 0.03); 
+/* ใช้พื้นหลังแบบเดียวกับ Profile Card */
+.profile-page-container .stat-card {
+    background: rgba(92, 76, 76, 0.03);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
     border: 1px solid var(--border);
-    border-radius: 20px;
+    border-radius: 24px;
     padding: 25px;
     color: var(--text);
-    box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
 }
@@ -162,7 +155,7 @@
     font-weight: 600;
 }
 
-/* ตกแต่ง List ของ Favorite Partners */
+/*Favorite Partners */
 #partnersContainer {
     display: flex;
     flex-direction: column;
@@ -196,12 +189,15 @@
     border-radius: 50%;
     margin-right: 15px;
     object-fit: cover;
+    flex-shrink: 0;
 }
 
-/* ============================================================
-   5. MOBILE RESPONSIVENESS
-   ============================================================ */
+/* MOBILE RESPONSIVENESS*/
 @media (max-width: 768px) {
+    .profile-page-container {
+        margin: 0px auto;
+    }
+
     .profile-card {
         flex-direction: column;
     }

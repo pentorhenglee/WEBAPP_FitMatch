@@ -101,17 +101,17 @@ let wordIndex = 0;
 const logoContainer = document.getElementById('dynamic-logo');
 
 async function smoothChangeWord() {
-    // 1. Fade out current letters
+    //Fade out current letters
     const currentCols = logoContainer.querySelectorAll('.column');
     currentCols.forEach(col => {
         col.style.opacity = '0';
         col.style.transform = 'translateY(-10px)';
     });
 
-    // 2. Short pause for fade out to complete
+    //Short pause for fade out to complete
     await new Promise(resolve => setTimeout(resolve, 500));
 
-    // 3. Clear and Build new word
+    //Clear and Build new word
     logoContainer.innerHTML = '';
     const currentWord = words[wordIndex];
 
@@ -126,7 +126,7 @@ async function smoothChangeWord() {
         }
         logoContainer.appendChild(column);
 
-        // 4. Staggered Entrance (the "Smooth" part)
+        //Staggered Entrance (the "Smooth" part)
         setTimeout(() => {
             column.classList.add('active');
         }, index * 100); // 100ms delay between each letter

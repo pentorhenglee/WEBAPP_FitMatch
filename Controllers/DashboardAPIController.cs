@@ -18,11 +18,10 @@ namespace WEBAPP_FitMatch.Controllers
         [HttpGet("my-activities")]
         public async Task<IActionResult> GetMyActivities()
         {
-            // 1. เช็คว่าใครล็อกอินอยู่
             var userId = HttpContext.Session.GetInt32("user_id");
             if (userId == null) return Unauthorized(new { message = "กรุณาล็อกอิน" });
 
-            // 2. ดึงโพสต์ทั้งหมดที่เราเป็นสมาชิกอยู่ (รวมถึงโพสต์ที่เราเป็นคนสร้าง)
+            // pull all the post we're in (owner too)
             var myPosts = await _db.Posts
                 .Include(p => p.Members)
                 .Where(p => p.UserId == userId || p.Members.Any(m => m.UserId == userId))
@@ -34,25 +33,23 @@ namespace WEBAPP_FitMatch.Controllers
                     p.Location,
                     p.EventDateTime,
                     p.Status,
-                    p.SportType // ดึงประเภทกีฬามาด้วยเพื่อไปเปลี่ยนไอคอนที่หน้าเว็บ
+                    p.SportType,
+                    IsOwner = p.UserId == userId
                 })
                 .ToListAsync();
 
-            // DB เก็บเวลาไทย (ค่าจริงเป็น +7 แต่ Kind=Unspecified) → ต้องเทียบกับเวลาไทยเช่นกัน
+            // DB เก็บเวลาไทย (ค่าจริงเป็น +7 แต่ Kind=Unspecified)  ต้องเทียบกับเวลาไทยเช่นกัน
             var now = DateTime.UtcNow.AddHours(7);
 
-            // 3. คัดแยก Upcoming (เวลายังไม่ถึง และ สถานะยังไม่ปิด)
             var upcoming = myPosts
                 .Where(p => p.EventDateTime > now && p.Status.ToLower() != "closed" && p.Status.ToLower() != "close")
                 .ToList();
 
-            // 4. คัดแยก History (เวลาผ่านมาแล้ว หรือ สถานะถูกปิดไปแล้ว)
             var history = myPosts
                 .Where(p => p.EventDateTime <= now || p.Status.ToLower() == "closed" || p.Status.ToLower() == "close")
                 .OrderByDescending(p => p.EventDateTime) 
                 .ToList();
 
-            // 5. ส่งข้อมูล 2 ก้อนกลับไปให้ JavaScript ที่หน้าเว็บ
             return Ok(new { upcoming, history });
         }
 
@@ -64,20 +61,20 @@ namespace WEBAPP_FitMatch.Controllers
 
             var now = DateTime.UtcNow;
 
-            // --- เตรียมข้อมูล: ดึง PostId ทั้งหมดที่เราเคยเข้าร่วม ---
+            // ดึง PostId ทั้งหมดที่เราเคยเข้าร่วม
             var myJoinedPostIds = await _db.Members
                 .Where(m => m.UserId == userId.Value)
                 .Select(m => m.PostId)
                 .ToListAsync();
 
-            // 📊 1. Participated Rate (เดือนนี้)
+            //Participated Rate (เดือนนี้)
             var participatedCount = await _db.Posts
                 .Where(p => myJoinedPostIds.Contains(p.PostId) && 
                             p.EventDateTime.Month == now.Month && 
                             p.EventDateTime.Year == now.Year)
                 .CountAsync();
 
-            // 🥧 2. Activity Stats (แยกประเภทกีฬา)
+            //Activity Stats
             var activityStats = await _db.Posts
                 .Where(p => myJoinedPostIds.Contains(p.PostId))
                 .GroupBy(p => p.SportType)
@@ -87,7 +84,7 @@ namespace WEBAPP_FitMatch.Controllers
                 })
                 .ToListAsync();
 
-            // 📝 3. Mission Succeeded (ดึงจากตาราง Mission)
+            // Mission Succeeded (ดึงจากตาราง Mission)
             var missions = await _db.Missions
                 .Where(m => m.UserId == userId.Value)
                 .OrderByDescending(m => m.CreatedAt)
@@ -108,7 +105,7 @@ namespace WEBAPP_FitMatch.Controllers
                 .Select(p => p.PostId)
                 .ToListAsync();
 
-            // 🤝 4. Favorite Partners (เพื่อนที่เล่นด้วยบ่อยสุด 3 อันดับ)
+            // Top Partners (3 people)
             var topPartners = await _db.Members
                 .Where(m => eligiblePostIds.Contains(m.PostId) && m.UserId != userId.Value)
                 .GroupBy(m => m.UserId)
@@ -120,7 +117,6 @@ namespace WEBAPP_FitMatch.Controllers
                 })
                 .ToListAsync();
 
-            // ไปดึงชื่อและรูปโปรไฟล์ของเพื่อนมาประกอบร่าง
             var partnerDetails = new List<object>();
             foreach(var tp in topPartners)
             {
@@ -136,11 +132,10 @@ namespace WEBAPP_FitMatch.Controllers
                 }
             }
 
-            // 🚀 ส่งข้อมูลทั้ง 4 กล่องกลับไปให้หน้าเว็บรวดเดียวจบ!
             var daysInMonth = DateTime.DaysInMonth(now.Year, now.Month);
             return Ok(new {
                 participated = participatedCount,
-                targetParticipated = daysInMonth, // จำนวนวันในเดือนปัจจุบัน
+                targetParticipated = daysInMonth,
                 activityStats = activityStats,
                 missions = missions,
                 favoritePartners = partnerDetails
@@ -164,14 +159,12 @@ namespace WEBAPP_FitMatch.Controllers
                 .Select(m => m.PostId)
                 .ToListAsync();
 
-            // 📊 Participated Rate (เดือนนี้)
             var participatedCount = await _db.Posts
                 .Where(p => joinedPostIds.Contains(p.PostId) &&
                             p.EventDateTime.Month == now.Month &&
                             p.EventDateTime.Year == now.Year)
                 .CountAsync();
 
-            // 🥧 Activity Stats
             var activityStats = await _db.Posts
                 .Where(p => joinedPostIds.Contains(p.PostId))
                 .GroupBy(p => p.SportType)
@@ -181,7 +174,6 @@ namespace WEBAPP_FitMatch.Controllers
                 })
                 .ToListAsync();
 
-            // 🤝 Favorite Partners
             var eligiblePostIds = await _db.Posts
                 .Where(p => joinedPostIds.Contains(p.PostId) &&
                             (p.EventDateTime <= nowThai ||

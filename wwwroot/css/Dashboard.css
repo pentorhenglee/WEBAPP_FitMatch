@@ -1,6 +1,4 @@
-/* ============================================================
-   Layout หลักของ Dashboard
-   ============================================================ */
+/* Layout หลักของ Dashboard */
 .dashboard-container {
     display: flex;
     gap: 20px;
@@ -8,13 +6,10 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 20px;
-    /* 🌟 ล็อกความสูงสูงสุดไว้ที่หน้าจอ เพื่อให้ Scrollbar ทำงาน */
     height: calc(90vh - 80px); 
 }
 
-/* ============================================================
-   ฝั่งซ้าย: กล่อง Up Coming / History
-   ============================================================ */
+/* left panel */
 .dash-left-panel {
     width: 450px;
     background: rgba(255, 255, 255, 0.04);
@@ -33,7 +28,7 @@
     flex-grow: 1; 
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* 🌟 กันเนื้อหาล้น */
+    overflow: hidden;
 }
 
 /* ส่วนหัวและ Tabs */
@@ -42,7 +37,7 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    flex-shrink: 0; /* 🌟 ห้ามหด */
+    flex-shrink: 0;
     text-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
 }
 
@@ -54,12 +49,10 @@
 .dash-header h2 {
     font-size: 1.8rem;
     font-weight: bold;
-    color: #ffffff; /* 🌟 ปรับเป็นสีขาวสว่าง */
+    color: #ffffff; 
 }
 
-/* ============================================================
-   Sort Mockup (โชว์แค่ This Month)
-   ============================================================ */
+/* Sort Mockup (This Month) */
 .custom-sort-wrapper {
     text-shadow: none;
 }
@@ -82,19 +75,19 @@
     display: flex;
     align-items: center;
     user-select: none;
-    cursor: default; /* เปลี่ยนเคอร์เซอร์เป็นลูกศรปกติ เพราะไม่ได้ให้กดแล้ว */
+    cursor: default; 
 }
 
 .tabs {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
-    flex-shrink: 0; /* 🌟 ห้ามหด */
+    flex-shrink: 0;
 }
 
 .tab-btn {
     background-color: transparent;
-    color: var(--text-muted); /* สีเทาสำหรับแท็บที่ไม่ได้เลือก */
+    color: var(--text-muted);
     border: 1px solid var(--border);
     padding: 8px 20px;
     border-radius: 20px;
@@ -110,16 +103,14 @@
     border-color: rgba(255, 255, 255, 0.2);
 }
 
-/* ============================================================
-   การ์ดกิจกรรม (Event Card)
-   ============================================================ */
+/* Event Card*/
 .tab-content {
     display: none; 
 }
 .tab-content.active {
     display: block; 
-    flex-grow: 1; /* 🌟 ให้กินพื้นที่ที่เหลือ */
-    overflow-y: auto; /* 🌟 ถ้าการ์ดเยอะให้ไถ Scrollbar ได้ */
+    flex-grow: 1;
+    overflow-y: auto;
     padding-right: 5px;
 }
 
@@ -163,12 +154,12 @@
 }
 .event-time {
     font-size: 0.75rem;
-    color: #aaaaaa; /* เวลาเป็นสีเทา */
+    color: #aaaaaa; 
     margin-bottom: 5px;
 }
 .event-desc {
     font-size: 0.7rem;
-    color: #888888; /* คำอธิบายเป็นสีเทา */
+    color: #888888;
     line-height: 1.2;
 }
 
@@ -177,9 +168,7 @@
     font-size: 1rem;
 }
 
-/* ============================================================
-   Right Panel Stats (Dashboard)
-   ============================================================ */
+/* Right Panel (Dashboard)*/
 .stats-grid {
     display: grid;
     grid-template-columns: 1fr 1fr; 
@@ -206,7 +195,7 @@
 .stat-card h3 {
     margin-top: 0;
     font-size: 1rem;
-    color: #ffffff; /* 🌟 หัวข้อกล่องสถิติเป็นสีขาว */
+    color: #ffffff;
     margin-bottom: 15px;
     font-weight: 500;
     flex-shrink: 0; 
@@ -235,13 +224,13 @@
     font-size: 3rem;
     font-weight: bold;
     text-align: center;
-    color: #ffffff; /* 🌟 ตัวเลขหลักเป็นสีขาว */
+    color: #ffffff;
 }
 
 .stat-sub-val {
     text-align: right;
     font-size: 0.8rem;
-    color: #aaaaaa; /* 🌟 ตัวเลขเป้าหมาย (รอง) เป็นสีเทา */
+    color: #aaaaaa;
 }
 
 .stat-header-flex {
@@ -272,6 +261,7 @@
     border-radius: 12px;
     color: #ffffff;
     font-size: 0.9rem;
+    word-break: break-all;
 }
 
 .partner-item:last-child {
@@ -284,6 +274,29 @@
     border-radius: 50%;
     margin-right: 15px;
     object-fit: cover;
+    flex-shrink: 0;
+}
+
+.partner-info {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.partner-name {
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.partner-chevron {
+    flex-shrink: 0;
+    margin-left: 10px;
+    color: #888;
+    font-size: 0.75rem;
 }
 
 .mission-item {
@@ -312,70 +325,65 @@
     padding: 20px 0;
 }
 
-/* ============================================================
-   Responsive Design (Portrait Viewport / Mobile & Tablet)
-   ============================================================ */
+/*  Responsive Design (Portrait Viewport / Mobile & Tablet) */
 
-/* สำหรับหน้าจอขนาดแท็บเล็ตแนวตั้ง (Portrait) และหน้าจอที่เล็กลงไป */
 @media screen and (max-width: 1024px) {
     .dashboard-container {
-        flex-direction: column; /* จับซ้ายขวา มาเรียงซ้อนบนล่าง */
-        height: auto; /* ปลดล็อกความสูงที่เคยล็อกไว้ เพื่อให้หน้าเว็บ Scroll ลงไปได้ */
+        flex-direction: column; 
+        height: auto; 
         min-height: var(--page-content-min-h, calc(100vh - 80px));
     }
 
     .dash-left-panel {
-        width: 100%; /* ขยายซ้ายมือให้เต็มจอ */
-        height: 50vh; /* ล็อกความสูงไว้ครึ่งจอ เพื่อให้ List กิจกรรมยัง Scroll ในกล่องตัวเองได้ */
+        width: 100%; 
+        height: 50vh; 
         min-height: 400px;
         flex-shrink: 0;
     }
 
     .dash-right-panel {
-        overflow: visible; /* ปลดล็อกกันเนื้อหาล้น */
+        overflow: visible; 
     }
 
     .stats-grid {
-        grid-template-columns: 1fr; /* เปลี่ยนสถิติ 2 คอลัมน์ ให้เหลือ 1 คอลัมน์ */
-        grid-template-rows: auto; /* ปลดล็อกความสูงแถวที่เคยตั้งไว้ 250px */
+        grid-template-columns: 1fr; 
+        grid-template-rows: auto;
         gap: 20px;
     }
 
     .stat-card {
-        min-height: 230px; /* กำหนดความสูงขั้นต่ำให้กล่องไม่แบนเกินไป */
+        min-height: 230px;
     }
 
-    /* ล็อกความสูงให้กล่อง Mission กับ Partners บนมือถือ เพื่อไม่ให้ยาวทะลุจอและยัง Scroll ในกล่องได้ */
     #partnersContainer, #missionsContainer {
         max-height: 280px; 
     }
 }
 
-/* สำหรับจอมือถือขนาดเล็กมาก (Mobile Portrait) */
 @media screen and (max-width: 480px) {
     .dashboard-container {
-        padding: 10px; /* ลดขอบหน้าจอลง เพื่อให้มีพื้นที่เนื้อหามากขึ้น */
+        padding: 10px;
     }
 
     .dash-left-panel, .stat-card {
-        padding: 20px; /* ลด Padding ในกล่องลงให้ประหยัดที่ */
-        border-radius: 16px; /* ปรับขอบมนให้เล็กลงสมส่วนกับจอมือถือ */
+        padding: 20px;
+        border-radius: 16px;
     }
 
     .dash-header h2 {
-        font-size: 1.5rem; /* ลดขนาดหัวข้อ */
+        font-size: 1.5rem;
     }
 
     .stat-main-val {
-        font-size: 2.5rem; /* ลดขนาดตัวเลขสถิติ */
+        font-size: 2.5rem;
     }
 
     .partner-item {
-        padding: 15px; /* ลดขนาดกล่องรายชื่อเพื่อน */
+        padding: 15px;
     }
     
     .tabs {
-        flex-wrap: wrap; /* ถ้าจอเล็กมาให้ปุ่ม Tab ปัดตกบรรทัดใหม่ได้ */
+        flex-wrap: wrap;
     }
 }
 

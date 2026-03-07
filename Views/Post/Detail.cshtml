@@ -84,7 +84,7 @@
                 </div>
                 <div class="form-field">
                     <label>Event Date/Time</label>
-                    <input type="datetime-local" id="editDateTime"/>
+                    <input type="datetime-local" id="editDateTime" />
                 </div>
                 <div class="form-field">
                     <label>Sport Type</label>
@@ -186,9 +186,7 @@
                 const participantsDiv = document.getElementById('displayParticipants');
                 participantsDiv.innerHTML = `<span style="color:#aaa; font-size:0.9rem;">Participants:</span> <span style="font-weight:bold; cursor:pointer; margin-left:10px; color:var(--accent);" onclick="openParticipantsModal()"><i class="fa-solid fa-users" style="margin-right:5px;"></i> ${currentPeopleCount} / ${data.maxPeople}</span>`;
 
-                // ==========================================
-                // ลอจิกปุ่ม 
-                // ==========================================
+                // login btn
                 const isOwner = data.ownerId === data.currentUserId;
                 const isAlreadyJoined = data.members.some(m => m.userId === data.currentUserId);
                 const isFull = currentPeopleCount >= data.maxPeople;
@@ -233,7 +231,6 @@
                     }
                 }
 
-                // ดึงแชทมาแสดงด้วย
                 renderChats();
 
             } catch (error) { 
@@ -242,9 +239,7 @@
             }
         }
 
-        // ==========================================
-        // 2. ฟังก์ชัน API สำหรับปุ่มต่างๆ
-        // ==========================================
+        //API logic btn
         async function joinPost() {
             const btn = document.getElementById('btnJoin');
             btn.innerText = "JOINING...";
@@ -303,7 +298,10 @@
             document.getElementById('editLocation').value = globalPostData.location;
             
             // Format datetime to local datetime format YYYY-MM-DDThh:mm
-            // eventDateTime จาก DB ไม่มี timezone suffix → slice ตรงๆ ได้เลย
+            // eventDateTime จาก DB ไม่มี timezone suffix slice ตรงๆ ได้เลย
+            // Set min to now so user cannot pick a past datetime
+            const nowLocal = new Date(new Date() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+            document.getElementById('editDateTime').min = nowLocal;
             document.getElementById('editDateTime').value = globalPostData.eventDateTime.slice(0, 16);
             
             document.getElementById('editSportType').value = globalPostData.sportType;
@@ -326,6 +324,11 @@
             const maxPeople = parseInt(document.getElementById('editMaxPeople').value);
             if (maxPeople < currentCount) {
                 alert(`Cannot set max people below current participant count (${currentCount}).`);
+                return;
+            }
+            const editDateTimeVal = document.getElementById('editDateTime').value;
+            if (new Date(editDateTimeVal) <= new Date()) {
+                alert('Please select a date and time in the future.');
                 return;
             }
             const dto = {
@@ -382,9 +385,7 @@
             } catch (error) { console.error("Error:", error); }
         }
 
-        // ==========================================
-        // 3. ระบบ Chat
-        // ==========================================
+        // chat render
         function renderChats() {
             const chatContainer = document.getElementById('chatHistoryContainer');
             if (!globalPostData || !globalPostData.comments || globalPostData.comments.length === 0) {
@@ -417,7 +418,6 @@
                     </div>
                 `;
             });
-            // เลื่อนลงไปล่างสุดเสมอเมื่อมีข้อความใหม่
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
@@ -435,7 +435,7 @@
 
                 if (response.ok) {
                     input.value = ""; 
-                    await fetchPostDetail(); // โหลดข้อมูลใหม่เพื่อดึงแชท
+                    await fetchPostDetail();
                 } else {
                     alert("Failed to send message.");
                 }
@@ -446,9 +446,7 @@
 
         function handleEnterKey(e) { if (e.key === 'Enter') sendChatMessage(); }
 
-        // ==========================================
-        // 4. Modal รายชื่อคน
-        // ==========================================
+        //modal people
         function openParticipantsModal() {
             document.getElementById('participantsModal').style.display = 'flex';
             renderParticipants(); 
@@ -492,9 +490,6 @@
             });
         }
 
-        // ==========================================
-        // Initialize
-        // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
             fetchPostDetail();
         });
