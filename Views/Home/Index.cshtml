@@ -77,7 +77,7 @@
         </div>
     </div>
 
-    <div class="fixes-top-section">
+    <div class="fixed-top-section">
         <div class="welcome-message">
             <h1>Find Your Fitness <span>Community</span></h1>
         </div>
@@ -370,17 +370,7 @@
         items.classList.toggle('show');
         container.classList.toggle('show-overlay'); 
     });
-
-    document.addEventListener('click', function(e) { //ปุ่มปิดหน้า mission เมื่อกดตรงไหนก้ได้ในหน้าเว็บ
-        const items = document.getElementById('mobileMissionItems');
-        const container = document.querySelector('.mission-menu-container');
-        
-        if (items.classList.contains('show') && !items.contains(e.target)) {
-            items.classList.remove('show');
-            container.classList.remove('show-overlay');
-        }
-    });
-
+    
     document.getElementById('statusToggle').addEventListener('change', function() { //toggle close or open
         const isChecked = this.checked;
         const targetStatus = isChecked ? 'close' : 'open';
