@@ -559,7 +559,7 @@
     .modal-content { border-radius: 16px; max-height: 88vh; max-width: 100%; }
 }
 
-/* ── Search Location button in modals ───────────────────── */
+/* Search Location button in modals */
 .btn-search-location-modal {
     background: #2ecc71;
     color: #000;

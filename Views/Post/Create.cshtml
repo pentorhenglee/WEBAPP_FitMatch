@@ -100,11 +100,11 @@
 
 @section Scripts {
     <script>
-        // ── Set minimum date ──────────────────────────────────────────────
+        //Set minimum date
         const todayStr = new Date().toISOString().split('T')[0];
         document.getElementById('postDate').min = todayStr;
 
-        // ── Geocode: Nominatim ────────────────────────────────────────────
+        //Geocode: Nominatim
         document.getElementById('btnSearchLocation').addEventListener('click', async function () {
             const query = document.getElementById('postLocation').value.trim();
             if (!query) { alert('Please fill the Location first!'); return; }

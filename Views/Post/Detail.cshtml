@@ -561,7 +561,7 @@
             fetchPostDetail();
         });
 
-        // ── Weather helpers ───────────────────────────────────────────────
+        // Weather helpers
         async function fetchDetailWeather(lat, lon, dateStr) {
             try {
                 const url = `https://api.open-meteo.com/v1/forecast` +
@@ -613,7 +613,7 @@
             return 'Unknown';
         }
 
-        // ── Edit modal geocode ────────────────────────────────────────────
+        // Edit modal geocode 
         document.getElementById('btnEditSearchLocation').addEventListener('click', async function () {
             const query = document.getElementById('editLocation').value.trim();
             if (!query) { alert('Please fill in a location first'); return; }
@@ -633,7 +633,7 @@
                 const lon = parseFloat(data[0].lon);
                 document.getElementById('editLat').value = lat;
                 document.getElementById('editLon').value = lon;
-                statusEl.textContent = `\u2713 ${data[0].display_name}`;
+                statusEl.textContent = `Found: ${data[0].display_name}`;
 
                 const editMapIframe  = document.getElementById('editMapIframe');
                 const editMapSection = document.getElementById('editMapSection');
