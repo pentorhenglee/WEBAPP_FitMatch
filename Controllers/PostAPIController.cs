@@ -97,7 +97,9 @@ namespace WEBAPP_FitMatch.Controllers
                 UserId = user_id.Value,
                 Location = dto.Location,
                 ImageUrl = dto.ImageUrl,
-                Status = "open"
+                Status = "open",
+                Lat = dto.Lat,
+                Lon = dto.Lon
             };
 
 
@@ -319,7 +321,9 @@ namespace WEBAPP_FitMatch.Controllers
                     p.MaxPeople,
                     p.ImageUrl,
                     p.Status,
-                    
+                    p.Lat,
+                    p.Lon,
+
                     // ดึง Members มาด้วย จะได้เอาไป .length นับจำนวนคน และโชว์รายชื่อได้
                     Members = p.Members.Join(_db.Users, 
                         m => m.UserId, 
@@ -370,6 +374,8 @@ namespace WEBAPP_FitMatch.Controllers
             post.SportType = dto.SportType ?? "";
             post.MaxPeople = dto.MaxPeople;
             post.ImageUrl = dto.ImageUrl;
+            post.Lat = dto.Lat;
+            post.Lon = dto.Lon;
 
             try
             {
