@@ -183,7 +183,7 @@
 .post-details::-webkit-scrollbar { width: 6px; }
 .post-details::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
 
-.post-details h2 { margin: 0; font-size: 2.5rem; color: #ffffff; }
+.post-details h2 { margin: 0; font-size: 2.5rem; color: #ffffff; word-break: break-word; overflow-wrap: break-word; }
 .post-meta { font-size: 0.95rem; color: #aaaaaa; margin: 0; display:flex; gap: 15px; align-items: center; flex-wrap: wrap;}
 .post-meta i { color: var(--accent); }
 .post-desc {
@@ -327,19 +327,20 @@
     .owner-actions-container {
         width: 100%;
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-    }
-
-    /* CLOSE button spans full width on its own row */
-    .owner-actions-container .btn-close {
-        grid-column: 1 / -1;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        min-width: 0;
     }
 
     .owner-actions-container button { 
         border-radius: 15px;
-        padding: 15px;
+        padding: 12px 6px;
+        font-size: 0.8rem;
         width: 100%;
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 
