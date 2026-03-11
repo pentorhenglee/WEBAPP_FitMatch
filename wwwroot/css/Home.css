@@ -1,9 +1,12 @@
 body {
     font-family: 'Segoe UI';
     background: radial-gradient(circle at top left, #0f2027, #000000 60%);
+    background-attachment: fixed;
     margin: 0;
+    min-height: 100vh;
 }
 
+/* ซ่อนเมนูมือถือในหน้า Desktop */
 .mobile-menu-container,
 .mission-menu-container {
     display: none;
@@ -27,14 +30,7 @@ body {
     transition: margin-left 0.4s ease, margin-right 0.4s ease;
 }
 
-@media (max-width: 768px) {
-    .main-content {
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-        transition: none;
-    }
-}
-
+/* ข้อความหัว Home Page */
 .welcome-message h1 {
     text-align: center;
     font-size: 44px;
@@ -46,28 +42,19 @@ body {
         0 0 30px rgba(255, 255, 255, 0.1);
 }
 
+/* สี highlight ของคำบางคำ */
 .welcome-message h1 span {
     color: #2ecc71;
     text-shadow: 0 0 8px rgba(46, 204, 113, 0.4);
 }
 
-@media (max-width: 768px) {
-    .welcome-message {
-        padding: 5px;
-        text-align: center;
-    }
-
-    .welcome-message h1 {
-        font-size: 24px;
-        margin-bottom: 10px;
-    }
-}
-
+/* ส่วนค้นหาโพสต์ */
 .welcome-message span {
     color: #2ecc71;
     text-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
 }
 
+/* --- 2. Search & Filter Bar --- */
 .search-container {
     display: flex;
     justify-content: center;
@@ -77,13 +64,6 @@ body {
     box-sizing: border-box;
 }
 
-@media (min-width: 992px) {
-    .search-container {
-        margin-top: 30px;
-    }
-}
-
-
 .search-bar {
     display: flex;
     align-items: center;
@@ -92,12 +72,9 @@ body {
     border-radius: 25px;
     padding: 5px 15px;
     flex-grow: 1;
-    /* ให้ช่องค้นหาขยายพื้นที่ให้มากที่สุดเท่าที่จะทำได้ */
     max-width: 600px;
-    /* แต่บนจอคอมห้ามเกินนี้ */
     backdrop-filter: blur(5px);
 }
-
 
 .search-bar input {
     background: transparent;
@@ -111,10 +88,12 @@ body {
     letter-spacing: 1px;
 }
 
+/* placeholder text */
 .search-bar input::placeholder {
     color: rgba(255, 255, 255, 0.4);
 }
 
+/* ปุ่ม search icon */
 .search-bar button {
     background: transparent;
     border: none;
@@ -123,38 +102,7 @@ body {
     font-size: 16px;
 }
 
-@media (max-width: 768px) {
-
-    /* โค้ดอื่นๆ ที่มีอยู่เดิม... */
-
-    .search-bar input {
-        background: transparent;
-        border: none;
-        color: white;
-        padding: 8px;
-        width: 100%;
-        outline: none;
-        font-size: 11px;
-        /* ลดขนาดฟอนต์บนมือถือลงนิดหน่อย */
-    }
-
-    .search-bar button {
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        font-size: 12px;
-        white-space: nowrap;
-        padding-left: 5px;
-    }
-
-    /* เพิ่มเติม: ปรับให้ช่อง Search กว้างขึ้นเต็มพื้นที่บนมือถือ */
-    .search-bar {
-        width: 100%;
-        flex-grow: 1;
-    }
-}
-
-/* สไตล์สำหรับ Toggle Switch */
+/* กล่องที่ครอบสวิตช์เปิด/ปิดสถานะโพสต์ */
 .status-toggle-container {
     display: flex;
     align-items: center;
@@ -162,6 +110,7 @@ body {
     margin-left: 10px;
 }
 
+/* กล่องหลัก */
 .switch {
     position: relative;
     display: inline-block;
@@ -175,6 +124,7 @@ body {
     height: 0;
 }
 
+/* ปุ่มวงกลมที่เลื่อนซ้ายขวา */
 .slider {
     position: absolute;
     cursor: pointer;
@@ -203,19 +153,18 @@ body {
     z-index: 2;
 }
 
-/* input:checked+.slider {
-    background-color: rgba(231, 76, 60, 0.2);
-    border-color: #e74c3c;
-} */
-
+/* เมื่อ toggle เปิด */
 input:checked+.slider:before {
     transform: translateX(40px);
+    /* เลื่อนวงกลมไปด้านขวา */
 }
 
+/* ทำให้ slider เป็นรูปวงรี */
 .slider.round {
     border-radius: 34px;
 }
 
+/* ทำให้ปุ่ม slider เป็นวงกลม */
 .slider.round:before {
     border-radius: 50%;
 }
@@ -230,14 +179,7 @@ input:checked+.slider:before {
     font-size: 16px;
 }
 
-.status-text {
-    color: #2ecc71;
-    font-weight: 800;
-    font-size: 16px;
-    letter-spacing: 1px;
-    width: 50px;
-}
-
+/* ปุ่ม + สำหรับสร้างโพสต์ */
 .post-button {
     position: fixed;
     bottom: 40px;
@@ -245,7 +187,6 @@ input:checked+.slider:before {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    /* 1. ปรับให้โปร่งใสแบบกระจก (Glassmorphism) */
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -258,11 +199,9 @@ input:checked+.slider:before {
     z-index: 999;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     transition: all 0.2s ease;
-    /* ปรับให้ Transition ครอบคลุมทุกค่า */
     outline: none;
 }
 
-/* 2. เอฟเฟกต์ตอนเอาเมาส์ไปชี้ (Hover) - ให้ชัดขึ้นเล็กน้อย */
 .post-button:hover {
     transform: scale(1.1);
     background: rgba(255, 255, 255, 0.2);
@@ -270,7 +209,6 @@ input:checked+.slider:before {
     color: #2ecc71
 }
 
-/* 3. เอฟเฟกต์ตอนคลิก (Active) - เปลี่ยนเป็นสีเขียวตามที่ต้องการ */
 .post-button:active {
     transform: scale(0.95);
     background-color: #2ecc71 !important;
@@ -374,7 +312,6 @@ input:checked+.slider:before {
 .category-sidebar {
     position: fixed;
     top: 50%;
-    left: 0;
     width: 60px;
     height: auto;
     max-height: 60vh;
@@ -388,16 +325,34 @@ input:checked+.slider:before {
     backdrop-filter: blur(15px);
     overflow: hidden;
     display: flex;
-    flex-direction: column;
+}
+
+.category-sidebar {
+    left: 0;
+    border-radius: 0 20px 20px 0;
+}
+
+.mission-sidebar {
+    right: 0;
+    border-radius: 20px 0 0 20px;
+}
+
+.category-sidebar:hover,
+.mission-sidebar:hover {
+    background: rgba(20, 20, 20, 0.98);
+    box-shadow: -10px 0 35px rgba(46, 204, 113, 0.15);
 }
 
 .category-sidebar:hover {
     width: 200px;
     padding: 10px 0;
-    background: rgba(20, 20, 20, 0.98);
-    box-shadow: -10px 0 35px rgba(46, 204, 113, 0.15);
 }
 
+.mission-sidebar:hover {
+    width: 380px;
+}
+
+/* กล่องครอบรายการหมวดหมู่ทั้งหมด */
 .category-items-wrapper {
     min-width: 60px;
     display: flex;
@@ -405,6 +360,7 @@ input:checked+.slider:before {
     width: 100%;
 }
 
+/* item ของหมวดหมู่ */
 .category-item {
     display: flex;
     align-items: center;
@@ -417,6 +373,7 @@ input:checked+.slider:before {
     background: transparent !important;
 }
 
+/* icon ของ category */
 .category-item i {
     width: 60px;
     margin-left: -4px;
@@ -428,6 +385,7 @@ input:checked+.slider:before {
     color: inherit;
 }
 
+/* text label ของ category */
 .category-label {
     font-weight: 800;
     font-size: 16px;
@@ -440,6 +398,7 @@ input:checked+.slider:before {
     color: rgba(255, 255, 255, 0.6);
 }
 
+/* เมื่อ hover sidebar label จะแสดง */
 .category-sidebar:hover .category-label {
     opacity: 1;
 }
@@ -466,7 +425,130 @@ input:checked+.slider:before {
     margin-left: 220px;
 }
 
-/* จัดกลุ่ม Card ให้เรียงเป็นแถวละ 3 ตัว (Responsive) */
+.mission-text-container {
+    min-width: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 20px 0;
+    background: rgba(0, 0, 0, 0.2);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.mission-text-container span {
+    color: rgba(255, 255, 255, 0.4);
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.mission-sidebar:hover .mission-text-container span {
+    color: #2ecc71;
+    text-shadow: 0 0 8px rgba(46, 204, 113, 0.4);
+}
+
+/* container ของ mission */
+.mission-content-hover {
+    opacity: 0;
+    /* ซ่อนก่อน */
+    visibility: hidden;
+    transition: all 0.4s ease;
+    width: 100%;
+    padding: 25px 20px 20px 15px;
+    transform: translateX(20px);
+    overflow-y: auto;
+}
+
+/* แสดง mission เมื่อ hover sidebar */
+.mission-sidebar:hover .mission-content-hover {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+.mission-content-hover::before {
+    content: "YOUR MISSIONS";
+    display: block;
+    color: #2ecc71;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(46, 204, 113, 0.3);
+}
+
+.mission-item {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 12px 15px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    transition: all 0.3s ease;
+}
+
+.mission-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(46, 204, 113, 0.4);
+    transform: translateX(-4px);
+}
+
+.mission-item input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.mission-item input[type="checkbox"]:checked {
+    background: #2ecc71;
+    border-color: #2ecc71;
+    box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+}
+
+.mission-item input[type="checkbox"]:checked::after {
+    content: '\f00c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    color: white;
+    font-size: 13px;
+    left: 4px;
+    top: 3.5px;
+}
+
+.mission-item label {
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1.4;
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+.mission-item input[type="checkbox"]:checked+label {
+    color: rgba(255, 255, 255, 0.3);
+    text-decoration: line-through;
+}
+
+.mission-sidebar:hover~.main-content {
+    margin-right: 400px;
+}
+
 .posts-display {
     display: grid;
     grid-template-columns: repeat(1, 1fr);
@@ -475,14 +557,6 @@ input:checked+.slider:before {
     width: 100%;
     margin: 0 auto;
     margin-top: 15px;
-}
-
-@media (min-width: 992px) {
-    .posts-display {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 40px;
-        margin-top: 30px;
-    }
 }
 
 .post-card {
@@ -501,6 +575,7 @@ input:checked+.slider:before {
     border-color: rgba(46, 204, 113, 0.3);
 }
 
+/* ภาพของโพสต์ */
 .card-image {
     position: relative;
     height: 250px;
@@ -508,26 +583,14 @@ input:checked+.slider:before {
     overflow: hidden;
 }
 
-@media (max-width: 768px) {
-    .post-card {
-        margin: 0 5px;
-    }
-
-    .card-image {
-        height: 140px;
-    }
-
-    .post-location {
-        font-size: 13px !important;
-    }
-}
-
+/* ทำให้ภาพเต็ม container */
 .card-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
+/* icon กีฬาบนรูป */
 .sport-icon-badge {
     position: absolute;
     top: 12px;
@@ -554,12 +617,6 @@ input:checked+.slider:before {
     margin-top: 10px;
 }
 
-@media (min-width: 997px) {
-    .post-title {
-        font-size: 20px;
-    }
-}
-
 .card-content {
     padding: 10px 20px 20px 20px;
     color: white;
@@ -582,7 +639,6 @@ input:checked+.slider:before {
 
 .post-location {
     font-size: 16px;
-    /* font-weight: bold; */
     padding-bottom: 5px;
     margin-bottom: 10px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.5);
@@ -602,15 +658,6 @@ input:checked+.slider:before {
     margin: 2px 0;
 }
 
-@media (min-width: 997px) {
-
-    .post-date,
-    .post-time {
-        font-size: 16px !important;
-    }
-}
-
-
 .post-description {
     font-size: 14px;
     color: #ccc;
@@ -622,12 +669,6 @@ input:checked+.slider:before {
     letter-spacing: 0.2px;
 }
 
-@media (max-width: 768px) {
-    .post-description {
-        font-size: 12px;
-    }
-}
-
 .post-card.post-closed {
     filter: grayscale(100%);
     opacity: 0.7;
@@ -635,14 +676,13 @@ input:checked+.slider:before {
     pointer-events: auto;
 }
 
-/* ป้องกันไม่ให้มี Effect การขยายตัวเมื่อเอาเมาส์ไปวางบนการ์ดที่ปิดแล้ว */
+/* สไตล์โพสต์ที่ปิดรับแล้ว */
 .post-card.post-closed:hover {
     transform: none !important;
     box-shadow: none !important;
     border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
-/* ส่วนท้ายของการ์ด (จำนวนคน) */
 .card-footer-info {
     display: flex;
     justify-content: flex-end;
@@ -665,19 +705,6 @@ input:checked+.slider:before {
     margin-right: 5px;
 }
 
-@media (max-width: 768px) {
-    .people-count {
-        font-size: 13px;
-        padding: 2px 8px;
-        border-radius: 8px;
-    }
-
-    .card-footer-info {
-        margin-top: 10px;
-        padding-top: 10px;
-    }
-}
-
 .no-post {
     grid-column: 1 / -1;
     display: flex;
@@ -689,181 +716,144 @@ input:checked+.slider:before {
     width: 100%;
 }
 
-.mission-sidebar {
-    position: fixed;
-    top: 50%;
-    right: 0;
-    width: 60px;
-    height: auto;
-    max-height: 55vh;
-    transform: translateY(-50%);
-    background: rgba(26, 26, 26, 0.95);
-    z-index: 100;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
-    border-radius: 20px 0 0 20px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(15px);
-    overflow: hidden;
-    display: flex;
-    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.5);
-}
-
-/* เมื่อ Hover ให้กางออกกว้างพอสำหรับอ่าน Mission */
-.mission-sidebar:hover {
-    width: 380px;
-    background: rgba(20, 20, 20, 0.98);
-    box-shadow: -10px 0 35px rgba(46, 204, 113, 0.15);
-    /* แสงสีเขียวอ่อนๆ สะท้อน */
-}
-
-/* จัดการส่วนตัวอักษรแนวตั้งแบบพรีเมียม */
-.mission-text-container {
-    min-width: 60px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    /* ล็อกช่องว่างให้ดูแน่นและสม่ำเสมอ */
-    padding: 20px 0;
-    background: rgba(0, 0, 0, 0.2);
-    /* ทำแถบฝั่งตัวอักษรให้เข้มขึ้นเพื่อแบ่งโซนเด่นชัด */
-    border-right: 1px solid rgba(255, 255, 255, 0.05);
-    /* เส้นคั่นบางๆ สบายตา */
-}
-
-.mission-text-container span {
-    color: rgba(255, 255, 255, 0.4);
-    font-weight: 800;
-    font-size: 15px;
-    letter-spacing: 1px;
-    transition: all 0.3s ease;
-}
-
-/* เมื่อขยาย Sidebar ตัวอักษรจะสว่างเป็นสีเขียว */
-.mission-sidebar:hover .mission-text-container span {
-    color: #2ecc71;
-    text-shadow: 0 0 8px rgba(46, 204, 113, 0.4);
-}
-
-/* ส่วนเนื้อหาภารกิจที่ซ่อนไว้ */
-.mission-content-hover {
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.4s ease;
-    width: 100%;
-    padding: 25px 20px 20px 15px;
-    transform: translateX(20px);
-    overflow-y: auto;
-}
-
-.mission-sidebar:hover .mission-content-hover {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(0);
-}
-
-/* เพิ่มหัวข้อด้านบนด้วย CSS สวยๆ */
-.mission-content-hover::before {
-    content: "YOUR MISSIONS";
-    display: block;
-    color: #2ecc71;
-    font-size: 16px;
-    font-weight: 800;
-    letter-spacing: 1px;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid rgba(46, 204, 113, 0.3);
-}
-
-/* ปรับ Mission Item เป็นการ์ดที่ดูโมเดิร์น */
-.mission-item {
-    background: rgba(255, 255, 255, 0.03);
-    padding: 12px 15px;
-    margin-bottom: 12px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.03);
-    transition: all 0.3s ease;
-}
-
-.mission-item:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(46, 204, 113, 0.4);
-    /* ขอบสีเขียวอ่อนตอนชี้ */
-    transform: translateX(-4px);
-    /* เมื่อ Hover ให้กล่องมันเด้งมาทางซ้ายนิดหน่อย */
-}
-
-/* เลือกใช้วงกลมแทนสี่เหลี่ยมเพื่อความสวยงาม */
-.mission-item input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 24px;
-    height: 24px;
-    background: transparent;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    /* วงกลม */
-    cursor: pointer;
-    position: relative;
-    transition: all 0.3s ease;
-    flex-shrink: 0;
-}
-
-/* เมื่อติ๊กถูก เปลี่ยนเป็นพื้นเขียวและขอบเขียว + เรืองแสง */
-.mission-item input[type="checkbox"]:checked {
-    background: #2ecc71;
-    border-color: #2ecc71;
-    box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
-}
-
-/* ใส่เครื่องหมายถูกแบบพอดีตัว */
-.mission-item input[type="checkbox"]:checked::after {
-    content: '\f00c';
-    font-family: 'Font Awesome 6 Free';
-    font-weight: 900;
-    position: absolute;
-    color: white;
-    font-size: 13px;
-    left: 4px;
-    top: 3.5px;
-}
-
-/* ปรับฟอนต์ข้อความใน Mission ให้อ่านง่าย */
-.mission-item label {
-    color: rgba(255, 255, 255, 0.85);
-    font-weight: 500;
-    cursor: pointer;
-    font-size: 16px;
-    line-height: 1.4;
-    transition: all 0.3s ease;
-    user-select: none;
-}
-
-/* เมื่อทำภารกิจสำเร็จตัวหนังสือจะขีดฆ่าและจางลงแบบเท่ๆ */
-.mission-item input[type="checkbox"]:checked+label {
-    color: rgba(255, 255, 255, 0.3);
-    text-decoration: line-through;
-}
-
-.mission-sidebar:hover~.main-content {
-    margin-right: 400px;
-}
-
 @media (max-width: 768px) {
+    .main-content {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        transition: none;
+    }
 
-    /* ซ่อน Sidebar Mission เดิม */
+    .welcome-message {
+        padding: 5px;
+        text-align: center;
+    }
+
+    .welcome-message h1 {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    .search-bar input {
+        padding: 8px;
+        font-size: 11px;
+    }
+
+    .search-bar button {
+        font-size: 12px;
+        white-space: nowrap;
+        padding-left: 5px;
+    }
+
+    .search-bar {
+        width: 100%;
+        /* flex-grow: 1; */
+    }
+
+    .post-button {
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+    }
+
+    .mobile-menu-container,
+    .mission-menu-container {
+        display: block;
+        position: fixed;
+        top: 50% !important;
+        z-index: 9999;
+    }
+
+    .mobile-menu-container {
+        left: 0;
+    }
+
+    .mission-menu-container {
+        right: 0;
+    }
+
+    .mobile-menu-trigger,
+    .mission-menu-trigger {
+        width: 25px;
+        height: 10vh !important;
+        background: rgba(46, 204, 113, 0.2) !important;
+        backdrop-filter: blur(10px);
+        border: 0px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: 0 15px 15px 0;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mobile-menu-items {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        margin-top: 5px;
+        max-height: 0;
+        overflow: auto;
+        transition: max-height 0.4s ease-in-out;
+    }
+
+    .mobile-menu-items.show {
+        max-height: 70vh;
+    }
+
+    .m-item {
+        width: 40px;
+        height: 45px;
+        background: rgba(26, 26, 26, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0 10px 10px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(10px);
+        margin-bottom: 2px;
+        transition: width 0.2s;
+    }
+
+    .m-item.active {
+        width: 7vh !important;
+        background: rgba(46, 204, 113, 0.4) !important;
+        color: white;
+        border-left: none;
+    }
+
+    .category-sidebar,
     .mission-sidebar {
         display: none !important;
     }
 
-    .mission-menu-items {
-        position: relative;
-        /* เพื่อให้ปุ่มปิดอ้างอิงตำแหน่งได้ถูกต้อง */
+    .post-card {
+        margin: 0 5px;
+    }
+
+    .card-image {
+        height: 140px;
+    }
+
+    .post-location {
+        font-size: 13px !important;
+    }
+
+    .post-description {
+        font-size: 12px;
+    }
+
+    .people-count {
+        font-size: 13px;
+        padding: 2px 8px;
+        border-radius: 8px;
+    }
+
+    .card-footer-info {
+        margin-top: 10px;
+        padding-top: 10px;
     }
 
     .close-mission-btn {
@@ -896,24 +886,17 @@ input:checked+.slider:before {
     }
 
     .mission-menu-trigger {
-        width: 25px;
         height: 50px;
         background: #2ecc71;
         border: none;
         transform: translateY(-50%);
         border-radius: 15px 0 0 15px;
-        color: white;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
 
     .mobile-menu-container {
         display: block;
         position: fixed;
         left: 0;
-        /* ชิดขอบซ้ายสุด */
         top: 50% !important;
         transform: translateY(-50%) !important;
         z-index: 999;
@@ -980,9 +963,25 @@ input:checked+.slider:before {
         border-bottom: 1px solid rgba(46, 204, 113, 0.3);
         text-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
     }
+}
 
-    /* ปรับแต่งระยะขอบด้านในของ Popup เล็กน้อยเพื่อให้หัวข้อไม่ชิดขอบเกินไป */
-    .mission-menu-items {
-        padding: 20px !important;
+@media (min-width: 992px) {
+    .search-container {
+        margin-top: 30px;
+    }
+
+    .posts-display {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 40px;
+        margin-top: 30px;
+    }
+
+    .post-title {
+        font-size: 20px;
+    }
+
+    .post-date,
+    .post-time {
+        font-size: 16px !important;
     }
 }
