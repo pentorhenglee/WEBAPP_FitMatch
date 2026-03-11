@@ -1,65 +1,61 @@
 @{
-    ViewData["Title"] = "Welcome to FitMatch";
+    ViewData[index: "Title"] = "Landing";
+    Layout = null;
 }
 
-@section Styles {
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/Landing.css" asp-append-version="true" />
+</head>
+<body>
 
-    <link rel="stylesheet" href="~/css/Landing.css" asp-append-version="true"/>
-}
+<div class="landing-wrapper">
+    <header class="hero-section">
+        <div class="tagline">READY TO PLAY?</div>
+        <h1 class="main-title">Welcome to <span class="green">FitMatch</span></h1>
+        <p class="hero-subtitle">Stop solo training. Find your team, join matches, and level up your fitness journey with a community that shows up.</p>
+        
+        <div class="cta-group">
+            <a class="secondary-btn" asp-controller="Home" asp-action="Index">Explore Matches</a>
+            <a class="primary-btn" asp-controller="Account" asp-action="Register">Register Now</a>
+        </div>
+    </header>
 
-// ref from account ดีกว่า ที่มันไม่ใช้ layout
-
-<div class="landing-page container py-5">
-    <div class="text-center mb-5">
-        <h1 class="display-4">Welcome to <span class="text-primary">FitMatch</span></h1>
-        <p class="lead mt-3">Find workout buddies, join missions, and share your progress with a community that motivates you.</p>
-    </div>
-
-    <div class="row gy-4">
-        <div class="col-lg-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h2 class="h5">What is FitMatch?</h2>
-                    <p>FitMatch is a web app that helps you connect with other fitness enthusiasts, create and join missions, and track progress together.</p>
-                    <p>Whether you want to practice, compete, or keep yourself accountable, FitMatch is built to make fitness social and fun.</p>
-                </div>
-            </div>
+    <div class="features-grid">
+        <div class="glass-card">
+            <div class="card-icon">⚽</div>
+            <h3>What is FitMatch?</h3>
+            <p>FitMatch is a social hub for athletes. We connect people who want to play sports but lack a team or a venue.</p>
+            <p>From casual park soccer to competitive basketball, we make finding a game as easy as a click.</p>
         </div>
 
-        <div class="col-lg-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h2 class="h5">How it works</h2>
-                    <ul class="ps-3 mb-0">
-                        <li><strong>Register or log in:</strong> Create an account to personalize your profile and start interacting.</li>
-                        <li><strong>Create a mission:</strong> Set a goal, define the details, and invite others to join.</li>
-                        <li><strong>Join missions:</strong> Browse available missions and request to join the ones that match your goals.</li>
-                        <li><strong>Share updates:</strong> Post progress, comment, and support other members.</li>
-                    </ul>
-                </div>
-            </div>
+        <div class="glass-card">
+            <div class="card-icon">🏆</div>
+            <h3>How it works</h3>
+            <ul class="feature-list">
+                <li><strong>Join a Plan:</strong> Browse sports plans and grab a spot.</li>
+                <li><strong>Host a Room:</strong> Need two more players for a football game? Post it here.</li>
+                <li><strong>Track your Stats:</strong> Keep track of your performance and stay consistent.</li>
+            </ul>
         </div>
 
-        <div class="col-lg-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h2 class="h5">Get started</h2>
-                    <p class="mb-2">It’s easy to begin:</p>
-                    <ol class="ps-3 mb-0">
-                        <li>Go to <a asp-controller="Account" asp-action="Register">Register</a> (or <a asp-controller="Account" asp-action="Login">Login</a> if you already have an account).</li>
-                        <li>Complete your profile so others know your interests.</li>
-                        <li>Visit the <a asp-controller="Dashboard" asp-action="Index">Dashboard</a> to explore missions and members.</li>
-                    </ol>
-                    <div class="mt-3">
-                        <a class="btn btn-primary" asp-controller="Dashboard" asp-action="Index">Go to Dashboard</a>
-                    </div>
-                </div>
-            </div>
+        <div class="glass-card">
+            <div class="card-icon">🚀</div>
+            <h3>Get Started</h3>
+            <p>Your next teammate is waiting. Ready to jump in?</p>
+            <ol class="feature-list">
+                <li>Create a room and set the details.</li>
+                <li>Or join an existing room sorted by your sports.</li>
+                <li>Check <strong>Home</strong> for active rooms.</li>
+            </ol>
+            <a class="card-link" asp-controller="Home" asp-action="Index">Join or Create a room →</a>
         </div>
-    </div>
-
-    <div class="mt-5 text-center text-muted">
-        <p class="mb-1">Need help? Visit the Help section or reach out via the contact information in your profile.</p>
-        <p class="mb-0">Stay consistent, stay motivated — build habits with the FitMatch community!</p>
     </div>
 </div>
+
+</body>
+</html>
