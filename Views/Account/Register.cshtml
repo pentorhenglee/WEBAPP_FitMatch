@@ -55,6 +55,7 @@
                 </div>
 
                 <button type="submit" id="btnSubmit" class="register-btn">
+                    <span class="loading-spinner"></span>
                     REGISTER
                 </button>
             </form>
@@ -64,56 +65,27 @@
 </div>
 
 <script>
-    document.getElementById("registerForm").addEventListener("submit", async function (e) {
-    e.preventDefault();
-    
-    const email = document.getElementById("email").value.trim();
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById("confirmPassword").value;
-    
+    const words = ["RUN", "CYCLE", "BASKETBALL", "SOCCER", "VOLLEYBALL"];
+    let wordIndex = 0;
+    const logoContainer = document.getElementById('dynamic-logo');
+    const registerForm = document.getElementById("registerForm");
     const errorDiv = document.getElementById("errorMessage");
     const btnSubmit = document.getElementById("btnSubmit");
-    const spinner = document.getElementById("spinner");
 
-    //Password Confirmation Logic
-    if (password !== confirmPassword) {
-        errorDiv.innerText = "Passwords do not match!";
-        errorDiv.classList.remove("d-none");
-        document.getElementById("confirmPassword").focus();
-        return; // Stop the function here
+    function setLoading(isLoading) {
+        if (!btnSubmit) return;
+        btnSubmit.disabled = isLoading;
+        btnSubmit.classList.toggle('loading', isLoading);
     }
 
-    //Simple Length Check (Optional but recommended)
-    if (password.length < 6) {
-        errorDiv.innerText = "Password must be at least 6 characters long.";
-        errorDiv.classList.remove("d-none");
-        return;
-    }
+    registerForm?.addEventListener("submit", async function (e) {
+        e.preventDefault();
 
-    // Clear previous errors and show loading state
-    errorDiv.classList.add("d-none");
-    btnSubmit.disabled = true;
-    spinner.classList.remove("d-none");
+        const email = document.getElementById("email").value.trim();
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
 
-    try {
-        const res = await fetch("/api/auth/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ Email: email, Username: username, Password: password })
-        });
-
-        if (res.ok) {
-            window.location.href = "/Account/Login";
-        } else {
-            const errorData = await res.json(); 
-            errorDiv.innerText = errorData.message || "Registration failed.";
-            errorDiv.classList.remove("d-none");
-            document.getElementById("email").focus();
-            return;
-        }
-
-        // 2. Check if pass and confpass match
         if (password !== confirmPassword) {
             errorDiv.innerText = "Passwords do not match!";
             errorDiv.classList.remove("d-none");
@@ -128,8 +100,7 @@
         }
 
         errorDiv.classList.add("d-none");
-        btnSubmit.disabled = true;
-        spinner.classList.remove("d-none");
+        setLoading(true);
 
         try {
             const res = await fetch("/api/auth/register", {
@@ -139,61 +110,57 @@
             });
 
             if (res.ok) {
-                // Fixed the redirect path here
-                window.location.href = "/Account/Login"; 
-            } else {
-                const errorData = await res.json(); 
-                errorDiv.innerText = errorData.message || "Registration failed.";
-                errorDiv.classList.remove("d-none");
+                window.location.href = "/Account/Login";
+                return;
             }
+
+            const errorData = await res.json();
+            errorDiv.innerText = errorData.message || "Registration failed.";
+            errorDiv.classList.remove("d-none");
+            document.getElementById("email").focus();
         } catch (err) {
             errorDiv.innerText = "Network error: " + err.message;
             errorDiv.classList.remove("d-none");
         } finally {
-            btnSubmit.disabled = false;
-            spinner.classList.add("d-none");
+            setLoading(false);
         }
     });
 
-const words = ["RUN", "CYCLE", "BASKETBALL", "SOCCER", "VOLLEYBALL"];
-let wordIndex = 0;
-const logoContainer = document.getElementById('dynamic-logo');
+    async function smoothChangeWord() {
+        if (!logoContainer) return;
 
-async function smoothChangeWord() {
-    const currentCols = logoContainer.querySelectorAll('.column');
-    currentCols.forEach(col => {
-        col.style.opacity = '0';
-        col.style.transform = 'translateY(-10px)';
-    });
+        const currentCols = logoContainer.querySelectorAll('.column');
+        currentCols.forEach(col => {
+            col.style.opacity = '0';
+            col.style.transform = 'translateY(-10px)';
+        });
 
-    await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 500));
 
-    logoContainer.innerHTML = '';
-    const currentWord = words[wordIndex];
+        logoContainer.innerHTML = '';
+        const currentWord = words[wordIndex];
 
-    [...currentWord].forEach((char, index) => {
-        const column = document.createElement('div');
-        column.className = 'column';
-        
-        for (let i = 0; i < 4; i++) {
-            const span = document.createElement('span');
-            span.textContent = char;
-            column.appendChild(span);
-        }
-        logoContainer.appendChild(column);
+        [...currentWord].forEach((char, index) => {
+            const column = document.createElement('div');
+            column.className = 'column';
 
-        setTimeout(() => {
-            column.classList.add('active');
-        }, index * 100);
-    });
+            for (let i = 0; i < 4; i++) {
+                const span = document.createElement('span');
+                span.textContent = char;
+                column.appendChild(span);
+            }
+            logoContainer.appendChild(column);
 
-    wordIndex = (wordIndex + 1) % words.length;
-}
+            setTimeout(() => {
+                column.classList.add('active');
+            }, index * 100);
+        });
 
-smoothChangeWord();
+        wordIndex = (wordIndex + 1) % words.length;
+    }
 
-setInterval(smoothChangeWord, 3000);
-
+    smoothChangeWord();
+    setInterval(smoothChangeWord, 3000);
 </script>
 
 </body>

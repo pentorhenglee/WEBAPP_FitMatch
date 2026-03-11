@@ -224,6 +224,11 @@ input:-webkit-autofill:active {
     color: var(--accent);
 }
 
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
 @media (max-width: 750px) {
     .hero-section {
         display: none;
