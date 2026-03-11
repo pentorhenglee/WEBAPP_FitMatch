@@ -30,7 +30,6 @@ body {
         0 0 30px rgba(255, 255, 255, 0.1);
 }
 
-/* สี highlight ของคำบางคำ */
 .welcome-message h1 span {
     color: #2ecc71;
     text-shadow: 0 0 8px rgba(46, 204, 113, 0.4);
@@ -75,12 +74,10 @@ body {
     letter-spacing: 1px;
 }
 
-/* placeholder text */
 .search-bar input::placeholder {
     color: rgba(255, 255, 255, 0.4);
 }
 
-/* ปุ่ม search icon */
 .search-bar button {
     background: transparent;
     border: none;
@@ -96,7 +93,6 @@ body {
     margin-left: 10px;
 }
 
-/* กล่องหลัก */
 .switch {
     position: relative;
     display: inline-block;
@@ -110,7 +106,6 @@ body {
     height: 0;
 }
 
-/* ปุ่มวงกลมที่เลื่อนซ้ายขวา */
 .slider {
     position: absolute;
     cursor: pointer;
@@ -141,15 +136,12 @@ body {
 
 input:checked+.slider:before {
     transform: translateX(40px);
-    /* เลื่อนวงกลมไปด้านขวา */
 }
 
-/* ทำให้ slider เป็นรูปวงรี */
 .slider.round {
     border-radius: 34px;
 }
 
-/* ทำให้ปุ่ม slider เป็นวงกลม */
 .slider.round:before {
     border-radius: 50%;
 }
@@ -244,11 +236,6 @@ input:checked+.slider:before {
     width: 380px;
 }
 
-.mission-sidebar:hover {
-    width: 380px;
-}
-
-/* กล่องครอบรายการหมวดหมู่ทั้งหมด */
 .category-items-wrapper {
     min-width: 60px;
     display: flex;
@@ -256,7 +243,6 @@ input:checked+.slider:before {
     width: 100%;
 }
 
-/* item ของหมวดหมู่ */
 .category-item {
     display: flex;
     align-items: center;
@@ -269,7 +255,6 @@ input:checked+.slider:before {
     background: transparent !important;
 }
 
-/* icon ของ category */
 .category-item i {
     width: 60px;
     margin-left: -4px;
@@ -281,7 +266,6 @@ input:checked+.slider:before {
     color: inherit;
 }
 
-/* text label ของ category */
 .category-label {
     font-weight: 800;
     font-size: 16px;
@@ -294,7 +278,6 @@ input:checked+.slider:before {
     color: rgba(255, 255, 255, 0.6);
 }
 
-/* เมื่อ hover sidebar label จะแสดง */
 .category-sidebar:hover .category-label {
     opacity: 1;
 }
@@ -468,7 +451,6 @@ input:checked+.slider:before {
     border-color: rgba(46, 204, 113, 0.3);
 }
 
-/* ภาพของโพสต์ */
 .card-image {
     position: relative;
     height: 250px;
@@ -482,7 +464,6 @@ input:checked+.slider:before {
     object-fit: cover;
 }
 
-/* icon กีฬาบนรูป */
 .sport-icon-badge {
     position: absolute;
     top: 12px;

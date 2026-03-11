@@ -208,6 +208,9 @@
 
             const currentPeople = post.members ? post.members.length : 0; 
             const maxPeople = post.maxPeople || 0;
+
+            const parts = date.split('-');
+            const formattedDate = (parts.length === 3) ? `${parts[2]}-${parts[1]}-${parts[0]}` : date;
         
             card.innerHTML = `
                 <div class="card-image">
@@ -226,7 +229,7 @@
                         </p>
                         <div class="post-datetime-container">
                             <p class="post-date">
-                                <i class="fas fa-calendar-alt"></i> ${date}
+                                <i class="fas fa-calendar-alt"></i> ${formattedDate}
                             </p>
                             ${time ? `<p class="post-time"><i class="fas fa-clock"></i> ${time.substring(0, 5)}</p>` : ''}
                         </div>
@@ -242,7 +245,10 @@
                 `;
 
             card.addEventListener("click", function () { //ตรวจสอบสถานะของโพสต์ก่อนนำผู้ใช้ไปยังหน้ารายละเอียด
-                if (post.status !== 'close') {
+                const currentUserId = @(Context.Session.GetInt32("user_id")?.ToString() ?? "null");
+                const joined = post.members && post.members.some(m => m.userId === currentUserId);
+                
+                if (post.status !== 'close' || joined) {
                     if (post.postId) {
                         window.location.href = `/Post/Detail?id=${post.postId}`;
                     }
