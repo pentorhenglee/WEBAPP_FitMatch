@@ -468,12 +468,12 @@
                 const avatarUrl = chat.profileUrl || 'https://via.placeholder.com/40';
                 
                 const dateObj = new Date(chat.comment_date);
-                const now = new Date();
-                const isToday = dateObj.toDateString() === now.toDateString();
-                const timeOnly = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
-                const timeStr = isToday
-                    ? timeOnly
-                    : dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) + ' ' + timeOnly;
+                const dd   = String(dateObj.getDate()).padStart(2, '0');
+                const mm   = String(dateObj.getMonth() + 1).padStart(2, '0');
+                const yyyy = dateObj.getFullYear();
+                const hh   = String(dateObj.getHours()).padStart(2, '0');
+                const min  = String(dateObj.getMinutes()).padStart(2, '0');
+                const timeStr = `${dd}/${mm}/${yyyy} ${hh}:${min}`;
 
                 chatContainer.innerHTML += `
                     <div class="chat-message-wrapper ${wrapperClass}">
@@ -488,11 +488,15 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
+        let isSending = false;
         async function sendChatMessage() {
+            if (isSending) return;
             const input = document.getElementById('chatInputMessage');
             const message = input.value.trim();
             if (!message) return;
 
+            isSending = true;
+            input.value = "";
             try {
                 const response = await fetch(`/api/commentapi/${currentPostId}`, {
                     method: 'POST',
@@ -501,13 +505,16 @@
                 });
 
                 if (response.ok) {
-                    input.value = ""; 
                     await fetchPostDetail();
                 } else {
                     alert("Failed to send message.");
+                    input.value = message;
                 }
             } catch (error) {
                 console.error("Error sending message:", error);
+                input.value = message;
+            } finally {
+                isSending = false;
             }
         }
 
