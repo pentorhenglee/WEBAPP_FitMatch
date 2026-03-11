@@ -32,6 +32,9 @@ public class Post
     public string? ImageUrl { get; set; }   
     public string? Status {get;set;}    
 
+    public double? Lat { get; set; }
+    public double? Lon { get; set; }
+
     public List<Member> Members {get;set;} = new List<Member>();
     public List<Comment>? Comments { get; set; } = new List<Comment>();
 }

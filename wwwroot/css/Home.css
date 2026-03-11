@@ -12,7 +12,17 @@ body {
     display: none;
 }
 
-/* ส่วนพื้นที่เนื้อหาหลักของหน้าเว็บ */
+.fixed-top-section {
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    background: #0f0f0f;
+    padding-bottom: 20px;
+    transition: none;
+}
+
 .main-content {
     margin-left: 80px;
     max-width: 100%;
@@ -186,7 +196,7 @@ input:checked+.slider:before {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 2000;
+    z-index: 999;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     transition: all 0.2s ease;
     outline: none;
@@ -206,8 +216,100 @@ input:checked+.slider:before {
     border-color: #2ecc71;
 }
 
-.category-sidebar,
-.mission-sidebar {
+@media (max-width: 768px) {
+    .post-button {
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+    }
+}
+
+.mobile-menu-container {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-container {
+        display: block;
+        position: fixed;
+        left: 0;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        z-index: 999;
+    }
+
+    /* ปุ่มหลัก (Trigger) ให้ดูเป็นส่วนหนึ่งของแถบ */
+    .mobile-menu-trigger,
+    .mission-menu-trigger {
+        width: 25px;
+        height: 10vh !important;
+        background: rgba(46, 204, 113, 0.2) !important;
+        backdrop-filter: blur(10px);
+        border: 0px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: 0 15px 15px 0;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mobile-menu-items {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        margin-top: 5px;
+        max-height: 0;
+        overflow: auto;
+        transition: max-height 0.4s ease-in-out;
+    }
+
+    .mobile-menu-items.show {
+        max-height: 70vh;
+    }
+
+    .m-item {
+        width: 40px;
+        height: 45px;
+        /* min-height: 55px; */
+        background: rgba(26, 26, 26, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        /* เส้นคั่นบางๆ */
+        border-radius: 0 10px 10px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(10px);
+        margin-bottom: 2px;
+        /* ระยะห่างเล็กน้อยระหว่างแผ่นดัชนี */
+        transition: width 0.2s;
+    }
+
+    /* เมื่อเลือกปุ่มนั้นๆ ให้ยื่นออกมานิดหน่อย */
+    .m-item.active {
+        width: 7vh !important;
+        background: rgba(46, 204, 113, 0.4) !important;
+        color: white;
+        border-left: none;
+        /* เอาเส้นเดิมออก */
+    }
+
+    /* ซ่อน Sidebar เดิม */
+    .category-sidebar,
+    .mission-sidebar {
+        display: none !important;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+}
+
+.category-sidebar {
     position: fixed;
     top: 50%;
     width: 60px;
@@ -766,11 +868,21 @@ input:checked+.slider:before {
         line-height: 1;
         padding: 5px;
         transition: color 0.3s ease;
-        z-index: 10002;
+        z-index: 999;
+        /* ให้อยู่เหนือเนื้อหาอื่นในป๊อปอัพ */
     }
 
     .close-mission-btn:hover {
         color: #e74c3c;
+        /* เปลี่ยนเป็นสีแดงเมื่อกดหรือชี้ */
+    }
+
+    .mission-menu-container {
+        display: block;
+        position: fixed;
+        right: 0;
+        top: 50% !important;
+        z-index: 999;
     }
 
     .mission-menu-trigger {
@@ -787,7 +899,7 @@ input:checked+.slider:before {
         left: 0;
         top: 50% !important;
         transform: translateY(-50%) !important;
-        z-index: 9999;
+        z-index: 999;
     }
 
     .mission-menu-items {
@@ -812,7 +924,7 @@ input:checked+.slider:before {
         opacity: 0;
         visibility: hidden;
         transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        z-index: 10001;
+        z-index: 999;
         display: block !important;
     }
 
@@ -837,7 +949,7 @@ input:checked+.slider:before {
         height: 100vh;
         background: rgba(0, 0, 0, 0.7);
         backdrop-filter: blur(4px);
-        z-index: 10000;
+        z-index: 999;
     }
 
     .mobile-mission-header {

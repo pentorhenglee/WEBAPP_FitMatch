@@ -9,6 +9,7 @@
 
 <div class="post-detail-container">
     
+    @* chat zone *@
     <div class="post-chat-section">
         <div class="chat-header">Chat</div>
         
@@ -25,7 +26,9 @@
     </div>
 
     <div class="post-info-section">
-        <img src="https://via.placeholder.com/800x400?text=Cover+Image" id="displayCoverImg" class="post-cover-img" alt="Event Cover" style="display:none;" />
+        <div class="post-cover-wrapper" id="coverWrapper" style="display:none;">
+            <img src="" id="displayCoverImg" class="post-cover-img" alt="Event Cover" />
+        </div>
         
         <div class="post-details">
             <h2 id="displayTitle">Loading...</h2>
@@ -34,7 +37,35 @@
                 <span><i class="fa-solid fa-location-dot"></i> Loading...</span>
             </div>
 
+            <div id="detailWeatherSection" style="display:none;">
+                <div class="weather-card-detail">
+                    <div class="weather-icon-wrapper">
+                        <span id="detailWeatherIcon"></span>
+                    </div>
+                    <div class="weather-info-detail">
+                        <div class="weather-temp-row">
+                            <span id="detailWeatherTemp"></span>
+                        </div>
+                        <div class="weather-desc-row">
+                            <span id="detailWeatherDesc"></span>
+                            <span class="weather-dot">•</span>
+                            <span id="detailWeatherRain"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="post-desc" id="displayDesc">Please wait, fetching data from database...</div>
+
+            <div id="detailMapSection" style="display:none;">
+                <iframe id="detailMapIframe"
+                    width="100%"
+                    height="220"
+                    style="border:0; border-radius:12px;"
+                    loading="lazy"
+                    src="">
+                </iframe>
+            </div>
         </div>
 
         <div class="post-info-footer">
@@ -79,11 +110,20 @@
                 </div>
                 <div class="form-field">
                     <label>Location</label>
-                    <input type="text" id="editLocation"/>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" id="editLocation" style="flex:1;"/>
+                        <button type="button" id="btnEditSearchLocation" class="btn-search-location-modal">Search</button>
+                    </div>
+                    <input type="hidden" id="editLat" />
+                    <input type="hidden" id="editLon" />
+                    <p id="editLocationStatus" style="margin:4px 0 0;font-size:12px;color:rgba(255,255,255,0.55);min-height:16px;"></p>
+                </div>
+                <div class="form-field" id="editMapSection" style="display:none;">
+                    <iframe id="editMapIframe" width="100%" height="180" style="border:0;border-radius:8px;" loading="lazy" src=""></iframe>
                 </div>
                 <div class="form-field">
                     <label>Event Date/Time</label>
-                    <input type="datetime-local" id="editDateTime"/>
+                    <input type="datetime-local" id="editDateTime" />
                 </div>
                 <div class="form-field">
                     <label>Sport Type</label>
@@ -105,10 +145,12 @@
                 </div>
                 <div class="form-field">
                     <label>Description</label>
-                    <textarea id="editDescription" rows="3"></textarea>
+                    <textarea id="editDescription" rows="5"></textarea>
                 </div>
+            </div>
+            <div class="modal-footer">
                 <button onclick="submitEditPost()" class="btn-save">Save Changes</button>
-                <button onclick="deletePost()" class="btn-delete-post" style="margin-top:8px; width:100%; background:#c0392b; color:#fff; border:none; padding:10px; border-radius:6px; cursor:pointer; font-weight:bold;">Delete Post</button>
+                <button onclick="deletePost()" class="btn-delete-post">Delete Post</button>
             </div>
         </div>
     </div>
@@ -142,9 +184,7 @@
             return icons[sportType] || 'fa-infinity';
         }
 
-        // ==========================================
-        // 1. ดึงข้อมูลโพสต์หลัก
-        // ==========================================
+        // fetch pull post detail
         async function fetchPostDetail() {
             try {
                 const response = await fetch(`/api/postapi/detail/${currentPostId}`);
@@ -162,18 +202,18 @@
                 const dateStr = dateObj.toLocaleDateString('en-GB').replace(/\//g, ' - ');
                 const timeStr = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
 
-                // จัดการรูปภาพ (ถ้าไม่มีให้โชว์ Placeholder เท่ๆ)
+                //img post, if none show placeholder
                 const coverImg = document.getElementById('displayCoverImg');
                 if (data.imageUrl && data.imageUrl.trim() !== "") {
                     coverImg.src = data.imageUrl;
                 } else {
                     coverImg.src = getSportPlaceholder(data.sportType);
                 }
-                coverImg.style.display = "block";
+                document.getElementById('coverWrapper').style.display = 'block';
 
                 document.getElementById('displayTitle').innerText = data.title;
                 
-                // ตกแต่ง Meta data (สถานที่ วันเวลา และประเภทกีฬา)
+                // meta data post
                 const sportIconClass = getSportIcon(data.sportType);
                 document.getElementById('displayMeta').innerHTML = `
                     <span style="color: #2ecc71; font-weight: bold;"><i class="fas ${sportIconClass}"></i> ${(data.sportType || 'Unknown Sport').toUpperCase()}</span>
@@ -181,15 +221,24 @@
                     <span><i class="fa-regular fa-calendar"></i> ${dateStr}</span>
                     <span><i class="fa-regular fa-clock"></i> ${timeStr}</span>
                 `;
+
+                // Map + Weather
+                if (data.lat && data.lon) {
+                    const mapSection  = document.getElementById('detailMapSection');
+                    const mapIframe   = document.getElementById('detailMapIframe');
+                    mapIframe.src = `https://maps.google.com/maps?q=${data.lat},${data.lon}&z=15&output=embed`;
+                    mapSection.style.display = 'block';
+
+                    const eventDateStr = new Date(data.eventDateTime).toISOString().split('T')[0];
+                    fetchDetailWeather(data.lat, data.lon, eventDateStr);
+                }
                 
                 document.getElementById('displayDesc').innerText = data.description || "No description provided.";
 
                 const participantsDiv = document.getElementById('displayParticipants');
                 participantsDiv.innerHTML = `<span style="color:#aaa; font-size:0.9rem;">Participants:</span> <span style="font-weight:bold; cursor:pointer; margin-left:10px; color:var(--accent);" onclick="openParticipantsModal()"><i class="fa-solid fa-users" style="margin-right:5px;"></i> ${currentPeopleCount} / ${data.maxPeople}</span>`;
 
-                // ==========================================
-                // ลอจิกปุ่ม 
-                // ==========================================
+                // login btn
                 const isOwner = data.ownerId === data.currentUserId;
                 const isAlreadyJoined = data.members.some(m => m.userId === data.currentUserId);
                 const isFull = currentPeopleCount >= data.maxPeople;
@@ -234,7 +283,6 @@
                     }
                 }
 
-                // ดึงแชทมาแสดงด้วย
                 renderChats();
 
             } catch (error) { 
@@ -243,9 +291,7 @@
             }
         }
 
-        // ==========================================
-        // 2. ฟังก์ชัน API สำหรับปุ่มต่างๆ
-        // ==========================================
+        //API logic btn
         async function joinPost() {
             const btn = document.getElementById('btnJoin');
             btn.innerText = "JOINING...";
@@ -302,9 +348,25 @@
             if (!globalPostData) return;
             document.getElementById('editTitle').value = globalPostData.title;
             document.getElementById('editLocation').value = globalPostData.location;
+
+            // populate lat/lon + show map if available
+            document.getElementById('editLat').value = globalPostData.lat ?? '';
+            document.getElementById('editLon').value = globalPostData.lon ?? '';
+            document.getElementById('editLocationStatus').textContent = '';
+            const editMapSection = document.getElementById('editMapSection');
+            const editMapIframe  = document.getElementById('editMapIframe');
+            if (globalPostData.lat && globalPostData.lon) {
+                editMapIframe.src = `https://maps.google.com/maps?q=${globalPostData.lat},${globalPostData.lon}&z=15&output=embed`;
+                editMapSection.style.display = 'block';
+            } else {
+                editMapSection.style.display = 'none';
+            }
             
             // Format datetime to local datetime format YYYY-MM-DDThh:mm
-            // eventDateTime จาก DB ไม่มี timezone suffix → slice ตรงๆ ได้เลย
+            // eventDateTime จาก DB ไม่มี timezone suffix slice ตรงๆ ได้เลย
+            // Set min to now so user cannot pick a past datetime
+            const nowLocal = new Date(new Date() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+            document.getElementById('editDateTime').min = nowLocal;
             document.getElementById('editDateTime').value = globalPostData.eventDateTime.slice(0, 16);
             
             document.getElementById('editSportType').value = globalPostData.sportType;
@@ -329,6 +391,11 @@
                 alert(`Cannot set max people below current participant count (${currentCount}).`);
                 return;
             }
+            const editDateTimeVal = document.getElementById('editDateTime').value;
+            if (new Date(editDateTimeVal) <= new Date()) {
+                alert('Please select a date and time in the future.');
+                return;
+            }
             const dto = {
                 title: document.getElementById('editTitle').value,
                 location: document.getElementById('editLocation').value,
@@ -336,7 +403,9 @@
                 sportType: document.getElementById('editSportType').value,
                 maxPeople: maxPeople,
                 imageUrl: document.getElementById('editImageUrl').value,
-                description: document.getElementById('editDescription').value
+                description: document.getElementById('editDescription').value,
+                lat:  document.getElementById('editLat').value  ? parseFloat(document.getElementById('editLat').value)  : null,
+                lon:  document.getElementById('editLon').value  ? parseFloat(document.getElementById('editLon').value)  : null
             };
 
             try {
@@ -383,9 +452,7 @@
             } catch (error) { console.error("Error:", error); }
         }
 
-        // ==========================================
-        // 3. ระบบ Chat
-        // ==========================================
+        // chat render
         function renderChats() {
             const chatContainer = document.getElementById('chatHistoryContainer');
             if (!globalPostData || !globalPostData.comments || globalPostData.comments.length === 0) {
@@ -418,7 +485,6 @@
                     </div>
                 `;
             });
-            // เลื่อนลงไปล่างสุดเสมอเมื่อมีข้อความใหม่
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
@@ -436,7 +502,7 @@
 
                 if (response.ok) {
                     input.value = ""; 
-                    await fetchPostDetail(); // โหลดข้อมูลใหม่เพื่อดึงแชท
+                    await fetchPostDetail();
                 } else {
                     alert("Failed to send message.");
                 }
@@ -447,9 +513,7 @@
 
         function handleEnterKey(e) { if (e.key === 'Enter') sendChatMessage(); }
 
-        // ==========================================
-        // 4. Modal รายชื่อคน
-        // ==========================================
+        //modal people
         function openParticipantsModal() {
             document.getElementById('participantsModal').style.display = 'flex';
             renderParticipants(); 
@@ -493,11 +557,92 @@
             });
         }
 
-        // ==========================================
-        // Initialize
-        // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
             fetchPostDetail();
+        });
+
+        // Weather helpers
+        async function fetchDetailWeather(lat, lon, dateStr) {
+            try {
+                const url = `https://api.open-meteo.com/v1/forecast` +
+                    `?latitude=${lat}&longitude=${lon}` +
+                    `&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,weathercode` +
+                    `&timezone=Asia%2FBangkok` +
+                    `&start_date=${dateStr}&end_date=${dateStr}`;
+
+                const res  = await fetch(url);
+                const data = await res.json();
+                if (!data.daily || !data.daily.time.length) return;
+
+                const maxTemp = data.daily.temperature_2m_max[0];
+                const minTemp = data.daily.temperature_2m_min[0];
+                const rain    = data.daily.precipitation_sum[0];
+                const code    = data.daily.weathercode[0];
+
+                document.getElementById('detailWeatherIcon').textContent = detailWeatherIcon(code);
+                document.getElementById('detailWeatherTemp').textContent = `${minTemp}\u00b0C \u2013 ${maxTemp}\u00b0C`;
+                document.getElementById('detailWeatherDesc').textContent = detailWeatherDesc(code);
+                document.getElementById('detailWeatherRain').textContent = `Rain: ${rain} mm`;
+                document.getElementById('detailWeatherSection').style.display = 'block';
+            } catch (e) { console.error('Weather fetch error', e); }
+        }
+
+        function detailWeatherIcon(code) {
+            if (code === 0) return '☀️';
+            if (code <= 2)  return '🌤️';
+            if (code <= 3)  return '☁️';
+            if (code <= 48) return '🌫️';
+            if (code <= 57) return '🌦️';
+            if (code <= 67) return '🌧️';
+            if (code <= 77) return '❄️';
+            if (code <= 82) return '🌧️';
+            if (code <= 99) return '⛈️';
+            return '🌡️';
+        }
+
+        function detailWeatherDesc(code) {
+            if (code === 0)  return 'Clear Sky';
+            if (code <= 2)   return 'Partly Cloudy';
+            if (code <= 3)   return 'Overcast';
+            if (code <= 48)  return 'Foggy';
+            if (code <= 57)  return 'Drizzle';
+            if (code <= 67)  return 'Rain';
+            if (code <= 77)  return 'Snow';
+            if (code <= 82)  return 'Heavy Rain';
+            if (code <= 99)  return 'Thunderstorm';
+            return 'Unknown';
+        }
+
+        // Edit modal geocode 
+        document.getElementById('btnEditSearchLocation').addEventListener('click', async function () {
+            const query = document.getElementById('editLocation').value.trim();
+            if (!query) { alert('Please fill in a location first'); return; }
+
+            const statusEl = document.getElementById('editLocationStatus');
+            statusEl.textContent = 'Searching...';
+
+            try {
+                const res  = await fetch(
+                    `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`,
+                    { headers: { 'User-Agent': 'FitMatch-App' } }
+                );
+                const data = await res.json();
+                if (!data.length) { statusEl.textContent = 'Location not found, try again'; return; }
+
+                const lat = parseFloat(data[0].lat);
+                const lon = parseFloat(data[0].lon);
+                document.getElementById('editLat').value = lat;
+                document.getElementById('editLon').value = lon;
+                statusEl.textContent = `Found: ${data[0].display_name}`;
+
+                const editMapIframe  = document.getElementById('editMapIframe');
+                const editMapSection = document.getElementById('editMapSection');
+                editMapIframe.src = `https://maps.google.com/maps?q=${lat},${lon}&z=15&output=embed`;
+                editMapSection.style.display = 'block';
+            } catch (err) {
+                document.getElementById('editLocationStatus').textContent = 'Error, please try again';
+                console.error(err);
+            }
         });
     </script>
 }

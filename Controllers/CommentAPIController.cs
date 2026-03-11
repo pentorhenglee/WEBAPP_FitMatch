@@ -44,7 +44,7 @@ namespace WEBAPP_FitMatch.Controllers
                 createcomment.CreatedAt
             });
         }
-
+        // ไม่ได้ใช้
         [HttpDelete("delete/{comment_id}")]
         public async Task<IActionResult> Delete(int comment_id)
         {

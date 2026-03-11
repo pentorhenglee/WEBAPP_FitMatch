@@ -6,8 +6,8 @@ This project was developed as a mini-project for the **Web Application Developme
 
 ## 👥 Team Members
 
-1. [Name Surname] - Student ID: [Student ID]
-2. [Name Surname] - Student ID: [Student ID]
-3. [Name Surname] - Student ID: [Student ID]
-4. [Name Surname] - Student ID: [Student ID]
-5. [Name Surname] - Student ID: [Student ID]
+1. Pentor Henglee - Student ID: 67010585
+2. Phakkaphon Pensiriphak - Student ID: 67010686
+3. Alisa-Vasiliki Catsoulis - Student ID: 67011031
+4. Suphasin Rattanaphan - Student ID: 67011569
+5. Chitsanupong Preecharat - Student ID: 67010207
