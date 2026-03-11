@@ -77,7 +77,7 @@
         </div>
     </div>
 
-    <div class="fixes-top-section">
+    <div class="fixed-top-section">
         <div class="welcome-message">
             <h1>Find Your Fitness <span>Community</span></h1>
         </div>
@@ -245,7 +245,10 @@
                 `;
 
             card.addEventListener("click", function () { //ตรวจสอบสถานะของโพสต์ก่อนนำผู้ใช้ไปยังหน้ารายละเอียด
-                if (post.status !== 'close') {
+                const currentUserId = @(Context.Session.GetInt32("user_id")?.ToString() ?? "null");
+                const joined = post.members && post.members.some(m => m.userId === currentUserId);
+                
+                if (post.status !== 'close' || joined) {
                     if (post.postId) {
                         window.location.href = `/Post/Detail?id=${post.postId}`;
                     }
@@ -309,10 +312,18 @@
 
         document.querySelectorAll('.category-item').forEach(item => { //กรอง category
             item.addEventListener('click', function() {
+                const category = this.getAttribute('data-category');
+
                 document.querySelectorAll('.category-item').forEach(el => el.classList.remove('active'));
                 this.classList.add('active');
 
-                const category = this.getAttribute('data-category');
+                document.querySelectorAll('.m-item').forEach(el => {
+                    el.classList.remove('active');
+                    if (el.getAttribute('data-category') === category) {
+                        el.classList.add('active');
+                    }
+                });
+
                 const searchTerms = document.getElementById('searchInput').value;
                 fetchSearchResults(searchTerms, category);
             });
@@ -339,10 +350,18 @@
 
     document.querySelectorAll('.m-item').forEach(item => { //ย้ายแถบเขียวใน category หน้ามือถือ
         item.addEventListener('click', function() {
+            const category = this.getAttribute('data-category');
+
             document.querySelectorAll('.m-item').forEach(el => el.classList.remove('active'));
             this.classList.add('active');
+
+            document.querySelectorAll('.category-item').forEach(el => {
+                el.classList.remove('active');
+                if (el.getAttribute('data-category') === category) {
+                    el.classList.add('active');
+                }
+            });
             
-            const category = this.getAttribute('data-category');
             const searchTerms = document.getElementById('searchInput').value;
             fetchSearchResults(searchTerms, category);
             document.getElementById('mobileMenuItems').classList.remove('show'); //menu จะปิดเอง
