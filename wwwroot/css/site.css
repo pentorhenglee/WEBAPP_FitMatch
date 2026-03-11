@@ -129,7 +129,9 @@ a { text-decoration: none; }
   object-fit: cover;
 }
 
-
+.hamburger {
+    display: none;
+}
 
 /* ============================================================
    พื้นที่ตรงกลาง (Dashboard)
@@ -424,6 +426,10 @@ a { text-decoration: none; }
             display: none;
         }
 
+    .hamberger {
+        display: none;
+    }
+
 @media (max-width: 768px) {
     .navbar {
         padding: 0 20px;
@@ -433,7 +439,7 @@ a { text-decoration: none; }
         display: none;
     }
 
-    .hamberger {
+    .hamburger {
         display: block;
         cursor: pointer;
         order: -1;
@@ -468,6 +474,10 @@ a { text-decoration: none; }
     .links a {
         padding: 10px 20px;
         width: 100%;
+    }
+
+    .links.show {
+        display: flex;
     }
 
     .auth-links {

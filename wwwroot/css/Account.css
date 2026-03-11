@@ -214,9 +214,40 @@ input:-webkit-autofill:active {
     color: var(--accent);
 }
 
-@media (max-width: 750px) {
+.logo-image {
+    width: 90px;
+    display: block;
+    margin: 0 auto;
+}
 
+.green {
+    color: var(--accent);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 750px) {
     .hero-section {
         display: none;
+    }
+
+    .container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .login-card, .register-card {
+        width: 100%;     
+        margin: 10px;
+        align-self: middle;
+    }
+    
+    .back-link {
+        top: 15px;
+        left: 15px;
     }
 }

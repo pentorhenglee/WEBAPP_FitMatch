@@ -1,0 +1,61 @@
+@{
+    ViewData[index: "Title"] = "Landing";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/Landing.css" asp-append-version="true" />
+</head>
+<body>
+
+<div class="landing-wrapper">
+    <header class="hero-section">
+        <div class="tagline">READY TO PLAY?</div>
+        <h1 class="main-title">Welcome to Fit<span class="green">Match</span></h1>
+        <p class="hero-subtitle">Stop solo training. Find your team, join matches, and level up your fitness journey with a community that shows up.</p>
+        
+        <div class="cta-group">
+            <a class="secondary-btn" asp-controller="Home" asp-action="Index">Explore Matches</a>
+            <a class="primary-btn" asp-controller="Account" asp-action="Register">Register Now</a>
+        </div>
+    </header>
+
+    <div class="features-grid">
+        <div class="glass-card">
+            <div class="card-icon">⚽</div>
+            <h3>What is FitMatch?</h3>
+            <p>FitMatch is a social hub for athletes. We connect people who want to play sports but lack a team or a venue.</p>
+            <p>From casual park soccer to competitive basketball, we make finding a game as easy as a click.</p>
+        </div>
+
+        <div class="glass-card">
+            <div class="card-icon">🏆</div>
+            <h3>How it works</h3>
+            <ul class="feature-list">
+                <li><strong>Join a Plan:</strong> Browse sports plans and grab a spot.</li>
+                <li><strong>Host a Room:</strong> Need two more players for a football game? Post it here.</li>
+                <li><strong>Track your Stats:</strong> Keep track of your performance and stay consistent.</li>
+            </ul>
+        </div>
+
+        <div class="glass-card">
+            <div class="card-icon">🚀</div>
+            <h3>Get Started</h3>
+            <p>Your next teammate is waiting. Ready to jump in?</p>
+            <ol class="feature-list">
+                <li>Create a room and set the details.</li>
+                <li>Or join an existing room sorted by your sports.</li>
+                <li>Check <strong>Home</strong> for active rooms.</li>
+            </ol>
+            <a class="card-link" asp-controller="Home" asp-action="Index">Join or Create a room →</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -55,116 +55,112 @@
                 </div>
 
                 <button type="submit" id="btnSubmit" class="register-btn">
+                    <span class="loading-spinner"></span>
                     REGISTER
                 </button>
             </form>
-
             <p class="login-text">Already have an account? <a href="/Account/Login">Login here!</a></p>
         </div>
     </div>
 </div>
 
 <script>
-    document.getElementById("registerForm").addEventListener("submit", async function (e) {
-    e.preventDefault();
-    
-    const email = document.getElementById("email").value.trim();
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value;
-    const confirmPassword = document.getElementById("confirmPassword").value;
-    
+    const words = ["RUN", "CYCLE", "BASKETBALL", "SOCCER", "VOLLEYBALL"];
+    let wordIndex = 0;
+    const logoContainer = document.getElementById('dynamic-logo');
+    const registerForm = document.getElementById("registerForm");
     const errorDiv = document.getElementById("errorMessage");
     const btnSubmit = document.getElementById("btnSubmit");
-    const spinner = document.getElementById("spinner");
 
-    // 1. Password Confirmation Logic
-    if (password !== confirmPassword) {
-        errorDiv.innerText = "Passwords do not match!";
-        errorDiv.classList.remove("d-none");
-        document.getElementById("confirmPassword").focus();
-        return; // Stop the function here
+    function setLoading(isLoading) {
+        if (!btnSubmit) return;
+        btnSubmit.disabled = isLoading;
+        btnSubmit.classList.toggle('loading', isLoading);
     }
 
-    // 2. Simple Length Check (Optional but recommended)
-    if (password.length < 6) {
-        errorDiv.innerText = "Password must be at least 6 characters long.";
-        errorDiv.classList.remove("d-none");
-        return;
-    }
+    registerForm?.addEventListener("submit", async function (e) {
+        e.preventDefault();
 
-    // Clear previous errors and show loading state
-    errorDiv.classList.add("d-none");
-    btnSubmit.disabled = true;
-    spinner.classList.remove("d-none");
+        const email = document.getElementById("email").value.trim();
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
 
-    try {
-        const res = await fetch("/api/auth/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ Email: email, Username: username, Password: password })
-        });
+        if (password !== confirmPassword) {
+            errorDiv.innerText = "Passwords do not match!";
+            errorDiv.classList.remove("d-none");
+            document.getElementById("confirmPassword").focus();
+            return;
+        }
 
-        if (res.ok) {
-            window.location.href = "/Account/Login";
-        } else {
-            const errorData = await res.json(); 
+        if (password.length < 6) {
+            errorDiv.innerText = "Password must be at least 6 characters long.";
+            errorDiv.classList.remove("d-none");
+            return;
+        }
+
+        errorDiv.classList.add("d-none");
+        setLoading(true);
+
+        try {
+            const res = await fetch("/api/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ Email: email, Username: username, Password: password })
+            });
+
+            if (res.ok) {
+                window.location.href = "/Account/Login";
+                return;
+            }
+
+            const errorData = await res.json();
             errorDiv.innerText = errorData.message || "Registration failed.";
             errorDiv.classList.remove("d-none");
+            document.getElementById("email").focus();
+        } catch (err) {
+            errorDiv.innerText = "Network error: " + err.message;
+            errorDiv.classList.remove("d-none");
+        } finally {
+            setLoading(false);
         }
-    } catch (err) {
-        errorDiv.innerText = "Network error: " + err.message;
-        errorDiv.classList.remove("d-none");
-    } finally {
-        btnSubmit.disabled = false;
-        spinner.classList.add("d-none");
+    });
+
+    async function smoothChangeWord() {
+        if (!logoContainer) return;
+
+        const currentCols = logoContainer.querySelectorAll('.column');
+        currentCols.forEach(col => {
+            col.style.opacity = '0';
+            col.style.transform = 'translateY(-10px)';
+        });
+
+        await new Promise(resolve => setTimeout(resolve, 500));
+
+        logoContainer.innerHTML = '';
+        const currentWord = words[wordIndex];
+
+        [...currentWord].forEach((char, index) => {
+            const column = document.createElement('div');
+            column.className = 'column';
+
+            for (let i = 0; i < 4; i++) {
+                const span = document.createElement('span');
+                span.textContent = char;
+                column.appendChild(span);
+            }
+            logoContainer.appendChild(column);
+
+            setTimeout(() => {
+                column.classList.add('active');
+            }, index * 100);
+        });
+
+        wordIndex = (wordIndex + 1) % words.length;
     }
-});
 
-    const words = ["RUN", "CYCLE", "BASKETBALL", "SOCCER", "VOLLEYBALL"];
-let wordIndex = 0;
-const logoContainer = document.getElementById('dynamic-logo');
-
-async function smoothChangeWord() {
-    // 1. Fade out current letters
-    const currentCols = logoContainer.querySelectorAll('.column');
-    currentCols.forEach(col => {
-        col.style.opacity = '0';
-        col.style.transform = 'translateY(-10px)';
-    });
-
-    // 2. Short pause for fade out to complete
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    // 3. Clear and Build new word
-    logoContainer.innerHTML = '';
-    const currentWord = words[wordIndex];
-
-    [...currentWord].forEach((char, index) => {
-        const column = document.createElement('div');
-        column.className = 'column';
-        
-        for (let i = 0; i < 4; i++) {
-            const span = document.createElement('span');
-            span.textContent = char;
-            column.appendChild(span);
-        }
-        logoContainer.appendChild(column);
-
-        // 4. Staggered Entrance (the "Smooth" part)
-        setTimeout(() => {
-            column.classList.add('active');
-        }, index * 100); // 100ms delay between each letter
-    });
-
-    wordIndex = (wordIndex + 1) % words.length;
-}
-
-// Initial Run
-smoothChangeWord();
-
-// Interval (set slightly longer to account for animation time)
-setInterval(smoothChangeWord, 3000);
-
+    smoothChangeWord();
+    setInterval(smoothChangeWord, 3000);
 </script>
 
 </body>
