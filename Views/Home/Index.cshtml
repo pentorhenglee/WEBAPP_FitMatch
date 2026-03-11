@@ -208,6 +208,9 @@
 
             const currentPeople = post.members ? post.members.length : 0; 
             const maxPeople = post.maxPeople || 0;
+
+            const parts = date.split('-');
+            const formattedDate = (parts.length === 3) ? `${parts[2]}-${parts[1]}-${parts[0]}` : date;
         
             card.innerHTML = `
                 <div class="card-image">
@@ -226,7 +229,7 @@
                         </p>
                         <div class="post-datetime-container">
                             <p class="post-date">
-                                <i class="fas fa-calendar-alt"></i> ${date}
+                                <i class="fas fa-calendar-alt"></i> ${formattedDate}
                             </p>
                             ${time ? `<p class="post-time"><i class="fas fa-clock"></i> ${time.substring(0, 5)}</p>` : ''}
                         </div>
