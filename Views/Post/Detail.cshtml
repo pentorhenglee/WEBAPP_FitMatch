@@ -430,7 +430,7 @@
             try {
                 const response = await fetch(`/api/postapi/delete/${currentPostId}`, { method: 'DELETE' });
                 if (response.ok) {
-                    window.location.href = '/Dashboard';
+                    window.location.href = '/Dashboard/Index';
                 } else {
                     const err = await response.text();
                     alert("Delete failed: " + err);
