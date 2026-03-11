@@ -26,7 +26,6 @@ body {
     gap: 60px;
 }
 
-/* Hero Section */
 .hero-section {
     text-align: center;
     animation: fadeIn 0.8s ease-out;
@@ -57,7 +56,6 @@ body {
 
 .green { color: var(--accent); }
 
-/* Buttons */
 .cta-group {
     display: flex;
     gap: 20px;
@@ -86,7 +84,6 @@ body {
 .primary-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(46, 204, 113, 0.3); }
 .secondary-btn:hover { background: rgba(255,255,255,0.1); }
 
-/* Features Grid */
 .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -144,13 +141,11 @@ body {
     margin-top: 10px;
 }
 
-/* Animations */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Mobile Responsive */
 @media (max-width: 768px) {
     .cta-group { flex-direction: column; }
     .landing-wrapper { padding: 40px 20px; }
