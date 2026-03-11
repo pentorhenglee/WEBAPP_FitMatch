@@ -430,7 +430,7 @@
             try {
                 const response = await fetch(`/api/postapi/delete/${currentPostId}`, { method: 'DELETE' });
                 if (response.ok) {
-                    window.location.href = '/Dashboard';
+                    window.location.href = '/Dashboard/index';
                 } else {
                     const err = await response.text();
                     alert("Delete failed: " + err);
@@ -472,7 +472,7 @@
                 const isToday = dateObj.toDateString() === now.toDateString();
                 const timeOnly = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
                 const timeStr = isToday
-                    ? timeOnly
+                    ? 'Today ' + timeOnly
                     : dateObj.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }) + ' ' + timeOnly;
 
                 chatContainer.innerHTML += `

@@ -136,7 +136,7 @@ body {
     bottom: 3px;
     background-color: white;
     transition: .4s;
-    z-index: 999;
+    z-index: 99;
 }
 
 input:checked+.slider:before {
