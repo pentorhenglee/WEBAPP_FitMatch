@@ -13,6 +13,8 @@ namespace WEBAPP_FitMatch.Models
         public string? SportType {get;set;}
         public Int32 MaxPeople {get;set;}
         public string? ImageUrl{get;set;}
+        public double? Lat { get; set; }
+        public double? Lon { get; set; }
 
     }
 }

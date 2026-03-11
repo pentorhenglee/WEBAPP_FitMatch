@@ -13,7 +13,7 @@ public class NotificationService
         _db = db;
     }
 
-    // มีคนกด join โพสต์ → แจ้งคนที่ join + owner
+    // มีคนกด join โพสต์ แจ้งคนที่ join + owner
     public async Task NotifyJoined(int postId, int joinerId, string postTitle, int ownerId)
     {
         var notifications = new List<Notification>
@@ -24,7 +24,7 @@ public class NotificationService
                 TriggerId = joinerId,
                 PostId    = postId,
                 Type      = "Join",
-                Message   = $"คุณได้เข้าร่วมกิจกรรม '{postTitle}'",
+                Message   = $"You have joined the activity '{postTitle}'",
                 IsRead    = false,
                 CreatedAt = DateTime.UtcNow
             },
@@ -34,7 +34,7 @@ public class NotificationService
                 TriggerId = joinerId,
                 PostId    = postId,
                 Type      = "Join",
-                Message   = $"มีคนสนใจเข้าร่วมกิจกรรม '{postTitle}'",
+                Message   = $"Someone has joined your activity '{postTitle}'",
                 IsRead    = false,
                 CreatedAt = DateTime.UtcNow
             }
@@ -44,7 +44,7 @@ public class NotificationService
         await _db.SaveChangesAsync();
     }
 
-    // owner เตะสมาชิก → แจ้งคนที่โดนเตะ
+    // owner เตะสมาชิก แจ้งคนที่โดนเตะ
     public async Task NotifyKicked(int postId, int kickedUserId, int ownerId, string postTitle)
     {
         _db.Notifications.Add(new Notification
@@ -53,14 +53,14 @@ public class NotificationService
             TriggerId = ownerId,
             PostId    = postId,
             Type      = "Kick",
-            Message   = $"คุณถูกนำออกจากกิจกรรม '{postTitle}'",
+            Message   = $"You have been removed from the activity '{postTitle}'",
             IsRead    = false,
             CreatedAt = DateTime.UtcNow
         });
         await _db.SaveChangesAsync();
     }
 
-    // owner แก้ไขโพสต์ → แจ้งทุกคนในโพสต์ (รวม owner)
+    // owner แก้ไขโพสต์ แจ้งทุกคนในโพสต์ (รวม owner)
     public async Task NotifyEdited(int postId, int editorId, string postTitle)
     {
         var memberIds = await _db.Members
@@ -74,7 +74,7 @@ public class NotificationService
             TriggerId = editorId,
             PostId    = postId,
             Type      = "Edit",
-            Message   = $"กิจกรรม '{postTitle}' มีการแก้ไขข้อมูล ตรวจสอบเลย!",
+            Message   = $"The activity '{postTitle}' has been updated. Check it out!",
             IsRead    = false,
             CreatedAt = DateTime.UtcNow
         }).ToList();
@@ -86,7 +86,7 @@ public class NotificationService
         }
     }
 
-    // owner ปิดโพสต์ → แจ้งทุกคนในโพสต์ (รวม owner)
+    // owner ปิดโพสต์ แจ้งทุกคนในโพสต์ (รวม owner)
     public async Task NotifyClosed(int postId, int closerId, string postTitle)
     {
         var memberIds = await _db.Members
@@ -100,7 +100,7 @@ public class NotificationService
             TriggerId = closerId,
             PostId    = postId,
             Type      = "Close",
-            Message   = $"กิจกรรม '{postTitle}' ปิดโพสต์แล้ว",
+            Message   = $"Congratulations! The activity '{postTitle}' has been closed. See you there!",
             IsRead    = false,
             CreatedAt = DateTime.UtcNow
         }).ToList();

@@ -17,16 +17,15 @@ public class NotificationAPIController : ControllerBase
         _db = db;
     }
 
-    // ทำเครื่องหมายว่าอ่านแล้ว (toggle)
     [HttpPost("read")]
     public async Task<IActionResult> ReadNotification([FromBody] ReadNotificationRequest req)
     {
         var user_id = HttpContext.Session.GetInt32("user_id");
-        if (user_id == null) return Unauthorized("กรุณาเข้าสู่ระบบ");
+        if (user_id == null) return Unauthorized("Please login");
 
         var notification = await _db.Notifications
             .FirstOrDefaultAsync(n => n.NotificationId == req.NotificationId && n.UserId == user_id.Value);
-        if (notification == null) return NotFound("ไม่พบการแจ้งเตือน");
+        if (notification == null) return NotFound("No Notification!");
 
         notification.IsRead = true;
         await _db.SaveChangesAsync();
@@ -38,7 +37,7 @@ public class NotificationAPIController : ControllerBase
     public async Task<IActionResult> RenderNotification()
     {
         var user_id = HttpContext.Session.GetInt32("user_id");
-        if (user_id == null) return Unauthorized("กรุณาเข้าสู่ระบบ");
+        if (user_id == null) return Unauthorized("Please login");
 
         var notifications = await _db.Notifications
             .Where(n => n.UserId == user_id.Value)
