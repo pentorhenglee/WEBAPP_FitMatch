@@ -93,8 +93,8 @@ CREATE INDEX "IX_Comment_PostId" ON "Comment" ("PostId");
 
 
 
--- Supabase exposes the public schema over its REST API with the public anon key.
--- This app talks to Postgres directly, so shut that door: no RLS policies = no rows for anon/authenticated.
+-- The app connects as the database owner, which bypasses RLS.
+-- RLS with no policies keeps these tables closed if Neon's Data API is ever switched on.
 ALTER TABLE "DataProtectionKeys" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "History" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "Mission" ENABLE ROW LEVEL SECURITY;
@@ -103,6 +103,3 @@ ALTER TABLE "Post" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "User" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "Comment" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "Member" ENABLE ROW LEVEL SECURITY;
-REVOKE ALL ON ALL TABLES IN SCHEMA public FROM anon, authenticated;
--- The "Session" table is created by the app on first start; this covers it too.
-ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE ALL ON TABLES FROM anon, authenticated;
