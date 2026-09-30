@@ -12,7 +12,7 @@ Log in with the demo account to browse games, join one, and see the dashboard:
 
 | Email | Password |
 |---|---|
-| `recruiter@fitmatch.demo` | `FitMatch-BiaCfr` |
+| `recruiter@fitmatch.demo` | `fitmatch2026` |
 
 The first request after a quiet period can take a few seconds while the server wakes up.
 
