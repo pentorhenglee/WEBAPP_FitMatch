@@ -3,6 +3,7 @@
 }
 
 @section Styles {
+    <link rel="stylesheet" href="~/css/tokens.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Home.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 }
@@ -79,27 +80,27 @@
 
     <div class="fixed-top-section">
         <div class="welcome-message">
-            <h1>Find Your Fitness <span>Community</span></h1>
+            <h1>Open games</h1>
         </div>
         
         <div class="search-container">
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="SEARCH THE PLACE" />
-                <button type="button" id="searchButton">SEARCH</button>
+            <div class="search-bar" role="search">
+                <i class="fa-solid fa-magnifying-glass search-bar__icon" aria-hidden="true"></i>
+                <label for="searchInput" class="visually-hidden">Search games</label>
+                <input type="text" id="searchInput" placeholder="Search games or places" />
+                <button type="button" id="searchButton">Search</button>
             </div>
 
             <div class="status-toggle-container">
-                <label class="switch">
-                    <input type="checkbox" id="statusToggle">
-                    <span class="slider round">
-                        <i class="fas fa-lock-open open-icon"></i>
-                        <i class="fas fa-lock closed-icon"></i>
-                    </span>
+                <label class="status-switch" title="Show open or closed games">
+                    <input type="checkbox" id="statusToggle" class="status-switch__input" aria-label="Show closed games only">
+                    <span class="status-switch__opt status-switch__opt--open">Open</span>
+                    <span class="status-switch__opt status-switch__opt--closed">Closed</span>
                 </label>
             </div>
 
-            <button class="post-button" id="addpostButton">
-            +
+            <button type="button" class="post-button" id="addpostButton" aria-label="Post a game">
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
             </button>
 
         </div>

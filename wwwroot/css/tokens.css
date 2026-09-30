@@ -1,0 +1,35 @@
+/* Hallmark tokens · theme: Sport (brand-green variant) · used by Landing.css */
+:root {
+  /* Paper / ink tinted toward the brand green (hue ~155) */
+  --color-paper:      oklch(15% 0.012 160);
+  --color-paper-2:    oklch(19% 0.014 160);
+  --color-rule:       oklch(32% 0.014 160);
+  --color-muted:      oklch(72% 0.012 155);
+  --color-ink:        oklch(95% 0.008 150);
+  --color-accent:     oklch(76% 0.17 151);   /* the app's #2ecc71 */
+  --color-accent-2:   oklch(82% 0.15 151);   /* accent hover */
+  --color-accent-ink: oklch(18% 0.03 155);   /* text on accent */
+  --color-focus:      oklch(86% 0.14 120);
+
+  --font-display: "Big Shoulders Display", "Arial Narrow", sans-serif;
+  --font-body:    "Barlow", "Helvetica Neue", Arial, sans-serif;
+
+  --space-3xs: 0.25rem;  --space-2xs: 0.5rem;  --space-xs: 0.75rem;
+  --space-sm:  1rem;     --space-md:  1.5rem;  --space-lg: 2rem;
+  --space-xl:  3rem;     --space-2xl: 4.5rem;  --space-3xl: 7rem;
+  --page-gutter: clamp(1rem, 4vw, 3.5rem);
+
+  --text-xs: 0.8125rem; --text-sm: 0.9375rem; --text-md: 1.0625rem;
+  --text-lg: 1.375rem;  --text-xl: 1.75rem;   --text-2xl: 2.5rem;
+  --text-display: clamp(3.5rem, 11vw, 10.5rem);
+
+  --rule-hair:  1px;
+  --rule-thick: 6px;
+  --radius-btn: 4px;
+
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:     cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+}
