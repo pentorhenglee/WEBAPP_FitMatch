@@ -1,5 +1,5 @@
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: var(--font-body);
     background: var(--bg);
     color: var(--text);
     display: flex;
@@ -41,7 +41,8 @@ body {
     display: flex;
     justify-content: center;
     gap: 12px;
-    font-size: 3.5rem;
+    font-family: var(--font-display);
+    font-size: 4rem;
     font-weight: 900;
     transition: all 0.5s ease;
 }
@@ -85,7 +86,7 @@ label {
     letter-spacing: 0.03em;
 }
 
-h2 { margin: 0 0 6px 0; font-size: 1.9rem; font-weight: 700; color: var(--text); }
+h2 { margin: 0 0 6px 0; font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; color: var(--text); }
 .subtitle { color: var(--text-muted); margin-bottom: 30px; font-size: 0.95rem; }
 
 .input-group {

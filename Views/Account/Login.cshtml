@@ -10,6 +10,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewData["Title"]</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Big+Shoulders+Display:wght@700;800;900&display=swap">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Account.css" asp-append-version="true" />
     
@@ -27,8 +30,8 @@
 
         <div class="form-section">
             <div class="login-card">
-                <h2>Welcome <span class="green">back!</span></h2>
-                <label for="loginLabel">Login</label>
+                <h2>Log in</h2>
+                <label for="email">Email and password</label>
                 <div id="errorMessage" role="alert" class="error d-none"></div>
                 <form id="loginForm">
                     <div class="input-group">
@@ -44,7 +47,7 @@
                     </button>
                 </form>
                 
-                <p class="login-text"> Don't have an account? <a href="/Account/Register">Sign up!</a></p>
+                <p class="login-text"> No account yet? <a href="/Account/Register">Create one</a></p>
             </div>
         </div>
     </div>

@@ -1,5 +1,5 @@
 @{
-    ViewData[index: "Title"] = "Landing";
+    ViewData["Title"] = "FitMatch";
     Layout = null;
 }
 
@@ -8,54 +8,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"]</title>
+    <title>@ViewData["Title"] · pickup games, posted and filled</title>
+    <meta name="description" content="Post a pickup game, fill the last spots, show up. A team web app built for CE KMITL." />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Big+Shoulders+Display:wght@700;800;900&display=swap">
+    <link rel="stylesheet" href="~/css/tokens.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Landing.css" asp-append-version="true" />
 </head>
 <body>
 
-<div class="landing-wrapper">
-    <header class="hero-section">
-        <div class="tagline">READY TO PLAY?</div>
-        <h1 class="main-title">Welcome to Fit<span class="green">Match</span></h1>
-        <p class="hero-subtitle">Stop solo training. Find your team, join matches, and level up your fitness journey with a community that shows up.</p>
-        
-        <div class="cta-group">
-            <a class="secondary-btn" asp-controller="Home" asp-action="Index">Explore Matches</a>
-            <a class="primary-btn" asp-controller="Account" asp-action="Register">Register Now</a>
-        </div>
-    </header>
+<header class="nav-edge">
+    <a class="wordmark" asp-controller="Home" asp-action="Index">FIT<span>MATCH</span></a>
+    <a class="btn btn--outline" asp-controller="Account" asp-action="Login">Log in</a>
+</header>
 
-    <div class="features-grid">
-        <div class="glass-card">
-            <div class="card-icon">⚽</div>
-            <h3>What is FitMatch?</h3>
-            <p>FitMatch is a social hub for athletes. We connect people who want to play sports but lack a team or a venue.</p>
-            <p>From casual park soccer to competitive basketball, we make finding a game as easy as a click.</p>
+<main>
+    <section class="marquee">
+        <h1 class="marquee__title">Two players short for futsal?</h1>
+    </section>
+
+    <hr class="rule-thick" />
+
+    <section class="board" aria-labelledby="board-title">
+        <div class="board__head">
+            <h2 id="board-title" class="section-title">Open games</h2>
+            <p class="board__lede">Pickup games people have posted on FitMatch, soonest first. Take a spot, or post your own.</p>
         </div>
 
-        <div class="glass-card">
-            <div class="card-icon">🏆</div>
-            <h3>How it works</h3>
-            <ul class="feature-list">
-                <li><strong>Join a Plan:</strong> Browse sports plans and grab a spot.</li>
-                <li><strong>Host a Room:</strong> Need two more players for a football game? Post it here.</li>
-                <li><strong>Track your Stats:</strong> Keep track of your performance and stay consistent.</li>
-            </ul>
-        </div>
+        <ol class="board__list" id="board" aria-live="polite" aria-busy="true">
+            <li class="board__state">Loading games…</li>
+        </ol>
+        <noscript><p class="board__state">The game list needs JavaScript. <a asp-controller="Home" asp-action="Index">Open the feed</a> instead.</p></noscript>
 
-        <div class="glass-card">
-            <div class="card-icon">🚀</div>
-            <h3>Get Started</h3>
-            <p>Your next teammate is waiting. Ready to jump in?</p>
-            <ol class="feature-list">
-                <li>Create a room and set the details.</li>
-                <li>Or join an existing room sorted by your sports.</li>
-                <li>Check <strong>Home</strong> for active rooms.</li>
-            </ol>
-            <a class="card-link" asp-controller="Home" asp-action="Index">Join or Create a room →</a>
+        <a class="link" asp-controller="Home" asp-action="Index">See every game on the feed</a>
+    </section>
+
+    <section class="steps" aria-labelledby="steps-title">
+        <h2 id="steps-title" class="section-title">How a game fills</h2>
+        <dl class="steps__list">
+            <div class="step">
+                <dt>Post</dt>
+                <dd>Name the sport, the place, the time and how many players you need.</dd>
+            </div>
+            <div class="step">
+                <dt>Join</dt>
+                <dd>Filter the feed by sport and ask for a spot. The host runs the roster.</dd>
+            </div>
+            <div class="step">
+                <dt>Play</dt>
+                <dd>The post shows the forecast for game day. Missions and your dashboard count what you played.</dd>
+            </div>
+        </dl>
+    </section>
+
+    <section class="cta" aria-labelledby="cta-title">
+        <h2 id="cta-title" class="cta__title">Got a game this week?</h2>
+        <div class="cta__actions">
+            <a class="btn btn--primary" asp-controller="Account" asp-action="Register">Create account</a>
+            <a class="link" asp-controller="Account" asp-action="Login">I have an account</a>
         </div>
-    </div>
-</div>
+    </section>
+</main>
+
+<footer class="foot-line">
+    <p>FitMatch · team project for Web Application Development, CE KMITL · <a class="link" href="https://github.com/pentorhenglee/WEBAPP_FitMatch">Source on GitHub</a></p>
+</footer>
+
+<script>
+    (function () {
+        const board = document.getElementById('board');
+
+        function el(tag, cls, text) {
+            const node = document.createElement(tag);
+            if (cls) node.className = cls;
+            if (text != null) node.textContent = text;
+            return node;
+        }
+
+        // eventDateTime is stored as local wall time, so read it as text, not as a UTC instant
+        function when(raw) {
+            const [d, t = ''] = String(raw).split('T');
+            const [y, m, day] = d.split('-').map(Number);
+            const date = new Date(Date.UTC(y, m - 1, day));
+            const label = date.toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short', timeZone: 'UTC' });
+            return { day: label, time: t.slice(0, 5) };
+        }
+
+        function row(post) {
+            const li = el('li', 'fixture');
+            const w = when(post.eventDateTime);
+
+            const time = el('time', 'fixture__when');
+            time.dateTime = post.eventDateTime;
+            time.append(el('span', 'fixture__day', w.day), el('span', 'fixture__time', w.time));
+
+            const what = el('div', 'fixture__what');
+            what.append(el('strong', 'fixture__title', post.title), el('span', 'fixture__place', post.location));
+
+            const taken = post.members ? post.members.length : 0;
+            const max = post.maxPeople || 0;
+            const spots = el('span', 'fixture__spots');
+            if (max && taken >= max) {
+                spots.textContent = 'Full';
+                spots.classList.add('is-full');
+            } else {
+                spots.append(el('b', null, String(taken)), document.createTextNode(' / ' + max));
+                spots.setAttribute('aria-label', taken + ' of ' + max + ' spots taken');
+            }
+
+            li.append(time, el('span', 'fixture__sport', post.sportType), what, spots);
+            return li;
+        }
+
+        function state(text) {
+            board.replaceChildren(el('li', 'board__state', text));
+        }
+
+        fetch('/api/all_post', { credentials: 'same-origin' })
+            .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+            .then(posts => {
+                const open = posts
+                    .filter(p => p.status !== 'closed')
+                    .sort((a, b) => String(a.eventDateTime).localeCompare(String(b.eventDateTime)))
+                    .slice(0, 8);
+                if (!open.length) { state('No open games right now. Post the first one.'); return; }
+                board.replaceChildren(...open.map(row));
+            })
+            .catch(() => state('The game list didn’t load. Refresh, or open the feed below.'))
+            .finally(() => board.setAttribute('aria-busy', 'false'));
+    })();
+</script>
 
 </body>
 </html>

@@ -8,6 +8,8 @@
   --accent:      #2ecc71;
   --text:        #ffffff;
   --text-muted:  #b3b3b3;
+  --font-body:    'Barlow', 'Helvetica Neue', Arial, sans-serif;
+  --font-display: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
   --navbar-h:    70px;
     --page-pad-y:  30px;
     --page-pad-x:  40px;
@@ -17,7 +19,7 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--font-body);
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -96,6 +98,9 @@ a { text-decoration: none; }
   height: 50px; 
   width: auto; 
 }
+/* Wordmark and page titles share the landing page's display face */
+.brand div, h1 { font-family: var(--font-display); letter-spacing: 0.01em; }
+
 .text-fit { color: var(--text); }
 .text-match { color: var(--accent); }
 

@@ -586,7 +586,7 @@
                 const rain    = data.daily.precipitation_sum[0];
                 const code    = data.daily.weathercode[0];
 
-                document.getElementById('detailWeatherIcon').textContent = detailWeatherIcon(code);
+                document.getElementById('detailWeatherIcon').className = 'fa-solid ' + detailWeatherIcon(code);
                 document.getElementById('detailWeatherTemp').textContent = `${minTemp}\u00b0C \u2013 ${maxTemp}\u00b0C`;
                 document.getElementById('detailWeatherDesc').textContent = detailWeatherDesc(code);
                 document.getElementById('detailWeatherRain').textContent = `Rain: ${rain} mm`;
@@ -595,16 +595,16 @@
         }
 
         function detailWeatherIcon(code) {
-            if (code === 0) return '☀️';
-            if (code <= 2)  return '🌤️';
-            if (code <= 3)  return '☁️';
-            if (code <= 48) return '🌫️';
-            if (code <= 57) return '🌦️';
-            if (code <= 67) return '🌧️';
-            if (code <= 77) return '❄️';
-            if (code <= 82) return '🌧️';
-            if (code <= 99) return '⛈️';
-            return '🌡️';
+            if (code === 0) return 'fa-sun';
+            if (code <= 2)  return 'fa-cloud-sun';
+            if (code <= 3)  return 'fa-cloud';
+            if (code <= 48) return 'fa-smog';
+            if (code <= 57) return 'fa-cloud-sun-rain';
+            if (code <= 67) return 'fa-cloud-rain';
+            if (code <= 77) return 'fa-snowflake';
+            if (code <= 82) return 'fa-cloud-showers-heavy';
+            if (code <= 99) return 'fa-cloud-bolt';
+            return 'fa-temperature-half';
         }
 
         function detailWeatherDesc(code) {

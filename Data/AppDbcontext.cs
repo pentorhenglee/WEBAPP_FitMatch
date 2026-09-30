@@ -1,11 +1,12 @@
 using System.Data.Common;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using WEBAPP_FitMatch.Models;
 
 namespace WEBAPP_FitMatch.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : DbContext, IDataProtectionKeyContext
 {
     public DbSet<User> Users { get; set; }
     public DbSet<Post> Posts { get; set; }
@@ -18,5 +19,7 @@ namespace WEBAPP_FitMatch.Data
     public DbSet<Mission> Missions { get; set; } 
 
     public DbSet<History> Histories {get;set;}
+
+    public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
 }
 }
